@@ -31,9 +31,7 @@ char* get_next_token(interpreteur inter) { /* lis le token suivant */
 
 
 /**
- * teste si un token est une valeur hexa
- * ATTENTION cette méthode n'est pas complete et ne fonctionnera pas dans tous les cas
- * essayer avec 0x567ZRT...
+ * test si un token est une valeur hexa
  *@param chaine le token à analyser
  *@return 0 si non-hexa, non null autrement
  */
@@ -84,9 +82,11 @@ int is_hexa(char*chaine)
 }
 
 
-
-
-/* test si la chaine de caractère est un octet */
+/**
+ * test si la chaine de caractère est un octet
+ *@param chaine le token à analyser
+ *@return 0 si non-byte, non null autrement
+ */
 int is_byte(char*chaine)
 {   int l=0;
     int i=0;
@@ -103,11 +103,11 @@ int is_byte(char*chaine)
 }
 
 
-
-
-
-
-/* test si la chaine de caractère est un word */
+/**
+ * test si la chaine de caractère est un word
+ *@param chaine le token à analyser
+ *@return 0 si non-word, non null autrement
+ */
 int is_word(char* chaine)
 { int i=0;
 	int k=0;
@@ -124,11 +124,11 @@ int is_word(char* chaine)
 }
 
 
-
-
-
-
-/* test si la chaine de caractère est un entier  */
+/**
+ * test si la chaine de caractère est un entier
+ *@param chaine le token à analyser
+ *@return 0 si non-integer, non null autrement
+ */
 int is_integer(char* chaine)
 {   int i=0;
     int k=0;
@@ -173,10 +173,11 @@ int is_integer(char* chaine)
 }
 
 
-
-
-
-/* test si la chaine de caractère est un fichier elf */
+/**
+ * test si la chaine de caractère est un fichier objet ELF
+ *@param chaine le token à analyser
+ *@return 0 si non-elf, non null autrement
+ */
 int is_elf(char* chaine)
 {	int l;
 	l=strlen(chaine);
@@ -186,7 +187,11 @@ return (chaine[l-2]=='.' && chaine[l-1]=='o' && chaine[l]=='\0');
 }
 
 
-/* test si la chaine de caractère est un registre existant */
+/**
+ * test si la chaine de caractère est un registre
+ *@param chaine le token à analyser
+ *@return 0 si non-reg, non null autrement
+ */
 int is_register(char* chaine)
 {
  int i=0;
@@ -208,10 +213,9 @@ int is_register(char* chaine)
 
 
 /**
- * retourne le type du token (fonction tres incomplete)
+ * retourne le type du token
  * @param chaine le token à analyser
  * @return un entier correspondant au type du token
- *
  */
 int get_type(char* chaine) {
     if (is_hexa(chaine))
@@ -234,7 +238,6 @@ int get_type(char* chaine) {
 
 
 /**
-*
 * @brief parse la chaine courante de l'interpreteur a la recherche d'une commande, et execute cette commande.
 * @param inter l'interpreteur qui demande l'analyse
 * @return CMD_OK_RETURN_VALUE si la commande s'est executee avec succes (0)
@@ -345,7 +348,6 @@ Les commandes de l'émulateur.
  * @param inter l'interpreteur qui demande l'analyse
  * @return 0 en case de succes, un nombre positif sinon
  */
-
 int testcmd(interpreteur inter) {
     DEBUG_MSG("Chaine : %s", inter->input);
     int return_value=0;
