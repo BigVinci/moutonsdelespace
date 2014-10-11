@@ -449,30 +449,36 @@ int setcmd(interpreteur inter, reg tabreg)
                  {while((token = get_next_token(inter))!=NULL && return_value==0)
                   {no_args_3=0;
                     if (get_type(token)==WORD) /* adresse non signée sur 32 bits */
-		      {
+		               {
                         sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue */
                         if ((token = get_next_token(inter))!=NULL)
                         {
                             if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
                                 {
-				    sscanf(token,"%u",&intValue);
+				                    if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
+                                    {
+                                    sscanf(token,"%u",&intValue);
                                     INFO_MSG("La commande set mem byte <adresse> <valeur> est exécutée.\n");
-                                    return_value= _set_mem_bytecmd(intValue, addrValue);
+                                    return_value= _set_mem_bytecmd(intValue, addrValue);  
+                                    }
+                                    else 
+                                        {WARNING_MSG("Il y a trop d'arguments.\n");
+                                        return 1;}
                                 }
                             else
                                 {WARNING_MSG("La valeur à affecter en mémoire n'est pas un entier alors qu'elle devrait l'être.\n");
                                 return 1;}
                         }
                         else
-			{WARNING_MSG("La valeur à affecter en mémoire n'est pas précisée.\n");
-                        return 1;}
-		     } /* fin du get_type == WORD */
+		                  {WARNING_MSG("La valeur à affecter en mémoire n'est pas précisée.\n");
+                            return 1;}
+		              } /* fin du get_type == WORD */
 
                     else /* si get_type(token)) ne renvoie pas WORD */
-		    {WARNING_MSG("value %s is not a valid argument of command %s\n",token,"setcmd mem byte");
-                    return 1;}
+		              {WARNING_MSG("value %s is not a valid argument of command %s\n",token,"setcmd mem byte");
+                          return 1;}
                   }
-		 }
+		         }
 
 	    else if (!strcmp(token,"word")) /* commande entrée : set mem word ... */
 		{
@@ -480,15 +486,21 @@ int setcmd(interpreteur inter, reg tabreg)
                  {no_args_4=0;
                     if (get_type(token)==WORD) /* adresse non signée sur 32 bits */
 		    {
-                        {
+                    {
 			sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue */
                         if ((token = get_next_token(inter))!=NULL)
                         {
                             if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
                                 {
-				    sscanf(token,"%u",&intValue);
+                                    if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
+                                    {
+                				    sscanf(token,"%u",&intValue);
                                     INFO_MSG("La commande set mem word <adresse> <valeur> est exécutée.\n");
                                     return_value= _set_mem_wordcmd(intValue, addrValue);
+                                    }
+                                    else 
+                                        {WARNING_MSG("Il y a trop d'arguments.\n");
+                                        return 1;}
                                 }
                             else
                                 {WARNING_MSG("La valeur à affecter en mémoire n'est pas un entier alors qu'elle devrait l'être.\n");
@@ -497,7 +509,7 @@ int setcmd(interpreteur inter, reg tabreg)
                         else
 			{WARNING_MSG("La valeur à affecter en mémoire n'est pas précisée.\n");
                         return 1;}
-		    	}
+	                }
 		    } /* fin du case WORD */
                     else
 		    {WARNING_MSG("value %s is not a valid argument of command %s\n",token,"setcmd mem word");
@@ -524,9 +536,15 @@ int setcmd(interpreteur inter, reg tabreg)
                         {
                             if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
                                 {
-				    sscanf(token,"%u",&intValue);
+                                    if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
+                                    {
+				                    sscanf(token,"%u",&intValue);
                                     INFO_MSG("La commande set reg <registre> <valeur> est exécutée.\n");
                                     return_value= _set_regcmd(intValue, regValue);
+                                    }
+                                    else 
+                                        {WARNING_MSG("Il y a trop d'arguments.\n");
+                                        return 1;}
                                 }
                             else
                             {WARNING_MSG("La valeur à affecter en mémoire n'est pas un entier alors qu'elle devrait l'être.\n");
@@ -602,9 +620,16 @@ int assertcmd(interpreteur inter, reg tab, mem vmem)
     char* token1;
 	if ((token1=get_next_token(inter))==NULL) 
 	{
-	    WARNING_MSG("no argument given to command %s\n","assert cmd");
+	    WARNING_MSG("no argument given to command %s\n","assertcmd");
             return 1;
 	}
+/* on test si l'argument suivant assert est bien un des arguments attendus */
+    if (strcmp(token1, "reg")!=0 || strcmp(token1, "reg")!=0 || strcmp(token1, "reg")!=0)
+    {
+        WARNING_MSG("argument given to command %s\n is not a valid argument","assertcmd");
+        return 1; /* il manque des arguments -> on quitte la fonction */
+    }
+
     char* token2;
 	if ((token2=get_next_token(inter))==NULL)
 	{
@@ -621,11 +646,6 @@ int assertcmd(interpreteur inter, reg tab, mem vmem)
 		if (strcmp(token1, "byte")==0)
 		{
 	    	    WARNING_MSG("no argument given to command %s\n","assertcmd byte");
-            	    return 1; /* il manque des arguments -> on quitte la fonction */
-		}
-		else
-		{
-	    	    WARNING_MSG("argument given to command %s\n is not a valid argument","assertcmd reg");
             	    return 1; /* il manque des arguments -> on quitte la fonction */
 		}
 	}

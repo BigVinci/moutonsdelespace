@@ -37,10 +37,13 @@ int main ( int argc, char *argv[] )
     /* on initialise le tableau de registre */ 
     reg tabreg=init_tab_reg();
 
+    /* on crée la mémoire et on l'alloue dynamiquement */
+    mem vmem = init_mem(7);
+
     if(argc > 1) /* en mode SCRIPT, on utilise la mémoire créée lors du load du fichier elf */
         {
            /* initialisation de la mémoire */ 
-                mem vmem = load(argv[1]); /* charge le fichier ELF */
+                vmem = load(argv[1]); /* charge le fichier ELF */
                 if (vmem == NULL) /* on vérifie que la mémoire ait bien été créée */ 
                 {
                     WARNING_MSG( "Unable to allocate host memory for vmem" );
@@ -62,9 +65,6 @@ int main ( int argc, char *argv[] )
         inter->mode = SCRIPT;
     }
 
-    /* initialisation d'une mémoire pour le mode INTERACTIF */
-    mem vmemory = init_mem( 7 ); /* on initialise la mémoire sans fichier elf */
-
     /* boucle infinie : lit puis execute une cmd en boucle */
     while ( 1 ) {
 
@@ -72,9 +72,6 @@ int main ( int argc, char *argv[] )
         if (acquire_line( fp,  inter)  == 0 ) {
 	 int res;
             /* Une nouvelle ligne a ete acquise dans le flux fp*/
-	    if (inter->mode == INTERACTIF) 
-            res = execute_cmd(inter, tabreg, vmemory);  /* execution de la commande en mode INTERACTIF */
-	    else 
             res = execute_cmd(inter, tabreg, vmem);     /* execution de la commande en mode SCRIPT */
 
 
