@@ -190,11 +190,26 @@ mem load(char* name)
         }
     }
 
-    //TODO allouer la pile (et donc modifier le nb de segments) 
-    /* adapter la fonction elf_load_s... et faire en sorte que les segments se rangent dans le bon ordre */
-    elf_load_section_in_memory(pf_elf, memory, "[lib]", R__, 0x5000);	/* alloue le segment [lib] */
-    elf_load_section_in_memory(pf_elf, memory, "[stack]", RW_, 0xff7ff000); /* alloue la pile */
-    elf_load_section_in_memory(pf_elf, memory, "[vsyscall]", R_X, 0xfffff000); /* alloue le segment pour les appels systemes */ 
+/* alloue le segment [lib] */
+    vm->seg[NB_SECTIONS+1].name      = "[lib]";     /* nom du segment */
+    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[i].start._64             = 0x5000;      /* adresse de départ du segment */
+    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */ 
+    vm->seg[i].attr                  = r--;         /* permission sur le segment */
+
+/* alloue la pile */
+    vm->seg[NB_SECTIONS+1].name      = "[stack]";   /* nom du segment */
+    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[i].start._64             = 0xff7ff000;  /* adresse de départ du segment */
+    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */
+    vm->seg[i].attr                  = rw-;         /* permission sur le segment */
+
+/* alloue le segment pour les appels systemes */
+    vm->seg[NB_SECTIONS+1].name      = "[vsyscall]";/* nom du segment */
+    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[i].start._64             = 0xfffff000;  /* adresse de départ du segment */
+    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */
+    vm->seg[i].attr                  = r-x;         /* permission sur le segment */
 
     printf("\n------ Fichier ELF \"%s\" : sections lues lors du chargement ------\n", name) ;
     print_mem(memory); /* affiche le contenu de la mémoire */ 
