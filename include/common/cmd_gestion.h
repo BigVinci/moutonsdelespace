@@ -54,7 +54,7 @@ int _disp_mem_mapcmd(mem vmem);
 int _disp_mem_plagescmd(char* token, mem vmem);
 int _disp_reg_registercmd(char* vname, reg tab);
 int _disp_reg_allcmd(reg* tab_reg);
-int _assert_regcmd(reg r, char* val);
+int _assert_regcmd(reg r, int valeur);
 int _assert_bytecmd(char* adress, int valeur, mem vmem);
 int _assert_wordcmd(char*adress, int valeur, mem vmem);
 void _debugcmd(interpreteur inter);

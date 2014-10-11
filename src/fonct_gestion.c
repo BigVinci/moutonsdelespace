@@ -181,7 +181,7 @@ int is_elf(char* chaine)
 {	int l;
 	l=strlen(chaine);
 
-return ( chaine[l-4]=='.' && chaine[l-3]=='e' && chaine[l-2]=='l' && chaine[l-1]=='f' && chaine[l]=='\0');
+return (chaine[l-2]=='.' && chaine[l-1]=='o' && chaine[l]=='\0');
 
 }
 
@@ -325,9 +325,9 @@ Les commandes de l'émulateur.
  Dans cette version, six commandes :
     "test" qui attend un nombre strictement positifs d'hexa strictement positifs et affiche ce(s) nombre() +1 dans le terminal
     "exit" qui quitte l'émulateur
-    "load"
+    "load" qui charge un fichier objet ELF .o
     "disp"
-    "disasm"
+    "disasm" --> cf disasm.c/.h
     "set"
     "assert"
     "resume"
@@ -443,10 +443,13 @@ int setcmd(interpreteur inter, reg tabreg)
 /* la commande set attend soit le terme "reg", soit le terme "mem" */
     if(!strcmp(token,"mem")) /* commande entrée : set mem ... */
         {
+           DEBUG_MSG("Commande set mem entrée.\n");
             while((token = get_next_token(inter))!=NULL && return_value==0)
             {no_args_2=0;
 	    if (!strcmp(token,"byte")) /* commande entrée : set mem byte ... */
-                 {while((token = get_next_token(inter))!=NULL && return_value==0)
+                 {
+                DEBUG_MSG("Commande set mem byte entrée.\n");
+                while((token = get_next_token(inter))!=NULL && return_value==0)
                   {no_args_3=0;
                     if (get_type(token)==WORD) /* adresse non signée sur 32 bits */
 		               {
@@ -457,7 +460,7 @@ int setcmd(interpreteur inter, reg tabreg)
                                 {
 				                    if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
                                     {
-                                    sscanf(token,"%u",&intValue);
+                                    sscanf(token,"%u",&intValue); /* on met la valeur de token dans intValue */
                                     INFO_MSG("La commande set mem byte <adresse> <valeur> est exécutée.\n");
                                     return_value= _set_mem_bytecmd(intValue, addrValue);  
                                     }
@@ -482,6 +485,7 @@ int setcmd(interpreteur inter, reg tabreg)
 
 	    else if (!strcmp(token,"word")) /* commande entrée : set mem word ... */
 		{
+            DEBUG_MSG("Commande set mem word entrée.\n");
                 while((token = get_next_token(inter))!=NULL && return_value==0)
                  {no_args_4=0;
                     if (get_type(token)==WORD) /* adresse non signée sur 32 bits */
@@ -494,7 +498,7 @@ int setcmd(interpreteur inter, reg tabreg)
                                 {
                                     if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
                                     {
-                				    sscanf(token,"%u",&intValue);
+                				    sscanf(token,"%u",&intValue); /* on met la valeur de token dans intValue */
                                     INFO_MSG("La commande set mem word <adresse> <valeur> est exécutée.\n");
                                     return_value= _set_mem_wordcmd(intValue, addrValue);
                                     }
@@ -525,6 +529,7 @@ int setcmd(interpreteur inter, reg tabreg)
         {
         if(!strcmp(token,"reg")) /* commande entrée : set reg ... */
             {
+            DEBUG_MSG("Commande set reg entrée.\n");
             while((token = get_next_token(inter))!=NULL && return_value==0)
             {no_args_5=0;
                 if ((token = get_next_token(inter))!=NULL)
@@ -538,7 +543,7 @@ int setcmd(interpreteur inter, reg tabreg)
                                 {
                                     if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
                                     {
-				                    sscanf(token,"%u",&intValue);
+				                    sscanf(token,"%u",&intValue); /* on met la valeur de token dans intValue */
                                     INFO_MSG("La commande set reg <registre> <valeur> est exécutée.\n");
                                     return_value= _set_regcmd(intValue, regValue);
                                     }
@@ -612,7 +617,7 @@ int setcmd(interpreteur inter, reg tabreg)
  */
 int assertcmd(interpreteur inter, reg tab, mem vmem)
 {   
-    DEBUG_MSG("Commande assert entrée.\n");
+    DEBUG_MSG("Chaine en entrée : %s", inter->input);
 
     int s=0; int k;
 
@@ -624,7 +629,7 @@ int assertcmd(interpreteur inter, reg tab, mem vmem)
             return 1;
 	}
 /* on test si l'argument suivant assert est bien un des arguments attendus */
-    if (strcmp(token1, "reg")!=0 || strcmp(token1, "reg")!=0 || strcmp(token1, "reg")!=0)
+    if (strcmp(token1, "reg")!=0 && strcmp(token1, "word")!=0 && strcmp(token1, "byte")!=0)
     {
         WARNING_MSG("argument given to command %s\n is not a valid argument","assertcmd");
         return 1; /* il manque des arguments -> on quitte la fonction */
@@ -633,55 +638,45 @@ int assertcmd(interpreteur inter, reg tab, mem vmem)
     char* token2;
 	if ((token2=get_next_token(inter))==NULL)
 	{
-	   	if (strcmp(token1, "reg")==0)
-		{
-	    	    WARNING_MSG("no argument given to command %s\n","assertcmd reg");
-            	    return 1; /* il manque des arguments -> on quitte la fonction */
-		}
-		if (strcmp(token1, "word")==0)
-		{
-	    	    WARNING_MSG("no argument given to command %s\n","assertcmd word");
-            	    return 1; /* il manque des arguments -> on quitte la fonction */
-		}
-		if (strcmp(token1, "byte")==0)
-		{
-	    	    WARNING_MSG("no argument given to command %s\n","assertcmd byte");
-            	    return 1; /* il manque des arguments -> on quitte la fonction */
-		}
+	    WARNING_MSG("no argument given to command %s %s\n","assertcmd", token1);
+        return 1; /* il manque des arguments -> on quitte la fonction */
 	}
+
     char* token3;
 	if ((token3=get_next_token(inter))==NULL)
 	{
-/* gestion des erreurs à finir */ 		
+        WARNING_MSG("no argument given to command %s %s %s\n","assertcmd", token1, token2);
+        return 1; /* il manque des arguments -> on quitte la fonction */		
 	}
+
     char* token4;
-	if ((token4=get_next_token(inter))==NULL)
+	if ((token4=get_next_token(inter))!=NULL)
 	{
-/* gestion des erreurs à finir */ 
+        WARNING_MSG("Too many arguments given to command %s %s %s %s\n","assertcmd", token1, token2, token3);
+        return 1; /* il y a trop d'arguments -> on quitte la fonction */
 	}
 
-    if(token4!=NULL)
-    {
-/* gestion des erreurs à finir */
-    }
 
-if(strcmp(token1,"reg")==0)
+if(strcmp(token1,"reg")==0) /* L'interpréteur a reçu "assert reg" */
 {   DEBUG_MSG("Command assert_reg");
 
-        if(is_register(token2)!=0)
+        if(is_register(token2)!=0) /* on vérifie que le token2 représente un registre */
         {
-            if(is_integer(token3)!=0)
+            if(is_word(token3)!=0) /* on vérifie que le token3 représente un entier 32 bits non signé */
             {
-    int i; int j=0;
-    for (i=0; i<35; i++)
-    {
-	if(strcmp(token2,tab[i].name)==0 || strcmp(token2, tab[i].mnemo)==0) /* on recherche le registre "token2" */
-	j=i; 
-    }
-                s=_assert_regcmd(tab+j, token3); //attention token3=chaine de caractère !! pas un entier, a
-                return s;
-            }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_reg"); return 1;}
-        } {WARNING_MSG("value %s is not a valid argument of command %s , expecting a register's name\n",token2,"assert_reg"); return 1;}
+            int i; int j=0;
+              for (i=0; i<35; i++) /* on parcourt l'ensemble des registre */
+                {
+	               if(strcmp(token2,tab[i].name)==0 || strcmp(token2, tab[i].mnemo)==0) /* on recherche le registre "token2" */
+	               j=i; /* le registre token2 est le ième registre */
+                }
+            sscanf(token3,"%u",&k); /* met la valeur de token3 dans k */
+            INFO_MSG("La commande assert reg <registre> <valeur> est exécutée.\n");
+            return _assert_regcmd(tab+j, k);
+            }  
+          {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_reg <registre>"); return 1;}
+        } 
+    {WARNING_MSG("value %s is not a valid argument of command %s , expecting a register's name\n",token2,"assert_reg"); return 1;}
 
 }
 
@@ -690,38 +685,36 @@ else if(strcmp(token1, "word")==0)
 {  DEBUG_MSG("Command assert_word");
     char* token2=get_next_token(inter);
 
-        if(is_hexa(token2)!=0)
+        if(is_hexa(token2)!=0) /* on vérifie que le token2 représente une adresse */
         {
-            char*token3=get_next_token(inter);
-
-            if(is_integer(token3)!=0)
+            if(is_integer(token3)!=0) /* on vérifie que le token3 représente un entier 32 bits non signé */
             {
-		sscanf(token3,"%u",&k);
-                s=_assert_wordcmd(token2, k, vmem);
-                return s;
-            }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_word"); return 1;}
+		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
+                INFO_MSG("La commande assert word <adresse> <valeur> est exécutée.\n");
+                return _assert_wordcmd(token2, k, vmem);
+            }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_word <adresse>"); return 1;}
         } {WARNING_MSG("value %s is not a valid argument of command %s , expecting an adress\n",token2,"assert_word"); return 1;}
 
 }
 
 
 else if(strcmp(token1, "byte")==0)
-{   DEBUG_MSG("Command assert_byte");
-    char* token2=get_next_token(inter);
-
-        if(is_hexa(token2)!=0)
+{   
+    DEBUG_MSG("Command assert_byte");
+        if(is_hexa(token2)!=0) /* on vérifie que le token2 représente une adresse */
         {
-            char*token3=get_next_token(inter);
-
-            if(is_integer(token3)!=0)
+            if(is_byte(token3)!=0) /* on vérifie que le token3 représente un entier 8 bits non signé */
             {
-		sscanf(token3,"%u",&k);
-                s=_assert_bytecmd(token2, k, vmem);
-                return s;
-            }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_byte"); return 1;}
-        }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an adress\n",token2,"assert_byte"); return 1;}
+		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
+                INFO_MSG("La commande assert byte <adresse> <valeur> est exécutée.\n");
+                return _assert_bytecmd(token2, k, vmem);
+            }  
+          {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_byte <adresse>"); return 1;}
+        } 
+      {WARNING_MSG("value %s is not a valid argument of command %s , expecting an adress\n",token2,"assert_byte"); return 1;}
 
 }
+else 
  {WARNING_MSG("wrong argument for command %s, expecting 'reg' or 'word' or 'byte\n","disp"); return 1;}
 }
 

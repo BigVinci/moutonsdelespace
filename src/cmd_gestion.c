@@ -181,10 +181,10 @@ void _resumecmd(interpreteur inter)
  * @param val la valeur à vérifier
  * @return 0 si les deux valeurs sont identiques, 1 si fail
  */
-int _assert_regcmd(reg r, char* val)
+int _assert_regcmd(reg r, int valeur)
 {   
     DEBUG_MSG("L'ouverture d'assert_reg a fonctionnée.\n"); //On vérifie qu'on est dans la bonne fonction
-    if(strcmp((r->data),val)==0) //On compare la valeur entrée avec le contenu du registre
+    if(strcmp((r->data),valeur)==0) //On compare la valeur entrée avec le contenu du registre
     {
 	INFO_MSG("Les deux valeurs sont identiques.\n");
         return CMD_OK_RETURN_VALUE; //retourne 0 si égal, 1 sinon
