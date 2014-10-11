@@ -1,0 +1,41 @@
+#-------
+#TEST_RETURN_CODE=PASS           
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+
+
+
+
+
+set
+set mem
+set mem 446452
+set mem 0
+set mem byte
+set mem word
+set mem 0x77777777
+set mem 4
+set mem 0x77777777 4
+set mem word 0x77777777
+set mem byte 0x77777777
+set mem word 0x77777777 bhxjisahxn
+set mem byte 0x77777777 sxghzuiaxhjs
+set mem word 0x77777777 4
+set mem byte 0x77777777 4
+set mem word 0x77777777 -4
+set mem byte 0x77777777 -4
+
+
+set reg
+set reg $0
+set reg pc
+set reg lo
+set reg hi
+set reg $37
+set reg $0
+set reg $0 -15
+set reg pc -15
+set reg lo -15
+set reg hi -15
+set reg $37 -15

@@ -1,0 +1,10 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+
+disasm
+disasm 0x44444444+4
+disasm 0x44444444:0x77777777
+disasm 0x44444

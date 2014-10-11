@@ -1,0 +1,13 @@
+#-------
+#TEST_RETURN_CODE=PASS           
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+
+break add
+break add 0x77777777+0x74564545
+break add 0x77777777+0x88888888
+break del
+break del $0
+break del $23
+break list

@@ -1,0 +1,11 @@
+#-------
+#TEST_RETURN_CODE=FAIL           
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+
+rn
+run cjkcdjsiqocnk
+run 0x7777777
+
+

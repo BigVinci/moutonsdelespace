@@ -1,0 +1,20 @@
+#-------
+#TEST_RETURN_CODE=FAIL           
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+
+
+
+
+dosp
+disp mom
+disp mem mop
+disp mem map 4685546
+dosp mem mop
+dispo mem 0x44444444+4
+
+
+dsp 
+disp rag
+disp reg cgsdqjc
