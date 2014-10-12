@@ -104,9 +104,9 @@ int is_byte(char*chaine)
 
 
 /**
- * test si la chaine de caractère est un word
- *@param chaine le token à analyser
- *@return 0 si non-word, non null autrement
+ * test si la chaine de caractère est un word (32 bits)
+ * @param chaine le token à analyser
+ * @return 0 si non-word, non null autrement
  */
 int is_word(char* chaine)
 { int i=0;
@@ -494,7 +494,7 @@ int setcmd(interpreteur inter, reg tabreg)
                   {no_args_3=0;
                     if (get_type(token)==HEXA) /* adresse non signée sur 32 bits */
 		               {
-                        sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue */
+                        sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue : passe du type hexa au type uint32_t */
                         if ((token = get_next_token(inter))!=NULL)
                         {
                             if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
@@ -662,6 +662,7 @@ int assertcmd(interpreteur inter, reg tab, mem vmem)
     DEBUG_MSG("Chaine en entrée : %s", inter->input);
 
     int s=0; int k;
+    uint32_t addrValue; /* argument uint32_t (adresse) */
 
 /* on enregistre la chaine de caractère entrée dans l'interpréteur */
     char* token1;
@@ -729,11 +730,12 @@ else if(strcmp(token1, "word")==0)
 
         if(get_type(token2)==HEXA) /* on vérifie que le token2 représente une adresse */
         {
+            sscanf(token2,"%u",&addrValue);
             if(get_type(token3)==INTEGER) /* on vérifie que le token3 représente un entier 32 bits non signé */
             {
 		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
                 INFO_MSG("La commande assert word <adresse> <valeur> est exécutée.\n");
-                return _assert_wordcmd(token2, k, vmem);
+                return _assert_wordcmd(addrValue, k, vmem);
             }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_word <adresse>"); return 1;}
         } {WARNING_MSG("value %s is not a valid argument of command %s , expecting an adress\n",token2,"assert_word"); return 1;}
 
@@ -745,11 +747,12 @@ else if(strcmp(token1, "byte")==0)
     DEBUG_MSG("Command assert_byte");
         if(get_type(token2)==HEXA) /* on vérifie que le token2 représente une adresse */
         {
+            sscanf(token2,"%u",&addrValue);
             if(get_type(token3)==BYTE) /* on vérifie que le token3 représente un entier 8 bits non signé */
             {
 		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
                 INFO_MSG("La commande assert byte <adresse> <valeur> est exécutée.\n");
-                return _assert_bytecmd(token2, k, vmem);
+                return _assert_bytecmd(addrValue, k, vmem);
             }  
           {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_byte <adresse>"); return 1;}
         } 
@@ -757,7 +760,7 @@ else if(strcmp(token1, "byte")==0)
 
 }
 else 
- {WARNING_MSG("wrong argument for command %s, expecting 'reg' or 'word' or 'byte\n","disp"); return 1;}
+ {WARNING_MSG("wrong argument for command %s, expecting 'reg' or 'word' or 'byte\n","assert cmd"); return 1;}
 }
 
 
@@ -796,8 +799,9 @@ int dispcmd(interpreteur inter, reg tab_reg, mem vmem)
         /* à refaire */
         if(get_type(token2)==HEXA) /* on test si token2 est un hexa, ie une adresse */
         {       
+            sscanf(token2,"%u",&addrValue);
             INFO_MSG("La commande disp mem <plage> est exécutée.\n");
-            _disp_mem_plagescmd(token2, vmem);
+            _disp_mem_plagescmd(addrValue, vmem); 
         }
         else if(strcmp(token2,"map")==0) /* on test si token2 est "map" */
         {
@@ -806,7 +810,7 @@ int dispcmd(interpreteur inter, reg tab_reg, mem vmem)
         }
         else /* si token1 n'est pas un des arguments attendus */
         {
-            WARNING_MSG("value %s is not a valid argument of command %s, expecting a range of adress or "map".\n",token2,"disp mem");
+            WARNING_MSG("value %s is not a valid argument of command %s, expecting a range of adress or "map".\n", token2, "disp mem");
             return 1;
         }
 

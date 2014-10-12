@@ -24,11 +24,11 @@ extern "C" {
 typedef union {
     uint32_t _32;
     uint64_t _64;
-} vsize; /* quelle est l'utilité de cette structure ? */
+} vsize;
 
 typedef struct {
     char      *name;    /* nom du segment */
-    byte      *content; /* the real address (adresse sous forme d'un octet ?) at which the bytes of the section is located */
+    byte      *content; /* (tableau de byte) the real address at which the bytes of the section is located */
     vaddr      start;   /* adresse de départ du segment */ 
     vsize      size;    /* taille du segment */ 
     uint32_t   attr;    /* an integer value corresponding to the access and execution permissions of the segment */

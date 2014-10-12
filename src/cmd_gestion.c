@@ -1,5 +1,8 @@
 #include "../include/common/cmd_gestion.h"
 
+
+
+
 /** TEST
  * version de la commande test qui prend en entrée un hexa
  * la fonction verifie si le nombre est >=0
@@ -23,13 +26,61 @@ int _testcmd(int hexValue)
  * version de la commande set mem byte
  * la fonction affecte une valeur dans la mémoire à l'adresse indiquée
  * @param byteValue la valeur à affecter
- * @param vaddr l'adresse où écrire la valeur
+ * @param vaddr l'adresse où écrire la valeur, doit appartenir à un des segments suivants :  
+ * @param vmem mémoire contenant l'adresse où doit être affectée la valeur
  * @return 0 en cas de succes, un nombre positif sinon
  */
-int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr)
+int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
 {
-	printf("Fonction non implémentée. Retourne toujours 0.\n");
-	return CMD_OK_RETURN_VALUE;
+    int i;
+    uint32_t addr;
+    uint32_t addrrelle;
+
+/* on vérifie que l'adresse existe */
+    if (vaddr => 0xfffffffd) /* adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc */
+    {
+        WARNING_MSG("L'adresse demandée n'existe pas.\n");
+        return 3;
+    }
+
+    /* on cherche l'adresse virtuelle exacte qui doit être modifiée (multiple de 4) */
+    addr = (vaddr - (vaddr%4));
+
+    for (int i = 0; i < 6; ++i) /* on cherche dans quel segment est addr */
+    {
+        if ((vmem->seg[i].start._32 <= addr) && (vmem->seg[i+1].start._32 > addr))
+        {
+            INFO_MSG("Le segment modifié est %s.\n", vmem->seg[i].name);
+
+            /* on cherche l'adresse réelle exacte */
+            addrrelle = (addr - vmem->seg[i].start._32);
+
+            /* on modifie la mémoire en gardant la représentation big endian */
+            ((vmem->seg[i].content)+addrrelle) = 0x00;
+            ((vmem->seg[i].content)+addrrelle+1) = 0x00;
+            ((vmem->seg[i].content)+addrrelle+2) = 0x00;
+            ((vmem->seg[i].content)+addrrelle+3) = byteValue;
+
+            INFO_MSG("Modification du segment réalisée.\n");
+            return CMD_OK_RETURN_VALUE
+        }
+        else if (vmem->seg[6].start._32 <= addr) /* on regarde si addr est dans le dernier segment */
+        {
+            INFO_MSG("Le segment modifié est %s.\n", "[vsyscall]");
+
+            /* on cherche l'adresse réelle exacte */
+            addrrelle = (addr - vmem->seg[6].start._32);
+
+            /* on modifie la mémoire en gardant la représentation big endian */
+            ((vmem->seg[6].content)+addrrelle) = 0x00;
+            ((vmem->seg[6].content)+addrrelle+1) = 0x00;
+            ((vmem->seg[6].content)+addrrelle+2) = 0x00;
+            ((vmem->seg[6].content)+addrrelle+3) = byteValue;
+
+            INFO_MSG("Modification du segment réalisée.\n");
+            return CMD_OK_RETURN_VALUE
+        }
+    }
 }
 
 

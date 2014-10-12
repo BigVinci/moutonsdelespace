@@ -46,7 +46,7 @@ typedef struct registre
 
 
 int _testcmd(int hexValue);
-int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr);
+int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem);
 int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr);
 int _set_regcmd(uint32_t wordValue, reg vreg);
 void _resumecmd(interpreteur inter);
