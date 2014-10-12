@@ -191,25 +191,25 @@ mem load(char* name)
     }
 
 /* alloue le segment [lib] */
-    vm->seg[NB_SECTIONS+1].name      = "[lib]";     /* nom du segment */
-    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
-    vm->seg[i].start._64             = 0x5000;      /* adresse de départ du segment */
-    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */ 
-    vm->seg[i].attr                  = r--;         /* permission sur le segment */
+    vm->seg[NB_SECTIONS+1].name                  = "[lib]";     /* nom du segment */
+    vm->seg[NB_SECTIONS+1].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[NB_SECTIONS+1].start._64             = 0x5000;      /* adresse de départ du segment */
+    vm->seg[NB_SECTIONS+1].size._64              = 0x0;         /* le segment est initialement vide */ 
+    vm->seg[NB_SECTIONS+1].attr                  = r--;         /* permission sur le segment */
 
 /* alloue la pile */
-    vm->seg[NB_SECTIONS+1].name      = "[stack]";   /* nom du segment */
-    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
-    vm->seg[i].start._64             = 0xff7ff000;  /* adresse de départ du segment */
-    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */
-    vm->seg[i].attr                  = rw-;         /* permission sur le segment */
+    vm->seg[NB_SECTIONS+2].name                  = "[stack]";   /* nom du segment */
+    vm->seg[NB_SECTIONS+2].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[NB_SECTIONS+2].start._64             = 0xff7ff000;  /* adresse de départ du segment */
+    vm->seg[NB_SECTIONS+2].size._64              = 0x0;         /* le segment est initialement vide */
+    vm->seg[NB_SECTIONS+2].attr                  = rw-;         /* permission sur le segment */
 
 /* alloue le segment pour les appels systemes */
-    vm->seg[NB_SECTIONS+1].name      = "[vsyscall]";/* nom du segment */
-    vm->seg[i].content               = NULL;        /* il n'y a aucune donnée dans le segment */
-    vm->seg[i].start._64             = 0xfffff000;  /* adresse de départ du segment */
-    vm->seg[i].size._64              = 0x0;         /* le segment est initialement vide */
-    vm->seg[i].attr                  = r-x;         /* permission sur le segment */
+    vm->seg[NB_SECTIONS+3].name                  = "[vsyscall]";/* nom du segment */
+    vm->seg[NB_SECTIONS+3].content               = NULL;        /* il n'y a aucune donnée dans le segment */
+    vm->seg[NB_SECTIONS+3].start._64             = 0xfffff000;  /* adresse de départ du segment */
+    vm->seg[NB_SECTIONS+3].size._64              = 0x0;         /* le segment est initialement vide */
+    vm->seg[NB_SECTIONS+3].attr                  = r-x;         /* permission sur le segment */
 
     printf("\n------ Fichier ELF \"%s\" : sections lues lors du chargement ------\n", name) ;
     print_mem(memory); /* affiche le contenu de la mémoire */ 
