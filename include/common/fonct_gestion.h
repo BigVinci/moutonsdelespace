@@ -22,7 +22,7 @@ int execute_cmd(interpreteur inter, reg tabreg, mem vmem);
 
 int testcmd( interpreteur inter );
 int exitcmd( interpreteur inter );
-int loadcmd( interpreteur inter );
+int loadcmd( interpreteur inter, mem vmem );
 int dispcmd( interpreteur inter, reg tab_reg, mem vmem );
 int disasmcmd( interpreteur inter );
 int setcmd( interpreteur inter, reg tabreg );

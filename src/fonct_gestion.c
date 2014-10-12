@@ -215,7 +215,7 @@ int is_register(char* chaine)
 /**
  * retourne le type du token
  * @param chaine le token à analyser
- * @return un entier correspondant au type du token
+ * @return 0 si la le type de la chaine ne correspond pas
  */
 int get_type(char* chaine) {
     if (is_hexa(chaine))
@@ -275,7 +275,7 @@ int execute_cmd(interpreteur inter, reg tabreg, mem vmem)
     /* test si la commande est load */
     else if(strcmp(token, "load") == 0)
     {
-    return loadcmd(inter);
+    return loadcmd(inter, vmem);
     }
     /* test si la commande est disp */
     else if(strcmp(token, "disp") == 0)
@@ -400,11 +400,45 @@ int exitcmd(interpreteur inter) {
  * @param inter l'interpreteur qui demande l'analyse
  * @return 0 en cas de succes, un nombre positif sinon
  */
-int loadcmd(interpreteur inter)
+int loadcmd(interpreteur inter, mem vmem)
 {
-    printf("Fonction non implémentée.\n");
-    return 0;
+    DEBUG_MSG("Chaine en entrée : %s", inter->input);
+    int no_args=1 /* permet de tester s'il manque un argument dans la boucle while suivante */
+    char* token=NULL;
+
+    /* la boucle permet d'executer la commande de manière recurrente*/
+    while((token = get_next_token(inter))!=NULL && return_value==0) /* token reçoit le nom du fichier objet ELF à charger */
+    {
+    no_args=0; /* il y a un argument puisque token != NULL */
+
+        if (get_next_token(inter)!=NULL) /* si il y a trop d'arguments */ 
+        {
+            WARNING_MSG("Il y a trop d'arguments pour la commande %s.\n","load");
+            return 1;
+        }
+
+        /* la commande load attend un fichier objet ELF */
+        if(is_elf(token)) /* on vérifie qu'il s'agit bien d'un fichier objet ELF */
+        {
+            DEBUG_MSG("Commande load entrée.\n");
+            mem = load(token);
+            return CMD_OK_RETURN_VALUE;
+        }
+        else /* si le token n'est pas un fichier objet ELF */
+        {
+            WARNING_MSG("value %s is not a valid argument of command %s. Un fichier objet ELF est attendu.\n",token,"load");
+            return 1;
+        }
+    } /* fin du while */
+
+    if (no_args==1) /* si aucun fichier n'est indiqué après la fonction load */
+    {
+        WARNING_MSG("no argument given to command %s\n","load");
+        return 1;
+    }
 }
+
+
 
 
 /**
