@@ -37,7 +37,7 @@ int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
     uint32_t addrrelle;
 
 /* on vérifie que l'adresse existe */
-    if (vaddr => 0xfffffffd) /* adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc */
+    if (vaddr > 0xfffffffc) /* adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc */
     {
         WARNING_MSG("L'adresse demandée n'existe pas.\n");
         return 3;
@@ -46,7 +46,7 @@ int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
     /* on cherche l'adresse virtuelle exacte qui doit être modifiée (multiple de 4) */
     addr = (vaddr - (vaddr%4));
 
-    for (int i = 0; i < 6; ++i) /* on cherche dans quel segment est addr */
+    for (i = 0; i < 6; ++i) /* on cherche dans quel segment est addr */
     {
         if ((vmem->seg[i].start._32 <= addr) && (vmem->seg[i+1].start._32 > addr))
         {
@@ -56,13 +56,13 @@ int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
             addrrelle = (addr - vmem->seg[i].start._32);
 
             /* on modifie la mémoire en gardant la représentation big endian */
-            ((vmem->seg[i].content)+addrrelle) = 0x00;
-            ((vmem->seg[i].content)+addrrelle+1) = 0x00;
-            ((vmem->seg[i].content)+addrrelle+2) = 0x00;
-            ((vmem->seg[i].content)+addrrelle+3) = byteValue;
+            *((vmem->seg[i].content)+addrrelle) = 0x00;
+            *((vmem->seg[i].content)+addrrelle+1) = 0x00;
+            *((vmem->seg[i].content)+addrrelle+2) = 0x00;
+            *((vmem->seg[i].content)+addrrelle+3) = byteValue;
 
             INFO_MSG("Modification du segment réalisée.\n");
-            return CMD_OK_RETURN_VALUE
+            return CMD_OK_RETURN_VALUE;
         }
         else if (vmem->seg[6].start._32 <= addr) /* on regarde si addr est dans le dernier segment */
         {
@@ -72,15 +72,17 @@ int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
             addrrelle = (addr - vmem->seg[6].start._32);
 
             /* on modifie la mémoire en gardant la représentation big endian */
-            ((vmem->seg[6].content)+addrrelle) = 0x00;
-            ((vmem->seg[6].content)+addrrelle+1) = 0x00;
-            ((vmem->seg[6].content)+addrrelle+2) = 0x00;
-            ((vmem->seg[6].content)+addrrelle+3) = byteValue;
+            *((vmem->seg[6].content)+addrrelle) = 0x00;
+            *((vmem->seg[6].content)+addrrelle+1) = 0x00;
+            *((vmem->seg[6].content)+addrrelle+2) = 0x00;
+            *((vmem->seg[6].content)+addrrelle+3) = byteValue;
 
             INFO_MSG("Modification du segment réalisée.\n");
-            return CMD_OK_RETURN_VALUE
+            return CMD_OK_RETURN_VALUE;
         }
     }
+    ERROR_MSG("SHOULD NEVER BE HERE\n");
+    return CMD_EXIT_RETURN_VALUE;
 }
 
 
@@ -234,8 +236,10 @@ void _resumecmd(interpreteur inter)
  */
 int _assert_regcmd(reg r, int valeur)
 {   
+    char* val=NULL;
+    sprintf(val, "%d", valeur); /* on converti valeur en chaîne de caractère */
     DEBUG_MSG("L'ouverture d'assert_reg a fonctionnée.\n"); //On vérifie qu'on est dans la bonne fonction
-    if(strcmp((r->data),valeur)==0) //On compare la valeur entrée avec le contenu du registre
+    if(strcmp((r->data),val)==0) //On compare la valeur entrée avec le contenu du registre
     {
 	INFO_MSG("Les deux valeurs sont identiques.\n");
         return CMD_OK_RETURN_VALUE; //retourne 0 si égal, 1 sinon
@@ -252,7 +256,7 @@ int _assert_regcmd(reg r, int valeur)
  * @param vmem la mémoire
  * @return 0 si réussi, 1 si fail
  */
-int _assert_bytecmd(char* adress, int valeur, mem vmem)
+int _assert_bytecmd(uint32_t adress, int valeur, mem vmem)
 {   
     printf("Fonction non implémentée. Retourne toujours 0.\n");
     return CMD_OK_RETURN_VALUE;
@@ -266,7 +270,7 @@ int _assert_bytecmd(char* adress, int valeur, mem vmem)
  * @param vmem la mémoire
  * @return 0 si réussi, 1 si fail
  */
-int _assert_wordcmd(char*adress, int valeur, mem vmem)
+int _assert_wordcmd(uint32_t adress, int valeur, mem vmem)
 {   
     printf("Fonction non implémentée. Retourne toujours 0.\n");
     return CMD_OK_RETURN_VALUE;
