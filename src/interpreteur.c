@@ -137,7 +137,7 @@ int  acquire_line(FILE *fp, interpreteur inter) {
 
     free( chunk ); // liberation de la memoire allouee par la fonction readline() ou par calloc()
 
-    DEBUG_MSG("Ligne acquise '%s'\n", inter->input); /* macro DEBUG_MSG : uniquement si compil en mode DEBUG_MSG */
+    DEBUG_MSG("Ligne acquise '%s'", inter->input); /* macro DEBUG_MSG : uniquement si compil en mode DEBUG_MSG */
     return 0;
 }
 

@@ -35,15 +35,13 @@ int main ( int argc, char *argv[] )
     }
 
     /* on initialise le tableau de registre */ 
-    reg tabreg=init_tab_reg();
+    reg* tabreg=init_tab_reg();
 
     /* on crée la mémoire et on l'alloue dynamiquement */
-    mem vmem = init_mem(7);
+    mem vmem = init_mem(7);            /* initialisation de la mémoire */ 
 
     if(argc > 1) /* en mode SCRIPT, on utilise la mémoire créée lors du load du fichier elf */
         {
-           /* initialisation de la mémoire */ 
-                vmem = load(argv[1]); /* charge le fichier ELF */
                 if (vmem == NULL) /* on vérifie que la mémoire ait bien été créée */ 
                 {
                     WARNING_MSG( "Unable to allocate host memory for vmem" );
@@ -74,7 +72,6 @@ int main ( int argc, char *argv[] )
             /* Une nouvelle ligne a ete acquise dans le flux fp*/
             res = execute_cmd(inter, tabreg, vmem);     /* execution de la commande en mode SCRIPT */
 
-
             // traitement des erreurs
             switch(res) {
             case CMD_OK_RETURN_VALUE:
@@ -92,6 +89,7 @@ int main ( int argc, char *argv[] )
                 /* En mode "fichier" toute erreur implique la fin du programme ! */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
+		    del_tab_reg(tabreg);
                     del_inter(inter);
                     /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                     ERROR_MSG("ERREUR DETECTEE. Aborts");
@@ -103,6 +101,7 @@ int main ( int argc, char *argv[] )
             /* mode fichier, fin de fichier => sortie propre du programme */
             DEBUG_MSG("FIN DE FICHIER");
             fclose( fp );
+	    del_tab_reg(tabreg);
             del_inter(inter);
             exit(EXIT_SUCCESS);
         }

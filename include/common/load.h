@@ -3,6 +3,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include "bits.h"
 #include "notify.h"
 #include "../elf/elf.h"
@@ -20,10 +21,13 @@
 #define RODATA_SECTION_STR ".rodata"
 #define DATA_SECTION_STR ".data"
 #define BSS_SECTION_STR ".bss"
+#define HEAP_SECTION_STR "[heap]"
 #define PILE_SECTION_STR "[stack]"
 #define LIB_SECTION_STR "[lib]"
 #define VSYSCALL_SECTION_STR "[vsyscall]"
 
+
+int _load_section_in_memory(mem memory, char* scn,unsigned int permissions,unsigned long long add_start);
 int is_in_symbols(char* name, stab symtab);
 unsigned int get_nsegments(stab symtab,char* section_names[],int nb_sections);
 int elf_load_section_in_memory(FILE* fp, mem memory, char* scn,unsigned int permissions,unsigned long long add_start);

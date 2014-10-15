@@ -164,14 +164,14 @@ int _disp_mem_plagescmd(char* token, mem vmem)
  * @param tab le tableau des registres 
  * @return 0 si réussi, 1 si fail
  */
-int _disp_reg_registercmd(char* vname, reg tab)
+int _disp_reg_registercmd(char* vname, reg* tab)
 {   
     DEBUG_MSG("La fonction disp_reg_register a été lancée.\n"); //on vérifie qu'on se trouve dans la bonne fonction
     int i=0;
     int j=0;
     for (i=0; i<35; i++)
     {
-	if(strcmp(vname,(tab+i)->name)==0 || strcmp(vname, (tab+i)->mnemo)==0) /* si le nom vname est un nom de registre */
+	if(strcmp(vname,tab[i]->name)==0 || strcmp(vname, tab[i]->mnemo)==0) /* si le nom vname est un nom de registre */
 	j=i; i=39;
     }
 
@@ -184,7 +184,7 @@ int _disp_reg_registercmd(char* vname, reg tab)
     if (i==39) /* un registre porte le nom ou le mnémo vname */
     {
 	INFO_MSG("La valeur du registre est :\n");
-	printf(" %s : %s  \n", (tab+j)->name, (tab+j)->data); //On affiche le nom du registre et sa data (attention, ne fonctionne que pour un seul registre)
+	printf(" %s : %s  \n", tab[j]->name, tab[j]->data); //On affiche le nom du registre et sa data (attention, ne fonctionne que pour un seul registre)
     }
     return CMD_OK_RETURN_VALUE;
 }

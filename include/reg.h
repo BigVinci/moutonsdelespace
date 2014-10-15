@@ -29,9 +29,9 @@ typedef struct registre
 
 reg init_reg(char* namereg, char* mnemoreg);
 void del_reg (reg vreg);
-void copy_reg(char* registre, reg cop_reg);
-reg init_tab_reg(void);
-void del_tab_reg(reg tabreg);
+reg to_reg(char* registre);
+reg* init_tab_reg(void);
+void del_tab_reg(reg* tabreg);
 
 
 #ifdef __cplusplus

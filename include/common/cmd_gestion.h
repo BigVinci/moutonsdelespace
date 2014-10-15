@@ -52,7 +52,7 @@ int _set_regcmd(uint32_t wordValue, reg vreg);
 void _resumecmd(interpreteur inter);
 int _disp_mem_mapcmd(mem vmem);
 int _disp_mem_plagescmd(char* token, mem vmem);
-int _disp_reg_registercmd(char* vname, reg tab);
+int _disp_reg_registercmd(char* vname, reg* tab_reg);
 int _disp_reg_allcmd(reg* tab_reg);
 int _assert_regcmd(reg r, int valeur);
 int _assert_bytecmd(uint32_t adress, int valeur, mem vmem);

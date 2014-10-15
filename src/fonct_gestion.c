@@ -87,7 +87,7 @@ int is_hexa(char*chaine)
  *@param chaine le token à analyser
  *@return 0 si non-byte, non null autrement
  */
-int is_byte(char*chaine)
+int is_byte(char* chaine)
 {   int l=0;
     int i=0;
     int k=0;
@@ -198,11 +198,11 @@ int is_register(char* chaine)
  int k=0;
  int l=0;
  int m=35;
- reg tab=init_tab_reg();
+ reg* tab=init_tab_reg();
  l=strlen(chaine);
     for(i=0; i<m; i++)
     {
-	if(strcmp(chaine,tab[i].name)==0 || strcmp(chaine, tab[i].mnemo)==0)
+	if(strcmp(chaine,tab[i]->name)==0 || strcmp(chaine, tab[i]->mnemo)==0)
 		{
 		k++;
 		}
@@ -245,7 +245,7 @@ int get_type(char* chaine) {
 * @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
 * @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
 */
-int execute_cmd(interpreteur inter, reg tabreg, mem vmem)
+int execute_cmd(interpreteur inter, reg* tabreg, mem vmem)
 {
     DEBUG_MSG("input '%s'", inter->input);
     char cmdStr[MAX_STR];
@@ -272,11 +272,13 @@ int execute_cmd(interpreteur inter, reg tabreg, mem vmem)
     {
         return testcmd(inter);
     }
+
     /* test si la commande est load */
     else if(strcmp(token, "load") == 0)
     {
     return loadcmd(inter, vmem);
     }
+
     /* test si la commande est disp */
     else if(strcmp(token, "disp") == 0)
     {
@@ -465,13 +467,13 @@ int disasmcmd(interpreteur inter)    /* A ne pas créer pour le moment */
  * @param inter l'interpreteur qui demande l'analyse
  * @return 0 en cas de succes, un nombre positif sinon
  */
-int setcmd(interpreteur inter, reg tabreg, mem vmem)
+int setcmd(interpreteur inter, reg* tabreg, mem vmem)
 {
     DEBUG_MSG("Chaine en entrée : %s", inter->input);
     int return_value=0;
     int no_args_1=1, no_args_2=1, no_args_3=1, no_args_4=1; /* permet de tester s'il manque un argument dans la boucle while suivante */
 
-    char* token=NULL; char* token1=NULL; char* token2=NULL;
+    char* token=NULL; char* token1=NULL; char* token2=NULL; char* token3=NULL;
 
     /* la commande set permet d'affecter une valeur integer à une adresse non signée sur 32 bits ou à un registre */
     uint32_t addrValue; /* argument uint32_t (adresse) */
@@ -488,19 +490,19 @@ int setcmd(interpreteur inter, reg tabreg, mem vmem)
     if(!strcmp(token,"mem")) /* commande entrée : set mem ... */
         {
            DEBUG_MSG("Commande set mem entrée.\n");
-            while((token = get_next_token(inter))!=NULL && return_value==0)
+            while((token1 = get_next_token(inter))!=NULL && return_value==0)
             {no_args_2=0;
-	    if (!strcmp(token,"byte")) /* commande entrée : set mem byte ... */
+	    if (!strcmp(token1,"byte")) /* commande entrée : set mem byte ... */
                  {
                 DEBUG_MSG("Commande set mem byte entrée.\n");
-                while((token = get_next_token(inter))!=NULL && return_value==0)
+                while((token2 = get_next_token(inter))!=NULL && return_value==0)
                   {no_args_3=0;
-                    if (get_type(token)==HEXA) /* adresse non signée sur 32 bits */
+                    if (get_type(token2)==HEXA) /* adresse non signée sur 32 bits */
 		               {
-                        sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue : passe du type hexa au type uint32_t */
-                        if ((token = get_next_token(inter))!=NULL)
+                        sscanf(token2,"%u",&addrValue); /* met l'adresse non signée dans addrValue : passe du type hexa au type uint32_t */
+                        if ((token3 = get_next_token(inter))!=NULL)
                         {
-                            if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
+                            if (get_type(token3)==INTEGER) /* on vérifie que la valeur est un entier */
                                 {
 				                    if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
                                     {
@@ -527,15 +529,15 @@ int setcmd(interpreteur inter, reg tabreg, mem vmem)
                   }
 		         }
 
-	    else if (!strcmp(token,"word")) /* commande entrée : set mem word ... */
+	    else if (!strcmp(token1,"word")) /* commande entrée : set mem word ... */
 		{
             DEBUG_MSG("Commande set mem word entrée.\n");
-                while((token = get_next_token(inter))!=NULL && return_value==0)
+                while((token2 = get_next_token(inter))!=NULL && return_value==0)
                  {no_args_3=0;
-                    if (get_type(token)==HEXA) /* on attend une adresse */
+                    if (get_type(token2)==HEXA) /* on attend une adresse */
 		    {
                     {
-                    sscanf(token,"%u",&addrValue); /* met l'adresse non signée dans addrValue */
+                    sscanf(token2,"%u",&addrValue); /* met l'adresse non signée dans addrValue */
                         if ((token = get_next_token(inter))!=NULL)
                         {
                             if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
@@ -565,8 +567,13 @@ int setcmd(interpreteur inter, reg tabreg, mem vmem)
                  } /* fin du while */
 	        } /* fin du cas "set mem word" */
 	    else /* cas ou le token n'est ni word, ni byte après la commande set mem */
-	    {WARNING_MSG("value %s is not a valid argument of command %s, expecting word or byte.\n",token,"setcmd mem");
+	    {if (token==NULL)
+	    	{WARNING_MSG("You have to indicate a valid argument of command %s, expecting reg or mem.\n","setcmd");
             return 1;}
+		else
+		{WARNING_MSG("value %s is not a valid argument of command %s, expecting reg or mem.\n",token,"setcmd");
+            return 1;}
+	}
 	    } /* fin du while */
         } /* fin du cas "set mem" */
     else /* dans le cas où la commande entrée n'est pas set mem */
@@ -578,14 +585,12 @@ int setcmd(interpreteur inter, reg tabreg, mem vmem)
             //DEBUG_MSG("Commande set reg entrée");
             while((token1 = get_next_token(inter))!=NULL && return_value==0)
             {no_args_4=0;
-DEBUG_MSG("Nouveau token chargé");
                     if (get_type(token1)==REG) /* vérifie qu'on a bien un registre après la commande "set reg" */
                     {
-DEBUG_MSG("Un registre a été entré");
-                        copy_reg(token, regValue); /* copie le registre token dans regValue */
+                        regValue = to_reg(token); /* copie le registre token dans regValue */
                         if ((token2 = get_next_token(inter))!=NULL)
                         {
-                            if (get_type(token)==INTEGER) /* on vérifie que la valeur est un entier */
+                            if (get_type(token2)==INTEGER) /* on vérifie que la valeur est un entier */
                                 {
                                     if (get_next_token(inter)==NULL) /* la chaine de caractère est bien finie */
                                     {
@@ -611,9 +616,15 @@ DEBUG_MSG("Un registre a été entré");
             } /* fin du while */
             } /* fin du strcmp reg */
         else /* cas où token n'est pas un caractère attendu */
-            {WARNING_MSG("value %s is not a valid argument of command %s, expecting reg or mem.\n",token,"setcmd");
+            {
+		if (token==NULL)
+	    	{WARNING_MSG("You have to indicate a valid argument of command %s, expecting reg or mem.\n","setcmd");
             return 1;}
-	} /* fin du else dans le cas où la commande entrée n'est pas set mem */
+		else
+		{WARNING_MSG("value %s is not a valid argument of command %s, expecting reg or mem.\n",token,"setcmd");
+            return 1;}
+	    }
+	} /* fin du else dans le cas où la commande entrée n'est pas set reg */
     } /* fin de la boucle while initiale */
 
 /* on teste le nombre d'argument pour chaque possibilité */
@@ -652,7 +663,7 @@ DEBUG_MSG("Un registre a été entré");
  * @param tab le tableau de registre
  * @return 0 si ça a fonctionné, 1 sinon
  */
-int assertcmd(interpreteur inter, reg tab, mem vmem)
+int assertcmd(interpreteur inter, reg* tab, mem vmem)
 {   
     DEBUG_MSG("Chaine en entrée : %s", inter->input);
 
@@ -705,12 +716,12 @@ if(strcmp(token1,"reg")==0) /* L'interpréteur a reçu "assert reg" */
             int i; int j=0;
               for (i=0; i<35; i++) /* on parcourt l'ensemble des registre */
                 {
-	               if(strcmp(token2,tab[i].name)==0 || strcmp(token2, tab[i].mnemo)==0) /* on recherche le registre "token2" */
+	               if(strcmp(token2,tab[i]->name)==0 || strcmp(token2, tab[i]->mnemo)==0) /* on recherche le registre "token2" */
 	               j=i; /* le registre token2 est le ième registre */
                 }
             sscanf(token3,"%u",&k); /* met la valeur de token3 dans k */
             INFO_MSG("La commande assert reg <registre> <valeur> est exécutée.\n");
-            return _assert_regcmd(tab+j, k);
+            return _assert_regcmd(*(tab+j), k);
             }  
           {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer\n",token3,"assert_reg <registre>"); return 1;}
         } 
@@ -765,7 +776,7 @@ else
  * @param inter l'interpreteur qui demande l'analyse
  * @return 0 si celà a fonctionné, 1 sinon
  */
-int dispcmd(interpreteur inter, reg tab_reg, mem vmem)
+int dispcmd(interpreteur inter, reg* tab_reg, mem vmem)
 {
     //uint32_t addrValue;
 

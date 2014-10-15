@@ -41,9 +41,22 @@ if ( NULL != vreg )
  * @param registre :token indiquant le registre à copier (registre reconnaissable par son nom)
  * @param cop_reg : registre recevant les données de "registre"
  */ 
-void copy_reg(char* registre, reg cop_reg)
+reg to_reg(char* chaine)
 {
-	printf("Fonction copy_reg dans reg.c non implémentée.\n");
+ int i=0;
+ int k=0;
+ int l=0;
+ int m=35;
+ reg* tab=init_tab_reg();
+ l=strlen(chaine);
+    for(i=0; i<m; i++)
+    {
+	if(strcmp(chaine,tab[i]->name)==0 || strcmp(chaine, tab[i]->mnemo)==0)
+		{
+		k=i;
+		}
+    }
+    return tab[k];
 }
 
 
@@ -51,7 +64,7 @@ void copy_reg(char* registre, reg cop_reg)
  * Crée l'ensemble des registres
  * @return 	le registre créé ou NULL en cas d'échec
  */
-reg init_tab_reg(void)
+reg* init_tab_reg(void)
 {
 	reg* tab = calloc(35, sizeof(*tab));
 	tab[0]=init_reg("$0", "$zero");
@@ -90,11 +103,11 @@ reg init_tab_reg(void)
 	tab[33]=init_reg("$33", "$HI");
 	tab[34]=init_reg("$34", "$LO");
 
-	return *tab;
+	return tab;
 }
 
 /* libère la mémoire allouée pour un tableau de registre */
-void del_tab_reg(reg tabreg)
+void del_tab_reg(reg* tabreg)
 {
 	int i;
 	if (tabreg!=NULL)
