@@ -4,11 +4,14 @@
 
 
 /* ensemble de fonctions */ 
-/* contient les fonctions utiles à exit, test, disp, disasm et set */
+/* contient les fonctions utiles à exit, test, disp, set, assert, resume et debug */
 #include "cmd_gestion.h"
 
 /* fonction load */
 #include "load.h"
+
+/* fonction disasm */
+#include "disasm.h"
 
 /* fonction reg */
 #include "../reg.h"
@@ -28,7 +31,7 @@ int testcmd( interpreteur inter );
 int exitcmd( interpreteur inter );
 int loadcmd( interpreteur inter, mem vmem );
 int dispcmd( interpreteur inter, reg* tab_reg, mem vmem );
-int disasmcmd( interpreteur inter );
+int disasmcmd( interpreteur inter, mem vmem, reg* tab_reg );
 int setcmd( interpreteur inter, reg* tab_reg, mem vmem );
 void debugcmd( interpreteur inter );
 void resumecmd( interpreteur inter ); 

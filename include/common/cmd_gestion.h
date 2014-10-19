@@ -46,17 +46,23 @@ typedef struct registre
 
 
 int _testcmd(int hexValue);
+
 int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem);
-int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr);
-int _set_regcmd(uint32_t wordValue, reg vreg);
-void _resumecmd(interpreteur inter);
+int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr, mem vmem);
+int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg);
+
 int _disp_mem_mapcmd(mem vmem);
-int _disp_mem_plagescmd(char* token, mem vmem);
+int _disp_mem_plagescmd(uint32_t addr1, uint32_t addr2, mem vmem);
+int _disp_mem_offsetcmd(uint32_t addr, int offset, mem vmem);
 int _disp_reg_registercmd(char* vname, reg* tab_reg);
 int _disp_reg_allcmd(reg* tab_reg);
+
 int _assert_regcmd(reg r, int valeur);
 int _assert_bytecmd(uint32_t adress, int valeur, mem vmem);
 int _assert_wordcmd(uint32_t adress, int valeur, mem vmem);
+
 void _debugcmd(interpreteur inter);
+
+void _resumecmd(interpreteur inter);
 
 #endif /* _CMD_GESTION_H_ */
