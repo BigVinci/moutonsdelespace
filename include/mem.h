@@ -16,8 +16,12 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <strings.h>
+#include <string.h>
 
 #include "common/types.h"
+#include "common/bits.h"
+#include "common/notify.h"
 
 
 

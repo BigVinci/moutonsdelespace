@@ -8,13 +8,7 @@
  * Memory.
  */
 
-#include <strings.h>
-#include <string.h>
-
 #include "../include/mem.h"
-#include "../include/common/bits.h"
-#include "../include/common/notify.h"
-
 
 
 // strdup is defined in the string.h header but included only for glibc >=2.12.

@@ -14,6 +14,9 @@ interpreteur init_inter(void)
     interpreteur inter = calloc(1,sizeof(*inter));
     if (inter ==NULL)
         ERROR_MSG("impossible d'allouer un nouvel interpreteur");
+    inter->file = calloc(1,sizeof(*FILE));
+    if (inter->file ==NULL)
+        ERROR_MSG("impossible d'allouer un nouvel interpreteur");
     return inter;
 }
 
@@ -21,9 +24,13 @@ interpreteur init_inter(void)
  * desallocation de l'interpreteur
  * @param inter le pointeur vers l'interpreteur Ã  libérer
  */
-void del_inter(interpreteur inter) {
-		if (inter !=NULL)
-    	free(inter);
+void del_inter(interpreteur inter) 
+{
+		if (inter->file !=NULL)
+    	free(inter->file);
+
+        if (inter !=NULL)
+        free(inter);
 }
 
 

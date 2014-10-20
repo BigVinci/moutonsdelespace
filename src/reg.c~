@@ -103,6 +103,8 @@ reg* init_tab_reg(void)
 	tab[33]=init_reg("$33", "$HI");
 	tab[34]=init_reg("$34", "$LO");
 
+printf(" %s : %s  \n", tab[0]->name, tab[0]->data);
+
 	return tab;
 }
 

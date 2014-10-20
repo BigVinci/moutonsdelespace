@@ -11,7 +11,7 @@
 #include "load.h"
 
 /* fonction disasm */
-#include "disasm.h"
+//#include "disasm.h"
 
 /* fonction reg */
 #include "../reg.h"
@@ -25,11 +25,11 @@ int is_integer(char* chaine);
 int is_elf(char* chaine);
 int is_register(char* chaine);
 int get_type(char* chaine);
-int execute_cmd(interpreteur inter, reg* tabreg, mem vmem);
+int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp);
 
 int testcmd( interpreteur inter );
 int exitcmd( interpreteur inter );
-int loadcmd( interpreteur inter, mem vmem );
+int loadcmd( interpreteur inter, mem* vmem );
 int dispcmd( interpreteur inter, reg* tab_reg, mem vmem );
 int disasmcmd( interpreteur inter, mem vmem, reg* tab_reg );
 int setcmd( interpreteur inter, reg* tab_reg, mem vmem );

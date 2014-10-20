@@ -245,7 +245,7 @@ int get_type(char* chaine) {
 * @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
 * @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
 */
-int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
+int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem)
 {
     DEBUG_MSG("input '%s'", inter->input);
     char cmdStr[MAX_STR];
@@ -306,14 +306,14 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
     /* test si la commande est resume */
     else if(strcmp(token, "resume") == 0)
     {
-    resumecmd(inter, fp);
+    resumecmd(inter);
     return CMD_OK_RETURN_VALUE;
     }
 
     /* test si la commande est debug */
     else if(strcmp(token, "debug") == 0)
     {
-    debugcmd(inter, fp);
+    debugcmd(inter);
     return CMD_OK_RETURN_VALUE;
     }
 
@@ -783,7 +783,7 @@ else if(strcmp(token1, "word")==0)
             if(get_type(token3)==INTEGER) /* on vérifie que le token3 représente un entier 32 bits non signé */
             {
 		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
-                INFO_MSG("La commande assert word 0x%x %u est exécutée", addrValue, k);
+                INFO_MSG("La commande assert word %x %u est exécutée", addrValue, k);
                 return _assert_wordcmd(addrValue, k, vmem);
             }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer",token3,"assert_word <adresse>"); return 1;}
         } {WARNING_MSG("value %s is not a valid argument of command %s , expecting an adress",token2,"assert_word"); return 1;}

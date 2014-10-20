@@ -1,0 +1,11 @@
+load elf/boucle.o
+disp mem 0x1000+6
+set mem byte 0x1000 9
+disp mem 0x1000+6
+set mem byte 0x1000 255
+disp mem 0x1000+6
+set mem byte 0x1000 0x9
+disp mem 0x1000+6
+assert word 0x1000 0000000000000011
+disp mem 0x1000+6
+exit

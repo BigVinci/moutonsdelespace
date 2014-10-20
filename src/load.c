@@ -187,39 +187,38 @@ mem load(char* name)
 
 
 /* alloue le segment [heap] qui restera vide */
-    memory->seg[j].name        = strdup("[heap]");     /* nom du segment */
+    memory->seg[j].name          = strdup("[heap]");     /* nom du segment */
     memory->seg[j].size._32      = 0xff7f8000;    /* le segment est initialement vide */ 
     memory->seg[j].start._32     = 0x5000;      /* adresse de départ du segment */
     memory->seg[j].attr          = SCN_ATTR(1, R__);         // permission sur le segment 
-    memory->seg[j].content       = calloc(memory->seg[j].start._32, sizeof(char)); //calloc(4094, sizeof(*(memory->seg[NB_SECTIONS+2].content)));    /* on alloue la mémoire réelle utile pour ce segment */
-
-/* alloue la pile */
-    memory->seg[j+1].name        = strdup("[stack]");   /* nom du segment */
-    memory->seg[j+1].size._32    = 0x800000;     /* le segment est initialement vide */
-    memory->seg[j+1].start._32   = 0xff7ff000;  /* adresse de départ du segment */
-    memory->seg[j+1].attr        = SCN_ATTR(1, RW_);         /* permission sur le segment */
-    memory->seg[j+1].content     = calloc(memory->seg[j+1].start._32, sizeof(char)); /* on alloue la mémoire réelle utile pour ce segment */
+    memory->seg[j].content       = calloc(memory->seg[j].size._32, sizeof(char)); //start ?    /* on alloue la mémoire réelle utile pour ce segment */
 
 /* alloue le segment [lib] */
-    memory->seg[j+2].name          = "[lib]";     /* nom du segment */
-    memory->seg[j+2].size._32      = 0x2000;   /* le segment est initialement vide */ 
-    memory->seg[j+2].start._32     = 0xff7fd000;      /* adresse de départ du segment */
-    memory->seg[j+2].attr          = SCN_ATTR(1, R__);         /* permission sur le segment */   
-    memory->seg[j+2].content       = calloc(memory->seg[j+2].start._32, sizeof(char));    /* on alloue la mémoire réelle utile pour ce segment */
+    memory->seg[j+1].name          = strdup("[lib]");     /* nom du segment */
+    memory->seg[j+1].size._32      = 0x2000;   /* le segment est initialement vide */ 
+    memory->seg[j+1].start._32     = 0xff7fd000;      /* adresse de départ du segment */
+    memory->seg[j+1].attr          = SCN_ATTR(1, R__);         /* permission sur le segment */   
+    memory->seg[j+1].content       = calloc(memory->seg[j+1].size._32, sizeof(char));    /* on alloue la mémoire réelle utile pour ce segment */
+
+/* alloue la pile */
+    memory->seg[j+2].name        = strdup("[stack]");   /* nom du segment */
+    memory->seg[j+2].size._32    = 0x800000;     /* le segment est initialement vide */
+    memory->seg[j+2].start._32   = 0xff7ff000;  /* adresse de départ du segment */
+    memory->seg[j+2].attr        = SCN_ATTR(1, RW_);         /* permission sur le segment */
+    memory->seg[j+2].content     = calloc(memory->seg[j+2].size._32, sizeof(char)); /* on alloue la mémoire réelle utile pour ce segment */
 
 /* alloue le segment pour les appels systemes */
-    memory->seg[j+3].name        = "[vsyscall]";/* nom du segment */
+    memory->seg[j+3].name        = strdup("[vsyscall]");/* nom du segment */
     memory->seg[j+3].size._32    = 0xfff;   /* taille du segment */ 
     memory->seg[j+3].start._32   = 0xfffff000;  /* adresse de départ du segment */
     memory->seg[j+3].attr        = SCN_ATTR(1, R_X);         /* permission sur le segment */
-    memory->seg[j+3].content     = calloc(memory->seg[j+3].start._32, sizeof(char));    /* on alloue la mémoire réelle utile pour ce segment */
+    memory->seg[j+3].content     = calloc(memory->seg[j+3].size._32, sizeof(char));    /* on alloue la mémoire réelle utile pour ce segment */
 
     printf("\n------ Fichier ELF \"%s\" : sections lues lors du chargement ------\n", name);
     print_mem(memory); /* affiche le contenu de la mémoire */ 
     stab32_print( symtab);	/* affiche les symboles contenus dans le tableau symtab */ 
 
     // on fait le ménage avant de partir
-    //del_mem(memory);
     //del_stab(symtab);
     fclose(pf_elf);
     puts("");

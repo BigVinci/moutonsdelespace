@@ -37,6 +37,7 @@ typedef struct {
     char input[MAX_STR];
     char * from;
     char first_token;
+    FILE* file;
 } *interpreteur;
 
 

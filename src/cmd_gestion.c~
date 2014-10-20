@@ -84,7 +84,7 @@ printf("ByteValue %u \n", byteValue);
             return CMD_OK_RETURN_VALUE;
         }
     }
-    ERROR_MSG("SHOULD NEVER BE HERE");
+    ERROR_MSG("SHOULD NEVER BE HERE\n");
     return CMD_EXIT_RETURN_VALUE;
 }
 
@@ -154,7 +154,7 @@ int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr, mem vmem)
             return CMD_OK_RETURN_VALUE;
         }
     }
-    ERROR_MSG("SHOULD NEVER BE HERE");
+    ERROR_MSG("SHOULD NEVER BE HERE\n");
     return CMD_EXIT_RETURN_VALUE;
 }
 
@@ -182,7 +182,7 @@ int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg)
             return CMD_OK_RETURN_VALUE;
         }
     }
-    ERROR_MSG("SHOULD NEVER BE HERE");
+    ERROR_MSG("SHOULD NEVER BE HERE\n");
     return CMD_EXIT_RETURN_VALUE;	
 }
 
@@ -442,17 +442,9 @@ int _disp_reg_allcmd(reg* tab_reg)
  * @param inter l'interpreteur qui demande l'analyse
  * @return néant
  */
-void _resumecmd(interpreteur inter, FILE* fp)
+void _resumecmd(interpreteur inter)
 {
-  if(fp==0 || inter->mode!=DEBUG)
-    {
-        WARNING_MSG("Cette commande ne sert à rien");
-        return 1;
-    }
-    fp=(inter->file);
-    inter->mode=SCRIPT;
-
-    return 0;
+  WARNING_MSG("Fonction resume pas encore implementée");
 }
 
 
@@ -563,17 +555,7 @@ int _assert_wordcmd(uint32_t address, int valeur, mem vmem)
  * @param inter l'interpreteur qui demande l'analyse
  * @return néant
  */
-void _debugcmd(interpreteur inter, FILE* fp)
+void _debugcmd(interpreteur inter)
 {
-    if(fp==0 || inter->mode!=SCRIPT)
-    {
-        WARNING_MSG("Cette commande ne sert à rien");
-        return 1;
-    }
-
-    FILE*f=fp;
-    inter->file=f;
-    fp=stdin;
-    inter->mode=DEBUG;
-    return CMD_OK_RETURN_VALUE;
+WARNING_MSG("fonction debug pas encore implémentée ");
 }
