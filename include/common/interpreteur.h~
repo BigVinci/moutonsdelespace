@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 /* la librairie readline */
 #include <readline/readline.h>
@@ -13,10 +12,6 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "notify.h"
 
-
-/////////////////////////////////////////////////////////////////
-#ifndef _INTERPRETEUR_
-#define _INTERPRETEUR_
 
 /* taille max pour nos chaines de char */
 #define MAX_STR 1024
@@ -42,14 +37,12 @@ typedef struct {
     char input[MAX_STR];
     char * from;
     char first_token;
+    FILE* file;
 } *interpreteur;
-
-#endif /*_INTERPRETEUR_ */
-//////////////////////////////////////////////////////////////////
 
 
 /* type de token (exemple) */
-enum {HEXA,BYTE,WORD,INTEGER,OCTAL,REG,UNKNOWN};
+enum {HEXA,BYTE,WORD,INTEGER,OCTAL,REG,ELF,UNKNOWN};
 
 
 interpreteur init_inter(void);

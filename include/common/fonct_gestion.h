@@ -11,7 +11,7 @@
 #include "load.h"
 
 /* fonction disasm */
-//#include "disasm.h"
+#include "disasm.h"
 
 /* fonction reg */
 #include "../reg.h"
@@ -33,8 +33,8 @@ int loadcmd( interpreteur inter, mem* vmem );
 int dispcmd( interpreteur inter, reg* tab_reg, mem vmem );
 int disasmcmd( interpreteur inter, mem vmem, reg* tab_reg );
 int setcmd( interpreteur inter, reg* tab_reg, mem vmem );
-void debugcmd( interpreteur inter );
-void resumecmd( interpreteur inter ); 
+void debugcmd( interpreteur inter, FILE* fp );
+void resumecmd( interpreteur inter, FILE* fp ); 
 int assertcmd( interpreteur inter, reg* tab_reg, mem vmem );
 
 #endif /* _FONCT_GESTION_ */

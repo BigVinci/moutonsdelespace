@@ -53,7 +53,7 @@ int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg);
 
 int _disp_mem_mapcmd(mem vmem);
 int _disp_mem_plagescmd(char* addr1, char* addr2, mem vmem);
-int _disp_mem_offsetcmd(int addr, int offset, mem vmem);
+int _disp_mem_offsetcmd(char* addr, int offset, mem vmem);
 int _disp_reg_registercmd(char* vname, reg* tab_reg);
 int _disp_reg_allcmd(reg* tab_reg);
 
@@ -61,8 +61,8 @@ int _assert_regcmd(reg r, int valeur);
 int _assert_bytecmd(uint32_t adress, int valeur, mem vmem);
 int _assert_wordcmd(uint32_t adress, int valeur, mem vmem);
 
-void _debugcmd(interpreteur inter);
+int _debugcmd(interpreteur inter, FILE* fp);
 
-void _resumecmd(interpreteur inter);
+int _resumecmd(interpreteur inter, FILE* fp);
 
 #endif /* _CMD_GESTION_H_ */

@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/*#include "../../src/interpreteur.c"*/
-
 /* la librairie readline */
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -61,8 +59,8 @@ int _assert_regcmd(reg r, int valeur);
 int _assert_bytecmd(uint32_t adress, int valeur, mem vmem);
 int _assert_wordcmd(uint32_t adress, int valeur, mem vmem);
 
-void _debugcmd(interpreteur inter, FILE* fp);
+int _debugcmd(interpreteur inter, FILE* fp);
 
-void _resumecmd(interpreteur inter, FILE* fp);
+int _resumecmd(interpreteur inter, FILE* fp);
 
 #endif /* _CMD_GESTION_H_ */

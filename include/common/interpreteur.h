@@ -27,7 +27,7 @@ Toute autre valeur signifie qu'une erreur est survenue
 #define CMD_UNKOWN_RETURN_VALUE -2
 
 /* mode d'interaction avec l'interpreteur (exemple)*/
-typedef enum {INTERACTIF,SCRIPT,DEBUG_MODE} inter_mode;
+typedef enum {INTERACTIF,SCRIPT} inter_mode;
 
 /* structure passee en parametre qui contient la connaissance de l'état de
  * l'interpreteur

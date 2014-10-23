@@ -34,51 +34,45 @@ int _set_mem_bytecmd(uint8_t byteValue, uint32_t vaddr, mem vmem)
 {
     DEBUG_MSG("La fonction set_mem_byte a été lancée"); //On vérifie que la bonne fonction s'ouvre
     int i;
-    uint32_t addr;
-    uint32_t addrrelle;
-printf("ByteValue %u \n", byteValue);
-// on vérifie que l'adresse existe 
-    if (vaddr > 0xfffffffc) // adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc 
+    uint32_t addrreelle;
+
+    if (byteValue>0xff)
+    {
+	WARNING_MSG("Seul un nombre inférieur ou égal à 255 peut être entré dans cet octet");
+	return 1;
+    }
+
+    // on vérifie que l'adresse existe 
+    if (vaddr > 0xffffffff) // adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc 
     {
         WARNING_MSG("L'adresse demandée n'existe pas");
         return 3;
     }
 
-    // on cherche l'adresse virtuelle exacte qui doit être modifiée (multiple de 4) 
-    addr = (vaddr - (vaddr%4));
-
     for (i = 0; i < 6; ++i) // on cherche dans quel segment est addr 
     {
-        if ((vmem->seg[i].start._32 <= addr) && (vmem->seg[i+1].start._32 > addr))
+        if ((vmem->seg[i].start._32 <= vaddr) && (vmem->seg[i+1].start._32 > vaddr))
         {
             INFO_MSG("Le segment modifié est %s", vmem->seg[i].name);
 
             // on cherche l'adresse réelle exacte 
-            addrrelle = (addr - vmem->seg[i].start._32);
+            addrreelle = (vaddr - vmem->seg[i].start._32);
 
             // on modifie la mémoire en gardant la représentation big endian 
-            *((vmem->seg[i].content)+addrrelle) = byteValue;
-/* 0x00;
-            *((vmem->seg[i].content)+addrrelle+1) = 0x00;
-            *((vmem->seg[i].content)+addrrelle+2) = 0x00;
-            *((vmem->seg[i].content)+addrrelle+3) = */
+            *((vmem->seg[i].content)+addrreelle) = byteValue;
 
             INFO_MSG("Modification du segment réalisée");
             return CMD_OK_RETURN_VALUE;
         }
-        else if (vmem->seg[6].start._32 <= addr) // on regarde si addr est dans le dernier segment 
+        else if (vmem->seg[6].start._32 <= vaddr) // on regarde si addr est dans le dernier segment 
         {
             INFO_MSG("Le segment modifié est %s", "[vsyscall]");
 
             // on cherche l'adresse réelle exacte 
-            addrrelle = (addr - vmem->seg[6].start._32);
+            addrreelle = (vaddr - vmem->seg[6].start._32);
 
             // on modifie la mémoire en gardant la représentation big endian 
-            *((vmem->seg[6].content)+addrrelle) = byteValue;
-/* 0x00;
-            *((vmem->seg[6].content)+addrrelle+1) = 0x00;
-            *((vmem->seg[6].content)+addrrelle+2) = 0x00;
-            *((vmem->seg[6].content)+addrrelle+3) = */
+            *((vmem->seg[6].content)+addrreelle) = byteValue;
 
             INFO_MSG("Modification du segment réalisée");
             return CMD_OK_RETURN_VALUE;
@@ -108,7 +102,7 @@ int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr, mem vmem)
     if (vaddr > 0xfffffffc) // adresse : multiple de 4 -> la dernière adresse modifiable est 0xfffffffc 
     {
         WARNING_MSG("L'adresse demandée n'existe pas");
-        return 3;
+        return 1;
     }
 
     for (i = 0; i < 4; ++i) // on transforme le word en 4 octets distincts 
@@ -116,17 +110,23 @@ int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr, mem vmem)
         byteValue[i] = ((uint8_t*)&wordValue)[3-i];
     }
 
-    // on cherche l'adresse virtuelle exacte qui doit être modifiée (multiple de 4) 
-    addr = (vaddr - (vaddr%4));
-
     for (i = 0; i < 6; ++i) // on cherche dans quel segment est addr 
     {
-        if ((vmem->seg[i].start._32 <= addr) && (vmem->seg[i+1].start._32 > addr))
+        if ((vmem->seg[i].start._32 <= vaddr) && (vmem->seg[i+1].start._32 > vaddr))
         {
+
+    	    // l'adresse virtuelle exacte qui doit être modifiée doit être un multiple de 4 
+    	    addr = ((vaddr - vmem->seg[i].start._32)%4);
+    	    if (addr!=0)
+    	    {
+        	WARNING_MSG("L'adresse à modifier doit être un multiple de 4 depuis l'adresse de départ du segment.");
+        	return 1;
+    	    }
+
             INFO_MSG("Le segment modifié est %s", vmem->seg[i].name);
 
             // on cherche l'adresse réelle exacte 
-            addrrelle = (addr - vmem->seg[i].start._32);
+            addrrelle = (vaddr - vmem->seg[i].start._32);
 
             // on modifie la mémoire en gardant la représentation big endian 
             *((vmem->seg[i].content)+addrrelle) = byteValue[0];
@@ -137,12 +137,20 @@ int _set_mem_wordcmd(uint32_t wordValue, uint32_t vaddr, mem vmem)
             INFO_MSG("Modification du segment réalisée");
             return CMD_OK_RETURN_VALUE;
         }
-        else if (vmem->seg[6].start._32 <= addr) // on regarde si addr est dans le dernier segment 
+        else if (vmem->seg[6].start._32 <= vaddr) // on regarde si addr est dans le dernier segment 
         {
+    	    // l'adresse virtuelle exacte qui doit être modifiée doit être un multiple de 4 
+    	    addr = ((vaddr - vmem->seg[i].start._32)%4);
+    	    if (addr!=0)
+    	    {
+        	WARNING_MSG("L'adresse à modifier doit être un multiple de 4 depuis l'adresse de départ du segment.");
+        	return 1;
+    	    }
+
             INFO_MSG("Le segment modifié est %s", "[vsyscall]");
 
             // on cherche l'adresse réelle exacte 
-            addrrelle = (addr - vmem->seg[6].start._32);
+            addrrelle = (vaddr - vmem->seg[6].start._32);
 
             // on modifie la mémoire en gardant la représentation big endian 
             *((vmem->seg[6].content)+addrrelle) = byteValue[0];
@@ -171,14 +179,14 @@ int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg)
 {
     int i;
     DEBUG_MSG("La fonction set_reg a été lancée"); //On vérifie que la bonne fonction s'ouvre
-    char* datareg=NULL;
+    char* datareg=calloc(1, sizeof(char));
 
-	for (i = 0; i < 35; ++i)
+    for (i = 0; i < 35; ++i)
     {
         if (strcmp(tab_reg[i]->name,vreg->name)==0 || strcmp(tab_reg[i]->mnemo,vreg->name)==0) // on cherche le registre adéquat
-        {
+        {   
             sprintf(datareg,"%u", wordValue); // converti uint32_t en char*
-            strcpy(tab_reg[i]->data,datareg); // copie datareg dans le registre sélectionné
+            tab_reg[i]->data=strdup(datareg); // copie datareg dans le registre sélectionné
             return CMD_OK_RETURN_VALUE;
         }
     }
@@ -299,17 +307,19 @@ int _disp_mem_offsetcmd(char* addr1, int offset, mem vmem)
     if (offset<0) {offset=-offset; INFO_MSG("La valeur absolue de l'offset a été considéré");}
     char* addr2=calloc(1, sizeof(char)); 
 
-unsigned int val2;
-sscanf(addr1, "%x", &val2);
-val2 += offset;
-sprintf(addr2, "%x", val2);
-
     unsigned int addr;
-    unsigned int addr_end; sscanf(addr2, "%x", &addr_end);
+    unsigned int addr_end; 
     unsigned int addr_start; sscanf(addr1, "%x", &addr_start);
     int j=0, addr_end2=0;
 
     if (addr_start < 4096) {addr_start=4096; strcpy(addr1, "0x1000");}
+
+unsigned int val2;
+sscanf(addr1, "%x", &val2);
+val2 += offset;
+sprintf(addr2, "%x", val2);
+sscanf(addr2, "%x", &addr_end);
+
     if (addr_end < 4096) {addr_end=4096; strcpy(addr2, "0x1000");}
 
     if (addr_end==addr_start)
@@ -442,9 +452,9 @@ int _disp_reg_allcmd(reg* tab_reg)
  * @param inter l'interpreteur qui demande l'analyse
  * @return néant
  */
-void _resumecmd(interpreteur inter, FILE* fp)
+int _resumecmd(interpreteur inter, FILE* fp)
 {
-  if(fp==0 || inter->mode!=DEBUG)
+  if(fp==0 || inter->mode!=INTERACTIF)
     {
         WARNING_MSG("Cette commande ne sert à rien");
         return 1;
@@ -452,7 +462,7 @@ void _resumecmd(interpreteur inter, FILE* fp)
     fp=(inter->file);
     inter->mode=SCRIPT;
 
-    return 0;
+    return CMD_OK_RETURN_VALUE;
 }
 
 
@@ -464,15 +474,15 @@ void _resumecmd(interpreteur inter, FILE* fp)
  */
 int _assert_regcmd(reg r, int valeur)
 {   
-    char* val=NULL;
+    char* val=calloc(1, sizeof(char));
     sprintf(val, "%d", valeur); // on converti valeur en chaîne de caractère
-    DEBUG_MSG("L'ouverture d'assert_reg a fonctionnée.\n"); // On vérifie qu'on est dans la bonne fonction
+    DEBUG_MSG("L'ouverture d'assert_reg a fonctionnée"); // On vérifie qu'on est dans la bonne fonction
     if(strcmp((r->data),val)==0) // On compare la valeur entrée avec le contenu du registre
     {
-	    INFO_MSG("Les deux valeurs sont identiques.\n");
+	    INFO_MSG("Les deux valeurs sont identiques");
         return CMD_OK_RETURN_VALUE; // retourne 0 si égal, 1 sinon
     }
-    INFO_MSG("Les deux valeurs ne sont pas identiques.\n");
+    INFO_MSG("Les deux valeurs ne sont pas identiques");
     return 1;
 }
 
@@ -486,29 +496,47 @@ int _assert_regcmd(reg r, int valeur)
  */
 int _assert_bytecmd(uint32_t address, int valeur, mem vmem)
 {   
-    int i;
-    char* val=NULL; char* valueaddr=NULL;
-    uint32_t addrrelle;
+    int i; int* a=calloc(1, sizeof(int));
+    char* val=calloc(1, sizeof(char)); char* valueaddr=calloc(1, sizeof(char));
+    uint32_t addrreelle;
 
-    sprintf(val, "%d", valeur); // on converti valeur en chaîne de caractère
-    DEBUG_MSG("L'ouverture de la commande assert_byte a fonctionné.\n"); // On vérifie qu'on est dans la bonne fonction
+    *a=valeur;
+    sprintf(val, "%x", *a); // on converti valeur en chaîne de caractère
+    DEBUG_MSG("L'ouverture de la commande assert_byte a fonctionné"); // On vérifie qu'on est dans la bonne fonction
 
     // on cherche l'adresse à tester
     for (i = 0; i < vmem->nseg; ++i) // on parcourt les segments
     {
-        if (vmem->seg[i].start._32 < address && vmem->seg[i].size._32 > address ) // on cherche le segment contenant address
+	if (i>0 && address < vmem->seg[i].start._32 && address > vmem->seg[i-1].start._32)
+	{
+	    WARNING_MSG("Cette adresse n'appartient à aucun segment");
+	    return 1;
+	}
+
+	if (i==0 && address < vmem->seg[i].start._32)
+	{
+	    WARNING_MSG("Cette adresse n'appartient à aucun segment");
+	    return 1;
+	}
+	
+        if (vmem->seg[i].start._32 <= address && (vmem->seg[i].start._32+vmem->seg[i].size._32+1) > address ) // on cherche le segment contenant address
         {
-            addrrelle=(address-(vmem->seg[i].start._32)); // on calcule l'adresse réelle à vérifier
-            valueaddr=(char*)(vmem->seg[i].content+addrrelle+3); // représentation big endian : on ne vérifie que le dernier octet
-            if(strcmp(valueaddr,val)==0 && (vmem->seg[i].content+addrrelle)==0 && (vmem->seg[i].content+addrrelle+1)==0 && (vmem->seg[i].content+addrrelle+2)==0) // On compare la valeur entrée avec le contenu de l'adresse
+            addrreelle=(address-(vmem->seg[i].start._32)); // on calcule l'adresse réelle à vérifier
+
+	    *a=vmem->seg[i].content[addrreelle]; // on récupère la valeur dans l'adresse
+	    sprintf(valueaddr, "%x", *a); // on converti la valeur de l'octet ciblé en char* (sous forme de integer)
+
+            if(strcmp(valueaddr,val)==0) // On compare la valeur entrée avec le contenu de l'adresse
             {
-                INFO_MSG("Les deux valeurs sont identiques.\n");
+                INFO_MSG("Les deux valeurs sont identiques");
                 return CMD_OK_RETURN_VALUE; // retourne 0 si égal, 1 sinon
             } 
+
         }
+	
     }
 
-    INFO_MSG("Les deux valeurs ne sont pas identiques.\n");
+    INFO_MSG("Les deux valeurs ne sont pas identiques");
     return 1;
 }
 
@@ -521,39 +549,57 @@ int _assert_bytecmd(uint32_t address, int valeur, mem vmem)
  * @return 0 si les deux valeurs sont identiques, 1 si fail
  */
 int _assert_wordcmd(uint32_t address, int valeur, mem vmem)
-{   
-    int i;
-    char* val=NULL; 
-    byte value1, value2, value3, value4; // représente les 4 octets à vérifier
-    word valueaddr; char* valaddr=NULL;
-    uint32_t addrrelle;
+{
+    int i; int* a=calloc(1, sizeof(int)); 
 
-    sprintf(val, "%d", valeur); // on converti valeur en chaîne de caractère
-    DEBUG_MSG("L'ouverture de la commande assert_word a fonctionné.\n"); // On vérifie qu'on est dans la bonne fonction
+    int* value1=calloc(1, sizeof(int)); int* value2=calloc(1, sizeof(int));
+    int* value3=calloc(1, sizeof(int)); int* value4=calloc(1, sizeof(int)); // représente les 4 octets à vérifier
+
+    char* val=calloc(1, sizeof(char)); char* valueaddr=calloc(1, sizeof(char));
+    uint32_t addrreelle;
+
+    *a=valeur;
+    sprintf(val, "%x", *a); // on converti valeur en chaîne de caractère
+    DEBUG_MSG("L'ouverture de la commande assert_word a fonctionné"); // On vérifie qu'on est dans la bonne fonction
 
     // on cherche l'adresse à tester
     for (i = 0; i < vmem->nseg; ++i) // on parcourt les segments
     {
-        if (vmem->seg[i].start._32 < address && vmem->seg[i].size._32 > address ) // on cherche le segment contenant address
+	if (i>0 && address < vmem->seg[i].start._32 && address > (vmem->seg[i-1].start._32+vmem->seg[i-1].size._32))
+	{
+	    WARNING_MSG("Cette adresse n'appartient à aucun segment");
+	    return 1;
+	}
+
+	if (i==0 && address < vmem->seg[i].start._32)
+	{
+	    WARNING_MSG("Cette adresse n'appartient à aucun segment");
+	    return 1;
+	}
+	
+        if (vmem->seg[i].start._32 <= address && (vmem->seg[i].start._32+vmem->seg[i].size._32+1) > address ) // on cherche le segment contenant address
         {
-            addrrelle=(address-(vmem->seg[i].start._32)); // on calcule l'adresse réelle à vérifier
-            value1=*(vmem->seg[i].content+addrrelle); // on récupère chaque byte de l'adresse indiquée
-            value2=*(vmem->seg[i].content+addrrelle+1);
-            value3=*(vmem->seg[i].content+addrrelle+2);
-            value4=*(vmem->seg[i].content+addrrelle+3);
+            addrreelle=(address-(vmem->seg[i].start._32)); // on calcule l'adresse réelle à vérifier
 
-            valueaddr=((((((value1 << 8)+value2) << 8)+value3) << 8)+value4 ); // on récupère la valeur sur 32 bits pour pouvoir la comparer
-            *valaddr=(unsigned char)(valueaddr);
+            *value1=vmem->seg[i].content[addrreelle]; // on récupère chaque byte de l'adresse indiquée
+            *value2=vmem->seg[i].content[addrreelle+1];
+            *value3=vmem->seg[i].content[addrreelle+2];
+            *value4=vmem->seg[i].content[addrreelle+3];
+	    *a = (*value4) + 256*(*value3) + 256*256*(*value2) + 256*256*256*(*value1);
 
-            if(strcmp(valaddr,val)==0) // On compare la valeur entrée avec le contenu de l'adresse
+	    sprintf(valueaddr, "%x", *a); // on converti la valeur de l'octet ciblé en char*
+
+            if(strcmp(valueaddr,val)==0) // On compare la valeur entrée avec le contenu de l'adresse
             {
-                INFO_MSG("Les deux valeurs sont identiques.\n");
+                INFO_MSG("Les deux valeurs sont identiques");
                 return CMD_OK_RETURN_VALUE; // retourne 0 si égal, 1 sinon
             } 
+
         }
+	
     }
 
-    INFO_MSG("Les deux valeurs ne sont pas identiques.\n");
+    INFO_MSG("Les deux valeurs ne sont pas identiques");
     return 1;
 }
 
@@ -563,7 +609,7 @@ int _assert_wordcmd(uint32_t address, int valeur, mem vmem)
  * @param inter l'interpreteur qui demande l'analyse
  * @return néant
  */
-void _debugcmd(interpreteur inter, FILE* fp)
+int _debugcmd(interpreteur inter, FILE* fp)
 {
     if(fp==0 || inter->mode!=SCRIPT)
     {
@@ -574,6 +620,6 @@ void _debugcmd(interpreteur inter, FILE* fp)
     FILE*f=fp;
     inter->file=f;
     fp=stdin;
-    inter->mode=DEBUG;
+    inter->mode=INTERACTIF;
     return CMD_OK_RETURN_VALUE;
 }

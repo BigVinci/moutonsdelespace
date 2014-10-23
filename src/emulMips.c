@@ -91,8 +91,8 @@ int main ( int argc, char *argv[] )
                 /* En mode "fichier" toute erreur implique la fin du programme ! */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
-		    del_tab_reg(tabreg);
                     del_inter(inter);
+    	    	    del_mem(*vmem);
                     /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                     ERROR_MSG("ERREUR DETECTEE. Aborts");
                 }
@@ -103,10 +103,8 @@ int main ( int argc, char *argv[] )
             /* mode fichier, fin de fichier => sortie propre du programme */
             DEBUG_MSG("FIN DE FICHIER");
             fclose( fp );
-	    //del_tab_reg(tabreg);
             del_inter(inter);
     	    del_mem(*vmem);
-            //del_stab(symtab);
             exit(EXIT_SUCCESS);
         }
     }

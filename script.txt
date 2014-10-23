@@ -1,11 +1,16 @@
 load elf/boucle.o
-disp mem 0x1000+6
-set mem byte 0x1000 9
-disp mem 0x1000+6
-set mem byte 0x1000 255
-disp mem 0x1000+6
-set mem byte 0x1000 0x9
-disp mem 0x1000+6
-assert word 0x1000 0000000000000011
-disp mem 0x1000+6
+disp mem map
+disp reg all
+disp mem 0x0000+89756464
+set mem byte 0x1006 21
+set mem word 0x1000 256
+set reg $2 354
+assert reg $2 354
+assert byte 0x1006 21
+disp mem 0x1000+5
+assert word 0x1000 256
+disp mem 0x1000+51
+disp reg all
+load elf/procedure.o
+disasm 0x1000:0x1004
 exit
