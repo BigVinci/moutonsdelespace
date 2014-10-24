@@ -8,6 +8,10 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "notify.h"
 
+/* la librairie readline */
+#include <readline/readline.h>
+#include <readline/history.h>
+
 /* les différents types utiles */
 #include "types.h"
 #include "../mem.h"
@@ -26,7 +30,6 @@ union inst_poly { R_TYPE r; I_TYPE i; J_TYPE j; unsigned int code;}; //Union rel
 
 int _disasm_range_hexacmd(char* addrValue1, char* addrValue2, mem vmem, reg* tab_reg);
 int _disasm_range_offsetcmd(char* addrValue1, int offsetValue, mem vmem, reg* tab_reg);
-int disasm(def*nom, char*code, char*adress, reg*tab_reg);
 
 def* mem_dico(char*nom);
 
@@ -34,7 +37,7 @@ int if_j_type(unsigned int code_instr);
 int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
 int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
 def trouve_def(char*code, def*tab_instr);
-int affiche_instruction(char*code, def*tab_instr, reg*tab_reg,char*adress);
+int disasm(char*code, def*tab_instr, reg*tab_reg,char*adress);
 
 
 

@@ -5,12 +5,15 @@ disp mem 0x0000+89756464
 set mem byte 0x1006 21
 set mem word 0x1000 256
 set reg $2 354
+debug
 assert reg $2 354
 assert byte 0x1006 21
 disp mem 0x1000+5
 assert word 0x1000 256
 disp mem 0x1000+51
 disp reg all
+set mem word 0x1000 191227
+disp mem 0x1000+5
 load elf/procedure.o
-disasm 0x1000:0x1004
+disasm 0x1000 : 0x1014
 exit

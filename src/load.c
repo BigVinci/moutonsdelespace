@@ -140,7 +140,6 @@ void print_segment_raw_content(segment* seg) {
 //
 mem load(char* name) 
 {
-
     char* section_names[NB_SECTIONS]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR}; 	/* 4 sections dont les noms ont été définie ci-dessus */ 
     unsigned int segment_permissions[NB_SECTIONS]= {R_X,R__,RW_,RW_};						/* décrit les différentes permissions possibles */ 
     unsigned int nsegments;		/* nombre de segment de mémoire */ 

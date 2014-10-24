@@ -11,7 +11,11 @@
  */
 int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 {
-    int no_args=1, i=0, j; 
+    int no_args=1, i=0, j=0;
+    uint32_t addrreelle;
+
+    int* value1=calloc(1, sizeof(int)); int* value2=calloc(1, sizeof(int));
+    int* value3=calloc(1, sizeof(int)); int* value4=calloc(1, sizeof(int)); // représente les 4 octets à vérifier
 
     unsigned int addr_start; sscanf(addr1, "%x", &addr_start);
     unsigned int addr_end; sscanf(addr2, "%x", &addr_end);
@@ -28,9 +32,15 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
         addr_end2=addr_end; addr_end=addr_start; addr_start=addr_end2; // on inverse les bornes en utilisant addr_end2 car cette variable n'est plus utile pour la suite
     }
 
-    if (((addr_start-vmem->seg[1].start._32)%4)!=0) // on doit commencer au début d'une instruction
+    if (((addr_start-vmem->seg[0].start._32)%4)!=0) // on doit commencer au début d'une instruction
     {
         WARNING_MSG("Cette adresse n'est pas valide. Veuillez indiquer l'adresse de début d'une instruction");
+        return 1;
+    }
+
+    if (addr_end > (vmem->seg[0].start._32+vmem->seg[0].size._32)) // on doit finir dans le .text
+    {
+        WARNING_MSG("Cette adresse n'est pas valide. Veuillez indiquer une adresse de fin appartenant au .text");
         return 1;
     }
 
@@ -40,9 +50,21 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
     while (addr_start<=addr_end)
     {
 	no_args=0; 
-	int* a=calloc(1, sizeof(int)); *a=vmem->seg[1].content[i];
-	sscanf(contenu, "%x", a); // on converti le contenu en char*
-	j=disasm(dico, contenu, addr1, tab_reg);
+	int* a=calloc(1, sizeof(int));
+
+
+	    addrreelle=(addr_start-(vmem->seg[0].start._32));
+
+            *value1=vmem->seg[0].content[addrreelle]; // on récupère chaque byte de l'adresse indiquée
+            *value2=vmem->seg[0].content[addrreelle+1];
+            *value3=vmem->seg[0].content[addrreelle+2]; 
+            *value4=vmem->seg[0].content[addrreelle+3];
+	    *a = (*value4) + 256*(*value3) + 256*256*(*value2) + 256*256*256*(*value1);
+
+	    sprintf(contenu, "%x", *a); // on converti la valeur de l'octet ciblé en char*
+
+
+	j=disasm(contenu, dico, tab_reg, addr1);
 
 	if (j!=0) // erreur dans disasm
 	{
@@ -50,8 +72,8 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
             return 1;
 	}
 
-	i++;
-	addr_start++; sprintf(addr1, "%u", addr_start);	
+	i+=4;
+	addr_start+=4; sprintf(addr1, "%x", addr_start);	
     }
 
     if (no_args==1) // si il ne se passe rien
@@ -60,6 +82,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
         return 1;
     }
 
+    free (dico);
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -85,19 +108,6 @@ int _disasm_range_offsetcmd(char* addr1, int offsetValue, mem vmem, reg* tab_reg
 }
 
 
-/** DISASMCMD 
- * commande qui désassemble chaque instruction
- * @param dico le dictionnaire contenant l'ensemble des instructions possibles (entre autres)
- * @param code le contenu (content) à désassembler
- * @param tab_reg le tableau de registre
- * @return 0 si réussite, 1 si fail 
- */
-int disasm(def* dico, char* code, char* adress, reg* tab_reg)
-{
-    return affiche_instruction(code, dico, tab_reg, adress);
-}
-
-
 /**
  * Met en mémoire le dictionnaire (allocation)
  * @param nom le nom (ne pas oublier .txt !!) du dictionnaire
@@ -120,13 +130,13 @@ def* mem_dico(char*nom)
     	fgets(definition,100,dico); //on lit la ligne du dico puis on la découpe en token et on remplit les champs de la structure définition
 
     	token=strtok(definition," " );
-    	sscanf(token,"%x", &((tab[i]).sign)); // pourquoi x et pas d ?
+    	sscanf(token,"%x", &((tab[i]).sign)); 
     	token=strtok(NULL," " );
-    	sscanf(token,"%x", &((tab[i]).masque)); // poourquoi x et pas d ?
+    	sscanf(token,"%x", &((tab[i]).masque)); 
     	token=strtok(NULL," ");
-    	sscanf(token,"%s", ((tab[i]).type)); // j'ai enlevé &
+    	sscanf(token,"%s", ((tab[i]).type));
     	token=strtok(NULL," ");
-    	sscanf(token,"%s", ((tab[i]).name)); // j'ai enlevé &
+    	sscanf(token,"%s", ((tab[i]).name)); 
      	token=strtok(NULL," " );
     	sscanf(token,"%d", &((tab[i]).nb_op));
 
@@ -136,7 +146,7 @@ def* mem_dico(char*nom)
 	for(j=0; j<tab[i].nb_op; j++) //ici on met un for, car il n'y a pas le même nombre d'opérande pour toutes instructions
 	{
     	    token=strtok(NULL," ");
-	    sscanf(token,"%s",(tab[i].op_mapping[k])); //on remplit le tableau d'operandes "op_mapping"  // j'ai enlevé &
+	    sscanf(token,"%s",(tab[i].op_mapping[k])); //on remplit le tableau d'operandes "op_mapping" 
 	    k++;
 	}
     }
@@ -153,13 +163,13 @@ int if_j_type(unsigned int code_instr) // l'instruction n'est pas en paramètre,
 {
     union inst_poly inst;
     inst.code=code_instr; //on initialise l'union
-//    int op_code_j=inst.j.opcode; //deja affiche par la fonction dissasm
+//    int op_code_j=inst.j.opcode; // inutile pour le moment
     int target_j=inst.j.target;
     //on récupère la valeur de "target" et on l'affiche
 
     printf(" %d ",target_j);
+    printf("\n");
     return CMD_OK_RETURN_VALUE;
-
 }
 
 
@@ -174,17 +184,19 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
-//    int op_code_i=inst.i.opcode; //deja affiché par dissasm
+//    int op_code_i=inst.i.opcode; // inutile pour le moment
     int rs_i=inst.i.rs; //on récupère toutes les opérantes grace à l'union
     int rt_i=inst.i.rt;
     int immediate=inst.i.immediate;
+    int offset=immediate;
+    if (immediate > 32767) offset-=65542; // calcul de l'offset dans le cas où il est censé être négatif (complément à 2)
     char*s=NULL;
     char*reg=NULL;
 
     int i=0;
     for(i=0; i<(int_t.definition.nb_op); i++) //On teste les noms des opérandes pour les afficher dans le bon ordre, puis on les affiche
     {
-        s=int_t.definition.op_mapping[i]; //probleme ici,  char* alors que op_mapping
+        s=int_t.definition.op_mapping[i]; 
         if(strcmp(s,"rs")==0)
         {   
 	    reg=(tab_reg[rs_i]->mnemo);
@@ -204,7 +216,7 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
 
         else if(strcmp(s,"offset")==0)
         {
-            printf(" %d", immediate); //ce n'est pas immediate ici, mais ça corepond au nombre contenu dans "immediate"
+            printf(" %d", offset); //ce n'est pas immediate ici, mais ça correspond au nombre contenu dans "immediate"
         }
 
         else
@@ -213,6 +225,7 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
             return 1;
         }
     }
+    printf("\n");
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -228,12 +241,12 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
-//    int op_code_r=inst.r.opcode;
+//    int op_code_r=inst.r.opcode; // inutile pour le moment
     int rs_r=inst.r.rs; //récupération des paramètres
     int rt_r=inst.r.rt;
     int rd_r=inst.r.rd;
     int sa_r=inst.r.sa;
-//    int func_r=inst.r.func;
+//    int func_r=inst.r.func; // inutile pour le moment
 
     char*s=NULL;
     char*reg=NULL;
@@ -273,6 +286,7 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
             return 1;
         }
     }
+    printf("\n");
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -302,7 +316,7 @@ def trouve_def(char*code, def*tab_instr)
 }
 
 
-/**
+/** DISASMCMD
  * Affiche le résultat du désasemblage
  * @param code contient le code de l'instruction 
  * @param tab_instr contient le dictionnaire
@@ -310,12 +324,12 @@ def trouve_def(char*code, def*tab_instr)
  * @param adress indique l'adresse virtuelle de l'instruction
  * @return 0 si réussi, 1 si fail
  */
-int affiche_instruction(char*code, def*tab_instr, reg*tab_reg,char*adress)
+int disasm(char* code, def* tab_instr, reg*tab_reg,char*adress)
 { 
     instruction int_t;
     int adresse_virtuelle=0;
 
-    sscanf(code, "%s", int_t.code); // j'ai enlevé &
+    sscanf(code, "%s", int_t.code);
     sscanf(adress, "%x", &adresse_virtuelle);
     (int_t.definition)=trouve_def(code, tab_instr);
     printf("%x :: %s",adresse_virtuelle ,int_t.definition.name  ); // affiche l'adresse virtuelle et le nom
