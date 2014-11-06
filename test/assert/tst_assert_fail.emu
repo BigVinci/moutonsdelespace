@@ -5,7 +5,7 @@
 
 
 
-
+load elf/boucle.o
 asserte
 ass
 assert rog

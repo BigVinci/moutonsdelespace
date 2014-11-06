@@ -7,7 +7,7 @@
 
 
 
-
+load elf/boucle.o
 assert
 assert reg
 assert reg $24

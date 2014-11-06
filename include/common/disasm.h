@@ -18,6 +18,7 @@
 #include "../reg.h"
 
 #include "interpreteur.h"
+#include "instruction.h"
 
 typedef struct definition {int nb_op; char type[100]; char name[100]; int sign; int masque; char op_mapping[100][100];} def; //Structure correspondant à une définition du dictionnaire
 typedef struct instr {def definition; char code[100];} instruction; // structure correspondant à une instruction
@@ -33,11 +34,11 @@ int _disasm_range_offsetcmd(char* addrValue1, int offsetValue, mem vmem, reg* ta
 
 def* mem_dico(char*nom);
 
-int if_j_type(unsigned int code_instr);
-int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
-int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
+int if_j_type(unsigned int code_instr, OP_VAL* opvalue);
+int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue);
+int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue);
 def trouve_def(char*code, def*tab_instr);
-int disasm(char*code, def*tab_instr, reg*tab_reg,char*adress);
+int disasm(char*code, def*tab_instr, reg*tab_reg,char*adress, char** name, OP_VAL* opvalue);
 
 
 

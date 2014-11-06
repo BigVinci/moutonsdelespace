@@ -623,3 +623,16 @@ int _debugcmd(interpreteur inter, FILE* fp)
     inter->mode=INTERACTIF;
     return CMD_OK_RETURN_VALUE;
 }
+
+/** RUNCMD
+ * fonction qui lance le microprocesseur après avoir chargé PC 
+ * @param address l'adresse à charger dans PC pour démarrer 
+ * @param tab_reg le tableau de registres
+ * @param vmem la mémoire contenant le code assembleur (dans .text)
+ * @return 0 si réussi, 1 si fail
+ */
+int _runcmd(char* address, reg* tab_reg, mem vmem)
+{
+    WARNING_MSG("Fonction non implémentée");
+    return CMD_OK_RETURN_VALUE;
+}
