@@ -1,0 +1,43 @@
+	5.2.3 : (p. 39)
+	lecture :
+			run
+set
+set into
+break
+
+	exe :
+run
+set
+set into
+break
+
+	3.4.2 : (p. 23-25) 
+BEQ
+BNE
+BGEZ
+BGTZ
+BLEZ
+BLTZ
+J
+JAL
+JALR
+JR
+BREAK
+SYSCALL
+
+
+B???
+J/JAL
+LW/SW
+
+incrémentation du PC 
+
+
+.c à travailler :
+fonct_gestion.c 
+cmd_gestion.c
+
+liste.c
+
+disasm.c 
+instruction.c
