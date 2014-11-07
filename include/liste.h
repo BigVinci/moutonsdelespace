@@ -20,13 +20,15 @@
 #include "common/interpreteur.h"
 
 typedef struct maillon {char* data; struct maillon* suiv;} MAILLON;
-typedef MAILLON* liste;
+typedef MAILLON* Liste;
 
-liste init_liste();
-void suppr_liste(liste l);
+Liste init_liste();
+int vide_liste(Liste L);
+void suppr_liste(Liste L);
 
-liste suppr_bp(liste l, char* adress);
-liste add_bp(liste l, char* adress);
-void disp_bp(liste l);
+Liste suppr_bp(Liste L, char* adress);
+Liste add_bp(Liste L, char* adress);
+void disp_bp(Liste L);
+int absent_bp(Liste L, char* adress);
 
 #endif /* _LISTE_H_ */
