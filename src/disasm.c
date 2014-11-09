@@ -37,8 +37,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
     if (((addr_start-vmem->seg[0].start._32)%4)!=0) // on doit commencer au début d'une instruction
     {
-        WARNING_MSG("Cette adresse n'est pas valide. Veuillez indiquer l'adresse de début d'une instruction");
-        return 1;
+        addr_start-vmem->seg[0].start._32=(addr_start-vmem->seg[0].start._32+((addr_start-vmem->seg[0].start._32)%4));
     }
 
     if (addr_end > (vmem->seg[0].start._32+vmem->seg[0].size._32)) // on doit finir dans le .text
@@ -73,13 +72,13 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 	if (j!=0) // erreur dans disasm
 	{
 	    WARNING_MSG("La fonction disasm a retourné une erreur, arrêt du désassemblage");
-            return 1;
+        return 1;
 	}
 
 	if (k!=0) // erreur dans realise_instr
 	{
 	    WARNING_MSG("La fonction realise_instr a retourné une erreur, arrêt du désassemblage");
-            return 1;
+        return 1;
 	}
 
 	i+=4;

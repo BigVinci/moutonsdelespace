@@ -45,39 +45,39 @@ Liste suppr_liste(Liste L)
  * @param adress indique l'adresse qui doit être supprimé de la liste des breakpoint
  * @return la liste sans l'élément à supprimer
  */
-Liste suppr_bp(Liste L, char* adress)
+Liste suppr_bp(Liste L, unsigned int adress)
 {
     if (est_vide(L)) // si la liste est vide
     {
-    printf("Cette liste est déjà vide.\n");
-    return L;
+        printf("Cette liste est déjà vide.\n");
+        return L;
     }
 
     Liste L1=init_liste();
     L1=calloc(1, sizeof(Liste));
     L1=L; // permet de ne pas perdre les éléments avant adress
 
-    if (strcmp(L->data, adress)==0) // si l'élément à supprimer est le premier
+    if (L->data==adress) // si l'élément à supprimer est le premier
     {
         if (L->suiv != NULL) return L->suiv; // on le supprime en débutant la liste par le deuxième élément s'il existe
-    else return NULL;            // sinon cela revient à supprimer la liste 
+        else return NULL;            // sinon cela revient à supprimer la liste 
     }        
 
 // si l'élément à supprimer n'est pas le premier 
     if (L->suiv==NULL) // l'élément n'existe pas dans la liste
     {
-    printf("L'élément ne peut être supprimé car il n'est pas dans la liste"); 
-    return L;
+        printf("L'élément ne peut être supprimé car il n'est pas dans la liste"); 
+        return L;
     } 
 
     while(L->suiv!=NULL)
     {
-        if (strcmp(L->suiv->data, adress)!=0) L=L->suiv; // on cherche l'élément à supprimer
-    else                         // on a trouvé l'élément à supprimer
-    {
-        if (L->suiv->suiv != NULL) L->suiv=L->suiv->suiv; // cas où l'élément n'est pas le dernier de la liste
-        else L->suiv=NULL;                    // cas où l'élément est le dernier de la liste
-    }                        
+        if (L->suiv->data!=adress) L=L->suiv; // on cherche l'élément à supprimer
+        else                         // on a trouvé l'élément à supprimer
+        {
+            if (L->suiv->suiv != NULL) L->suiv=L->suiv->suiv; // cas où l'élément n'est pas le dernier de la liste
+            else L->suiv=NULL;                    // cas où l'élément est le dernier de la liste
+        }                        
     }
 
     return L1;
@@ -91,67 +91,67 @@ Liste suppr_bp(Liste L, char* adress)
  * @param adress indique l'adresse qui doit être ajouté à la liste des breakpoint
  * @return la liste une fois l'élément ajouté
  */
-Liste add_bp(Liste L, char* adress)
+Liste add_bp(Liste L, unsigned int adress)
 {
     if (est_vide(L)) // si la liste est vide
     {
-    L=calloc(1, sizeof(Liste));
-        L->data=strdup(adress);
+        L=calloc(1, sizeof(Liste));
+        L->data=adress;
         L->suiv=NULL;
     }
 
     if (absent_bp(L, adress)) // si la liste n'est pas vide & l'élément n'est pas présent dans la liste 
     {
         Liste p=init_liste(); // Liste qui permet de se déplacer de maillon en maillon sans toucher à L
-    p=calloc(1, sizeof(Liste));
+        p=calloc(1, sizeof(Liste));
         p=L; 
 
         Liste L1=init_liste(); // Futur maillon à ajouter à la liste
         L1=calloc(1, sizeof(Liste));
-    L1->data=strdup(adress); 
+        L1->data=adress; 
 
-    int* i; int* j; int* k;
-    i = calloc(1, sizeof(int)); j = calloc(1, sizeof(int)); k = calloc(1, sizeof(int));
-    sscanf(p->data, "%x", &i); sscanf(adress, "%x", &j);  // permet de comparer les deux valeurs numériques
+        int* i; int* j; int* k;
+        i = calloc(1, sizeof(int)); j = calloc(1, sizeof(int)); k = calloc(1, sizeof(int));
+        i=p->data; j=adress;  // permet de comparer les deux valeurs numériques
 
-    if (p->suiv !=NULL) sscanf(p->suiv->data, "%x", &k); // on vérifie qu'il y ait plus strictement de un élément
-    else 
-    {
-        if (i<j) {p->suiv=L1; return L;}    // on rajoute l'élément en seconde position (ie la fin dans ce cas particulier)
-        else {L1->suiv=p; L=L1; return L;}  // on ajoute l'élément en première position
-    }
+        if (p->suiv !=NULL) k=p->suiv->data; // on vérifie qu'il y ait plus strictement de un élément
+        else 
+        {
+            if (i<j) {p->suiv=L1; return L;}    // on rajoute l'élément en seconde position (ie la fin dans ce cas particulier)
+            else {L1->suiv=p; L=L1; return L;}  // on ajoute l'élément en première position
+        }
 
-// cas où il y a au moins deux éléments dans la liste
-    if (j<i) // ajout en tête 
-    {
-        L1->suiv=L;
-        return L1;
-    }
+    // cas où il y a au moins deux éléments dans la liste
+        if (j<i) // ajout en tête 
+        {
+            L1->suiv=L;
+            return L1;
+        }
 
-    if (j<k && i<j) // ajout en seconde position 
-    {
-        L1->suiv=p->suiv;
+        if (j<k && i<j) // ajout en seconde position 
+        {
+            L1->suiv=p->suiv;
             p->suiv=L1;
-        return L;
-    }
+            return L;
+        }
 
         while(k<j && p->suiv !=NULL) // ajout autre position
         {
             p=p->suiv;
-        if (p->suiv!=NULL) sscanf(p->suiv->data, "%x", &k); // on check l'élément suivant
+            if (p->suiv!=NULL) k=p->suiv->data; // on check l'élément suivant
         }
 
         // on se situe sur le maillon d'élément inférieur à adress et dont le suivant est supérieur à adress
         if (p->suiv != NULL) // cas où k>j
-    {
-        L1->suiv=p->suiv;
+        {
+            L1->suiv=p->suiv;
             p->suiv=L1;
-    }
-    else // si on ajoute un élément à la fin de la liste
-    {
-        L1->suiv=NULL;
-        p->suiv=L1; 
-    }
+        }
+        else // si on ajoute un élément à la fin de la liste
+        {
+            L1->suiv=NULL;
+            p->suiv=L1; 
+        }
     }
 
     return L;
@@ -190,15 +190,15 @@ void disp_bp(Liste L)
  * @param adress l'élément à rechercher dans la liste
  * @return 1 si absent, 0 si présent
  */
-int absent_bp(Liste L, char* adress)
+int absent_bp(Liste L, unsigned int adress)
 {
     if (est_vide(L)) return 1;
-    if (strcmp(L->data, adress)==0) return 0; 
+    if (L->data==adress) return 0; 
 
     while (L->suiv!=NULL)
     {
-    L=L->suiv;
-    if (strcmp(L->data, adress)==0) return 0;
+        L=L->suiv;
+        if (L->data==adress) return 0;
     }
 
     return 1;

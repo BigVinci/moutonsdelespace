@@ -935,7 +935,7 @@ void debugcmd(interpreteur inter, FILE* fp)
 	return;
 }
 
-/** 
+/** 
  * BREAKCMD
  * commande qui met un point d'arrêt à une ou plusieurs adresses
  * @param inter l'interpreteur qui demande l'analyse

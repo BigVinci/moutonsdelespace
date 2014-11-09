@@ -42,6 +42,7 @@ typedef struct registre
 
 #endif /* _REG_ */
 
+enum {NOT_S, RUN, PAUSE, TERM} STATE;
 
 int _testcmd(int hexValue);
 
@@ -61,7 +62,7 @@ int _assert_wordcmd(uint32_t adress, int valeur, mem vmem);
 
 int _debugcmd(interpreteur inter, FILE* fp);
 int _resumecmd(interpreteur inter, FILE* fp);
-
 int _runcmd(char* address, reg* tab_reg, mem vmem);
+int machine_state(interpreteur inter, reg* tab_reg, mem vmem);
 
 #endif /* _CMD_GESTION_H_ */

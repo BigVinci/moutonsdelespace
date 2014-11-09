@@ -19,16 +19,16 @@
 
 #include "common/interpreteur.h"
 
-typedef struct maillon {char* data; struct maillon* suiv;} MAILLON;
+typedef struct maillon {unsigned int data; struct maillon* suiv;} MAILLON;
 typedef MAILLON* Liste;
 
 Liste init_liste();
 int vide_liste(Liste L);
 void suppr_liste(Liste L);
 
-Liste suppr_bp(Liste L, char* adress);
-Liste add_bp(Liste L, char* adress);
+Liste suppr_bp(Liste L, unsigned int adress);
+Liste add_bp(Liste L, unsigned int adress);
 void disp_bp(Liste L);
-int absent_bp(Liste L, char* adress);
+int absent_bp(Liste L, unsigned int adress);
 
 #endif /* _LISTE_H_ */

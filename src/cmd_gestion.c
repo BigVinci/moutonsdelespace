@@ -636,3 +636,69 @@ int _runcmd(char* address, reg* tab_reg, mem vmem)
     WARNING_MSG("Fonction non implémentée");
     return CMD_OK_RETURN_VALUE;
 }
+
+
+/** MACHINE_STATE
+ * fonction qui décrit la machine à état relative au désassemblage
+ * @param cmd la commande qui permet de démarrer la fonction (run, step ou step into)
+ * @param address l'adresse à charger dans PC pour démarrer 
+ * @param BP la liste des breakpoints
+ * @param tab_reg le tableau de registres
+ * @param vmem la mémoire contenant le code assembleur (dans .text)
+ * @return 0 si réussi, 1 si fail
+ */
+int machine_state(char* cmd, char* address, Liste BP, reg* tab_reg, mem vmem)
+{
+    STATE s=NOT_S;
+    unsigned int PC; sscanf(address, "%x", &PC);
+    int i;
+    
+    char* instruction=calloc(1, sizeof(char));
+
+    while (1)
+    {
+        switch (s)
+        case NOT_S :
+            if (strcmp(cmd, "run")==0) 
+                s=RUN;
+            else if (strcmp(cmd, "step")==0)
+            {
+                s=RUN;
+                BP=add_bp(BP, PC+4);
+            }
+            break;
+        case RUN :
+            i=_disasm_range_offsetcmd(PC, 0, vmem, tab_reg); // exécute la fonction
+            if (i==1) s=TERM; // en cas d'erreur dans la fonction disasm
+            else if (absent_bp(BP, PC+4)==0) s=PAUSE; // si l'adresse suivante est un breakpoint, on s'arrête avant l'exécution de celle-ci
+            else if (PC>(vmem->seg[0].start._32+vmem->seg[0].size._32)) s=TERM;
+            PC+=4; // on passe à la ligne à désassembler suivante 
+            break;
+        case PAUSE :
+            scanf("%s", instruction);
+            if (strcmp(instruction, "run")==0) 
+                s=RUN;
+            else if (strcmp(instruction, "step")==0)
+            {
+                s=RUN;
+                BP=add_bp(BP, PC+4);
+            }
+            else if (strcmp(instruction, "step into")==0)
+            {
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP");
+                s=RUN;
+                BP=add_bp(BP, PC+4);
+            }
+            else if (strcmp(instruction, "exit")==0)
+                s=TERM;
+            break; 
+        case TERM :
+            printf("Le désassemblage est terminé.\n");
+            return CMD_OK_RETURN_VALUE;
+            break;
+        default :
+            printf("Le désassemblage ne s'est pas déroulé comme prévu.\n");
+            return 1;
+            break;
+    }
+}
