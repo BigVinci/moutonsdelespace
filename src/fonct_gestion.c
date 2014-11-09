@@ -938,8 +938,8 @@ void debugcmd(interpreteur inter, FILE* fp)
 /** 
  * BREAKCMD
  * commande qui met un point d'arrêt à une ou plusieurs adresses
- * @param inter l'interpreteur qui demande l'analyse
- * @param tab_reg le tableau de registres
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
  * @param vmem la mémoire contenant le code assembleur (dans .text)
  * @return 0 si réussi, 1 si fail
  */
@@ -956,26 +956,47 @@ int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
 /** 
  * STEPCMD
  * commande qui provoque l'exécution d'une ou plusieurs instructions après avoir ajouté un breakpoint
- * @param inter l'interpreteur qui demande l'analyse
- * @param tab_reg le tableau de registres
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
  * @param vmem la mémoire contenant le code assembleur (dans .text)
  * @return 0 si réussi, 1 si fail
  */
 int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
 {
     DEBUG_MSG("Command step");
-//    char* token1=get_next_token(inter);
+    char* token1=get_next_token(inter);
+    char* token2=NULL;
 
-    WARNING_MSG("Fonction non implémentée");
-    return CMD_OK_RETURN_VALUE;
+    if (token1==NULL) // instruction STEP
+    {
+        return _machine_statecmd("step", tab_reg[32]->data, inter->BP, tab_reg, vmem);
+    }
+
+    else 
+    {
+        if(token2=get_next_token(inter)!=NULL || strcmp(token1, "into")!=0)
+        {
+            WARNING_MSG("Too many arguments to the command STEP (INTO)");
+            return 1;
+        }
+
+        else if (strcmp(token1, "into")==0) // instruction STEP INTO
+        {
+            WARNING_MSG("Fonction non implémentée. Exécution de la fonction STEP");
+            return _machine_statecmd("step", tab_reg[32]->data, inter->BP, tab_reg, vmem);
+        }
+    }
+
+    WARNING_MSG("La commande n'a pas fonctionné");
+    return 1;
 }
 
 
 /** 
  * RUNCMD
  * commande qui lance le microprocesseur après avoir chargé PC 
- * @param inter l'interpreteur qui demande l'analyse
- * @param tab_reg le tableau de registres
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
  * @param vmem la mémoire contenant le code assembleur (dans .text)
  * @return 0 si réussi, 1 si fail
  */
@@ -985,22 +1006,26 @@ int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
     char* token1=get_next_token(inter);
     char* token2=NULL;
 
+    if (strcmp(tab_reg[32]->data,"0")==0) 
+        sprintf(tab_reg[32]->data, "%u", vmem->seg[0].start._32); // on initialise PC au début du point .text si il n'a pas encore été initialisé
+
     if (token1==NULL) // si l'adresse est omise, on démarre à l'adresse courante du PC
     {
-	return _runcmd(tab_reg[32]->data, tab_reg, vmem);
+	   return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem);
     }
 
     if ((token2=get_next_token(inter))!=NULL) // on vérifie qu'il n'y ait pas trop d'arguments
     {
-	WARNING_MSG("Too many arguments givent to command %s %s","run", token1);
-	return 1;
+	   WARNING_MSG("Too many arguments givent to command %s %s","run", token1);
+	   return 1;
     }
 
     if (get_type(token1)!=HEXA)
     {
-	WARNING_MSG("%s is not a valid argument for %s, expecting an adress",token1, "run cmd");
-	return 1;
+	   WARNING_MSG("%s is not a valid argument for %s, expecting an adress",token1, "run cmd");
+	   return 1;
     }
 
-    return _runcmd(token1, tab_reg, vmem); 
+    tab_reg[32]->data=token1; // on initialise PC à la valeur précisée par l'utilisateur
+    return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem); 
 }

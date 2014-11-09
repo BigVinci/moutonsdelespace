@@ -624,36 +624,27 @@ int _debugcmd(interpreteur inter, FILE* fp)
     return CMD_OK_RETURN_VALUE;
 }
 
-/** RUNCMD
- * fonction qui lance le microprocesseur après avoir chargé PC 
- * @param address l'adresse à charger dans PC pour démarrer 
- * @param tab_reg le tableau de registres
- * @param vmem la mémoire contenant le code assembleur (dans .text)
- * @return 0 si réussi, 1 si fail
- */
-int _runcmd(char* address, reg* tab_reg, mem vmem)
-{
-    WARNING_MSG("Fonction non implémentée");
-    return CMD_OK_RETURN_VALUE;
-}
-
 
 /** MACHINE_STATE
  * fonction qui décrit la machine à état relative au désassemblage
  * @param cmd la commande qui permet de démarrer la fonction (run, step ou step into)
  * @param address l'adresse à charger dans PC pour démarrer 
- * @param BP la liste des breakpoints
+ * @param L la liste des breakpoints issue de l'interpréteur
  * @param tab_reg le tableau de registres
  * @param vmem la mémoire contenant le code assembleur (dans .text)
  * @return 0 si réussi, 1 si fail
  */
-int machine_state(char* cmd, char* address, Liste BP, reg* tab_reg, mem vmem)
+int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem)
 {
+    DEBUG_MSG("Lancement de la machine à état.");
     STATE s=NOT_S;
     unsigned int PC; sscanf(address, "%x", &PC);
     int i;
     
     char* instruction=calloc(1, sizeof(char));
+    Liste BP=init_liste(); // on crée la liste de breakpoint
+    BP=calloc(1, sizeof(Liste));
+    BP=*L;
 
     while (1)
     {
@@ -694,9 +685,11 @@ int machine_state(char* cmd, char* address, Liste BP, reg* tab_reg, mem vmem)
             break; 
         case TERM :
             printf("Le désassemblage est terminé.\n");
+            *L=BP; // on conserve la liste de breakpoint modifiée
             return CMD_OK_RETURN_VALUE;
             break;
         default :
+            // on ne modifie pas la liste de breakpoint en entrée car il y a eu une erreur
             printf("Le désassemblage ne s'est pas déroulé comme prévu.\n");
             return 1;
             break;

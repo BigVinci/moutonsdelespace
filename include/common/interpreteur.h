@@ -38,6 +38,7 @@ typedef struct {
     char * from;
     char first_token;
     FILE* file;
+    Liste* BP;
 } *interpreteur;
 
 
