@@ -18,7 +18,10 @@
 #include "../reg.h"
 
 #include "interpreteur.h"
+<<<<<<< HEAD
 #include "instruction.h"
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 typedef struct definition {int nb_op; char type[100]; char name[100]; int sign; int masque; char op_mapping[100][100];} def; //Structure correspondant à une définition du dictionnaire
 typedef struct instr {def definition; char code[100];} instruction; // structure correspondant à une instruction
@@ -31,6 +34,10 @@ union inst_poly { R_TYPE r; I_TYPE i; J_TYPE j; unsigned int code;}; //Union rel
 
 int _disasm_range_hexacmd(char* addrValue1, char* addrValue2, mem vmem, reg* tab_reg);
 int _disasm_range_offsetcmd(char* addrValue1, int offsetValue, mem vmem, reg* tab_reg);
+<<<<<<< HEAD
+=======
+int disasm(def*nom, char*code, char*adress, reg*tab_reg);
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 def* mem_dico(char*nom);
 
@@ -38,7 +45,11 @@ int if_j_type(unsigned int code_instr);
 int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
 int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
 def trouve_def(char*code, def*tab_instr);
+<<<<<<< HEAD
 int disasm(char*code, def*tab_instr, reg*tab_reg,char*adress, char** name, OP_VAL* opvalue);
+=======
+int affiche_instruction(char*code, def*tab_instr, reg*tab_reg,char*adress);
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 
 

@@ -11,7 +11,11 @@
  */
 int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 {
+<<<<<<< HEAD
     int no_args=1, i=0, j=0, k=0;
+=======
+    int no_args=1, i=0, j=0;
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     uint32_t addrreelle;
 
     int* value1=calloc(1, sizeof(int)); int* value2=calloc(1, sizeof(int));
@@ -22,9 +26,12 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
     int addr_end2=(vmem->seg[1].start._32+vmem->seg[1].size._32);
     char* contenu=calloc(1, sizeof(char));
 
+<<<<<<< HEAD
     OP_VAL* opvalue=init_opvalue();
     char** vname=calloc(1, sizeof(char*)); *vname=calloc(1, sizeof(char));
 
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     if (addr_start < 4096) {addr_start=4096; strcpy(addr1, "0x1000");} // on vérifie que l'adresse de départ est bien dans le .text
     if (addr_end < 4096) {addr_end=4096; strcpy(addr2, "0x1000");} // on vérifie que l'adresse de fin est bien dans le .text
     if (addr_end > addr_end2) {addr_end=addr_end2;} // on vérifie que l'adresse de fin est bien dans le .text
@@ -37,12 +44,22 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
     if (((addr_start-vmem->seg[0].start._32)%4)!=0) // on doit commencer au début d'une instruction
     {
+<<<<<<< HEAD
         addr_start=(addr_start + ((addr_start-vmem->seg[0].start._32)%4)); // si on débute au milieu d'une instruction, on débute à la suivante
+=======
+        WARNING_MSG("Cette adresse n'est pas valide. Veuillez indiquer l'adresse de début d'une instruction");
+        return 1;
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     if (addr_end > (vmem->seg[0].start._32+vmem->seg[0].size._32)) // on doit finir dans le .text
     {
+<<<<<<< HEAD
         addr_end=(vmem->seg[0].start._32+vmem->seg[0].size._32);
+=======
+        WARNING_MSG("Cette adresse n'est pas valide. Veuillez indiquer une adresse de fin appartenant au .text");
+        return 1;
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     def* dico=mem_dico("dico_instr.txt");
@@ -65,13 +82,18 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 	    sprintf(contenu, "%x", *a); // on converti la valeur de l'octet ciblé en char*
 
 
+<<<<<<< HEAD
 	j=disasm(contenu, dico, tab_reg, addr1, vname, opvalue);
 	
 	k=realise_instr(opvalue, vname, tab_reg);      
+=======
+	j=disasm(contenu, dico, tab_reg, addr1);
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 	if (j!=0) // erreur dans disasm
 	{
 	    WARNING_MSG("La fonction disasm a retourné une erreur, arrêt du désassemblage");
+<<<<<<< HEAD
         return 1;
 	}
 
@@ -79,6 +101,9 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 	{
 	    WARNING_MSG("La fonction realise_instr a retourné une erreur, arrêt du désassemblage");
         return 1;
+=======
+            return 1;
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 	}
 
 	i+=4;
@@ -168,7 +193,11 @@ def* mem_dico(char*nom)
  * @param code_instr contient le code hexa de l'instruction
  * @return 0 
  */
+<<<<<<< HEAD
 int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est pas en paramètre, car ici pas besoin de op_mapping
+=======
+int if_j_type(unsigned int code_instr) // l'instruction n'est pas en paramètre, car ici pas besoin de op_mapping
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 {
     union inst_poly inst;
     inst.code=code_instr; //on initialise l'union
@@ -176,8 +205,13 @@ int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est p
     int target_j=inst.j.target;
     //on récupère la valeur de "target" et on l'affiche
 
+<<<<<<< HEAD
     printf(" %d \n",target_j);
     opvalue->target=target_j;
+=======
+    printf(" %d ",target_j);
+    printf("\n");
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -189,7 +223,11 @@ int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est p
  * @param tab_reg indique le tableau de registres
  * @return 0 si réussi, 1 si fail
  */
+<<<<<<< HEAD
 int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue)
+=======
+int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
@@ -210,26 +248,38 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
         {   
 	    reg=(tab_reg[rs_i]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[rs_i]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else if(strcmp(s,"rt")==0)
         {   
 	    reg=(tab_reg[rt_i]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[rt_i]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else if(strcmp(s,"immediate")==0)
         {
             printf(" %d", immediate);
+<<<<<<< HEAD
 	    opvalue->immediate=immediate;
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else if(strcmp(s,"offset")==0)
         {
             printf(" %d", offset); //ce n'est pas immediate ici, mais ça correspond au nombre contenu dans "immediate"
+<<<<<<< HEAD
 	    opvalue->offset=offset;
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else
@@ -239,7 +289,10 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
         }
     }
     printf("\n");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -251,7 +304,11 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
  * @param tab_reg indique le tableau de registres
  * @return 0 si réussi, 1 si fail
  */
+<<<<<<< HEAD
 int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue)
+=======
+int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg)
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
@@ -274,28 +331,40 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
         {   
 	    reg=(tab_reg[rs_r]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[rs_r]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else if(strcmp(s,"rt")==0)
         {   
 	    reg=(tab_reg[rt_r]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[rt_r]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else  if(strcmp(s,"rd")==0)
         {   
 	    reg=(tab_reg[rd_r]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[rd_r]->data, "%d", &(opvalue->rd)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else if(strcmp(s,"sa")==0)
         {   
 	    reg=(tab_reg[sa_r]->mnemo);
             printf(" %s", reg);
+<<<<<<< HEAD
 	    sscanf(tab_reg[sa_r]->data, "%d", &(opvalue->sa)); // on renvoie la donnée data dans opvalue sous forme d'entier
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
         }
 
         else
@@ -320,7 +389,11 @@ def trouve_def(char*code, def*tab_instr)
     int code_int=0; int i=0; int sign_code=0;
     sscanf(code,"%x",&code_int); //on transforme le code en entier hexadecimal
 
+<<<<<<< HEAD
     for(i=0; i<40; i++) // mettre 46 plus tard 
+=======
+    for(i=0; i<40; i++)
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     {
         sign_code=code_int&(tab_instr[i].masque); //on applique le masque pour chaque ligne du dictionnaire
         if((tab_instr[i].sign)==sign_code) //on compare les signatures obtenues avec celles du dictionnaire
@@ -342,7 +415,11 @@ def trouve_def(char*code, def*tab_instr)
  * @param adress indique l'adresse virtuelle de l'instruction
  * @return 0 si réussi, 1 si fail
  */
+<<<<<<< HEAD
 int disasm(char* code, def* tab_instr, reg* tab_reg, char* adress, char** name, OP_VAL* opvalue)
+=======
+int disasm(char* code, def* tab_instr, reg*tab_reg,char*adress)
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 { 
     instruction int_t;
     int adresse_virtuelle=0;
@@ -352,24 +429,39 @@ int disasm(char* code, def* tab_instr, reg* tab_reg, char* adress, char** name, 
     (int_t.definition)=trouve_def(code, tab_instr);
     printf("%x :: %s",adresse_virtuelle ,int_t.definition.name  ); // affiche l'adresse virtuelle et le nom
 
+<<<<<<< HEAD
     strcpy(*name, int_t.definition.name); 
 
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     unsigned int code_instr=0;
     sscanf(code,"%x", &code_instr);
 
     if(strcmp(int_t.definition.type,"R")==0)
     {
+<<<<<<< HEAD
   	return if_r_type(code_instr,int_t,tab_reg, opvalue); // si RTYPE renvoi vers la fonction d'affichage RTYPE
+=======
+  	return if_r_type(code_instr,int_t,tab_reg); // si RTYPE renvoi vers la fonction d'affichage RTYPE
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     else if(strcmp(int_t.definition.type,"I")==0)
     {
+<<<<<<< HEAD
    	return if_i_type(code_instr,int_t,tab_reg, opvalue); // si ITYPE renvoi vers la fonction d'affichage ITYPE
+=======
+   	return if_i_type(code_instr,int_t,tab_reg); // si ITYPE renvoi vers la fonction d'affichage ITYPE
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     else if (strcmp(int_t.definition.type,"J")==0)
     {
+<<<<<<< HEAD
   	return  if_j_type(code_instr, opvalue); // si JTYPE renvoi vers la fonction d'affichage JTYPE
+=======
+  	return  if_j_type(code_instr); // si JTYPE renvoi vers la fonction d'affichage JTYPE
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     else

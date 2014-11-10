@@ -12,7 +12,10 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "notify.h"
 
+<<<<<<< HEAD
 #include "../liste.h"
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 /* taille max pour nos chaines de char */
 #define MAX_STR 1024
@@ -28,7 +31,11 @@ Toute autre valeur signifie qu'une erreur est survenue
 #define CMD_UNKOWN_RETURN_VALUE -2
 
 /* mode d'interaction avec l'interpreteur (exemple)*/
+<<<<<<< HEAD
 typedef enum {INTERACTIF,SCRIPT} inter_mode;
+=======
+typedef enum {INTERACTIF,SCRIPT,DEBUG_MODE} inter_mode;
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 /* structure passee en parametre qui contient la connaissance de l'état de
  * l'interpreteur
@@ -39,7 +46,10 @@ typedef struct {
     char * from;
     char first_token;
     FILE* file;
+<<<<<<< HEAD
     Liste* BP;
+=======
+>>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 } *interpreteur;
 
 
