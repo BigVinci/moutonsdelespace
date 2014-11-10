@@ -17,14 +17,12 @@
 #include "mem.h"
 #include "reg.h"
 
-#include "common/interpreteur.h"
-
 typedef struct maillon {unsigned int data; struct maillon* suiv;} MAILLON;
 typedef MAILLON* Liste;
 
 Liste init_liste();
 int vide_liste(Liste L);
-void suppr_liste(Liste L);
+Liste suppr_liste(Liste L);
 
 Liste suppr_bp(Liste L, unsigned int adress);
 Liste add_bp(Liste L, unsigned int adress);

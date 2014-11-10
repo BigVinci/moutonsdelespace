@@ -13,11 +13,11 @@ Liste init_liste()
 
 
 /** 
- * EST_VIDE
+ * VIDE_LISTE
  * commande qui vérifie si une liste est vide
  * @return un positif si vide, 0 si non vide
  */
-int est_vide(Liste L)
+int vide_liste(Liste L)
 {
     return !L;
 }
@@ -30,9 +30,9 @@ int est_vide(Liste L)
  */
 Liste suppr_liste(Liste L)
 {
-    if (!est_vide(L)) // si la liste n'est pas vide
+    if (!vide_liste(L)) // si la liste n'est pas vide
     {
-    return NULL;
+        return NULL;
     }
     return L;
 }
@@ -47,7 +47,7 @@ Liste suppr_liste(Liste L)
  */
 Liste suppr_bp(Liste L, unsigned int adress)
 {
-    if (est_vide(L)) // si la liste est vide
+    if (vide_liste(L)) // si la liste est vide
     {
         printf("Cette liste est déjà vide.\n");
         return L;
@@ -93,7 +93,7 @@ Liste suppr_bp(Liste L, unsigned int adress)
  */
 Liste add_bp(Liste L, unsigned int adress)
 {
-    if (est_vide(L)) // si la liste est vide
+    if (vide_liste(L)) // si la liste est vide
     {
         L=calloc(1, sizeof(Liste));
         L->data=adress;
@@ -110,11 +110,11 @@ Liste add_bp(Liste L, unsigned int adress)
         L1=calloc(1, sizeof(Liste));
         L1->data=adress; 
 
-        int* i; int* j; int* k;
-        i = calloc(1, sizeof(int)); j = calloc(1, sizeof(int)); k = calloc(1, sizeof(int));
-        i=p->data; j=adress;  // permet de comparer les deux valeurs numériques
+        unsigned int* i; unsigned int* j; unsigned int* k;
+        i = calloc(1, sizeof(unsigned int)); j = calloc(1, sizeof(unsigned int)); k = calloc(1, sizeof(unsigned int));
+        *i=(p->data); *j=adress;  // permet de comparer les deux valeurs numériques
 
-        if (p->suiv !=NULL) k=p->suiv->data; // on vérifie qu'il y ait plus strictement de un élément
+        if (p->suiv !=NULL) *k=p->suiv->data; // on vérifie qu'il y ait plus strictement de un élément
         else 
         {
             if (i<j) {p->suiv=L1; return L;}    // on rajoute l'élément en seconde position (ie la fin dans ce cas particulier)
@@ -138,7 +138,7 @@ Liste add_bp(Liste L, unsigned int adress)
         while(k<j && p->suiv !=NULL) // ajout autre position
         {
             p=p->suiv;
-            if (p->suiv!=NULL) k=p->suiv->data; // on check l'élément suivant
+            if (p->suiv!=NULL) *k=p->suiv->data; // on check l'élément suivant
         }
 
         // on se situe sur le maillon d'élément inférieur à adress et dont le suivant est supérieur à adress
@@ -165,7 +165,7 @@ Liste add_bp(Liste L, unsigned int adress)
  */
 void disp_bp(Liste L)
 {
-    if (est_vide(L))
+    if (vide_liste(L))
     {
     printf("La liste est vide.\n");
     return;
@@ -174,12 +174,13 @@ void disp_bp(Liste L)
     Liste p=init_liste();
     p=calloc(1, sizeof(Liste));
     p=L;
-    printf("%s\n", p->data); // la liste n'est pas vide
+    printf("Visualiser de la liste de breakpoint : \n %u ", p->data); // la liste n'est pas vide
     while (p->suiv!=NULL)
     {
         p=p->suiv;
-        printf("%s\n", p->data);
+        printf("%u ", p->data);
     }
+    printf("\n");
 }
 
 
@@ -192,7 +193,7 @@ void disp_bp(Liste L)
  */
 int absent_bp(Liste L, unsigned int adress)
 {
-    if (est_vide(L)) return 1;
+    if (vide_liste(L)) return 1;
     if (L->data==adress) return 0; 
 
     while (L->suiv!=NULL)

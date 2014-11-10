@@ -37,7 +37,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
     if (((addr_start-vmem->seg[0].start._32)%4)!=0) // on doit commencer au début d'une instruction
     {
-        addr_start-vmem->seg[0].start._32=(addr_start-vmem->seg[0].start._32+((addr_start-vmem->seg[0].start._32)%4));
+        addr_start=(addr_start + ((addr_start-vmem->seg[0].start._32)%4)); // si on débute au milieu d'une instruction, on débute à la suivante
     }
 
     if (addr_end > (vmem->seg[0].start._32+vmem->seg[0].size._32)) // on doit finir dans le .text

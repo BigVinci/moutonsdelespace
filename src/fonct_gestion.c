@@ -673,7 +673,7 @@ int assertcmd(interpreteur inter, reg* tab, mem vmem)
 	if ((token1=get_next_token(inter))==NULL) 
 	{
 	    WARNING_MSG("no argument given to command %s, expecting 'reg' , 'word' or 'byte'","assertcmd");
-            return 1;
+        return 1;
 	}
 /* on test si l'argument suivant assert est bien un des arguments attendus */
     	if (strcmp(token1, "reg")!=0 && strcmp(token1, "word")!=0 && strcmp(token1, "byte")!=0)
@@ -926,10 +926,10 @@ void debugcmd(interpreteur inter, FILE* fp)
     char* token1=get_next_token(inter);
 	if(token1!=NULL)
 	{
-    	    {
-		WARNING_MSG("Too many argument in this command");
-		return;
-            }
+    	{
+		  WARNING_MSG("Too many argument in this command");
+		  return;
+        }
 	}
 	_debugcmd(inter, fp);
 	return;
@@ -946,10 +946,85 @@ void debugcmd(interpreteur inter, FILE* fp)
 int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
 {
     DEBUG_MSG("Command break");
-//    char* token1=get_next_token(inter);
+    char* token1=get_next_token(inter); char* token2=NULL;
+    int address=0;
+    unsigned int BP;
 
-    WARNING_MSG("Fonction non implémentée");
-    return CMD_OK_RETURN_VALUE;
+    if (token1==NULL)
+    {
+        WARNING_MSG("no argument given to command %s, expecting 'add' , 'del' or 'list'","break");
+        return 1;
+    }
+
+    if (strcmp(token1, "add")==0)
+    {
+        while ((token2=get_next_token(inter))!=NULL)
+        {
+            address=1;
+
+            if (get_type(token2)!=HEXA) // on vérifie que l'on a bien une adresse
+            {
+                WARNING_MSG("%s if not a valid argument to command %s %s, expecting an address",token2, "break", token1);
+                return 1;  
+            }
+
+            sscanf(token2, "%x", &BP);
+            *(inter->BP)=add_bp(*(inter->BP), BP); // on rajoute chaque élément précisé
+        }
+
+        if (address==0) // s'il n'y a aucun argument après "add"
+        {
+            WARNING_MSG("no argument given to command %s %s, expecting an address","break", token1);
+            return 1;  
+        }
+
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    else if (strcmp(token1, "del")==0)
+    {
+        while ((token2=get_next_token(inter))!=NULL)
+        {
+            address=1;
+
+            if (get_type(token2)!=HEXA && strcmp(token2, "all")!=0) // on vérifie que l'on a bien une adresse ou le mot "all"
+            {
+                WARNING_MSG("%s if not a valid argument to command %s %s, expecting an address or 'all' ",token2, "break", token1);
+                return 1;  
+            }
+
+            if (strcmp(token2, "all")==0) // si la commande entrée est break del all
+                suppr_liste(*(inter->BP)); // on supprime tous les breakpoints
+            else if (get_type(token2)==HEXA)
+            {
+                sscanf(token2, "%x", &BP);
+                *(inter->BP)=suppr_bp(*(inter->BP), BP); // on supprime chaque élément précisé
+            }
+        }
+
+        if (address==0) // s'il n'y a aucun argument après "add"
+        {
+            WARNING_MSG("no argument given to command %s %s, expecting an address or 'all' ","break", token1);
+            return 1;  
+        }
+
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    else if (strcmp(token1, "list")==0)
+    {
+        if((token2=get_next_token(inter))!=NULL)
+        {
+            WARNING_MSG("Too many arguments given to command %s %s","break", token1);
+            return 1; 
+        }
+
+        disp_bp(*(inter->BP));
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    WARNING_MSG("Should never be here");
+    return 1;
 }
 
 
@@ -974,7 +1049,7 @@ int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
 
     else 
     {
-        if(token2=get_next_token(inter)!=NULL || strcmp(token1, "into")!=0)
+        if((token2=get_next_token(inter))!=NULL || strcmp(token1, "into")!=0)
         {
             WARNING_MSG("Too many arguments to the command STEP (INTO)");
             return 1;
@@ -987,7 +1062,7 @@ int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
         }
     }
 
-    WARNING_MSG("La commande n'a pas fonctionné");
+    WARNING_MSG("Should never be here");
     return 1;
 }
 

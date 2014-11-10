@@ -35,7 +35,7 @@ void del_inter(interpreteur inter)
 	if (inter->file !=NULL)
     	free(inter->file);
 
-    if ( !est_vide(*(inter->BP)) )
+    if ( !vide_liste(*(inter->BP)) )
         suppr_liste(*(inter->BP));
 
     if (inter !=NULL)
