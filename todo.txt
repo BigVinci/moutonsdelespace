@@ -1,43 +1,51 @@
 	5.2.3 : (p. 39)
 	lecture :
 			run
-set
+			set
 set into
-break
+			break
 
 	exe :
-run
-set
+			run
+			set
 set into
-break
+			break list
+			break add
+			break suppr			3 - finie
 
 	3.4.2 : (p. 23-25) 
-BEQ
-BNE
-BGEZ
-BGTZ
-BLEZ
-BLTZ
-J
-JAL
-JALR
-JR
+		BEQ						2 - rien à modifier 
+		BNE	
+		BGEZ
+		BGTZ
+		BLEZ
+		BLTZ
+	J 							1 - modifiée mais à compléter également dans l'exécution
+JAL 							0 - non implémentée / étudiée
+	JALR
+		JR
 BREAK
 SYSCALL
 
+		NOP
+			MOVE
+			NEG
+			LI16
+LI32
+		BLT
 
 B???
 J/JAL
 LW/SW
 
-incrémentation du PC 
+incrémentation du PC : où ? 
 
 
-.c à travailler :
-fonct_gestion.c 
-cmd_gestion.c
+	.c à travailler :
+			fonct_gestion.c 
+			cmd_gestion.c
 
-liste.c			à vérifier !!
+			liste.c			
 
-disasm.c 
-instruction.c
+	disasm.c 
+	instruction.c

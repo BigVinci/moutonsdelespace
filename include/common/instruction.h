@@ -19,6 +19,7 @@
 
 #include "interpreteur.h"
 
+// contient les valeurs à mettre dans les registres (les valeurs sont dans rt, rs, rd, ...) et les numéros des registres à modifier (dans *_num)
 typedef struct op_val_struct {int rt; int rs; int rd; int sa; int immediate; int offset; int target; 
                               int rt_num; int rs_num; int rd_num; int sa_num; int immediate_num; int offset_num; int target_num;} OP_VAL;
 
@@ -83,7 +84,8 @@ int instr_syscall(OP_VAL* opvalue);
 int instr_nop(OP_VAL* opvalue);
 int instr_move(OP_VAL* opvalue);
 int instr_neg(OP_VAL* opvalue);
-int instr_li(OP_VAL* opvalue);
+int instr_li16(OP_VAL* opvalue);
+int instr_li32(OP_VAL* opvalue);
 int instr_blt(OP_VAL* opvalue);
 
 #endif /* _INSTRUCTION_H_ */
