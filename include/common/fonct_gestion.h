@@ -37,11 +37,8 @@ void debugcmd( interpreteur inter, FILE* fp );
 void resumecmd( interpreteur inter, FILE* fp ); 
 int assertcmd( interpreteur inter, reg* tab_reg, mem vmem );
 
-<<<<<<< HEAD
 int breakcmd( interpreteur inter, reg* tab_reg, mem vmem);
 int stepcmd( interpreteur inter, reg* tab_reg, mem vmem);
 int runcmd( interpreteur inter, reg* tab_reg, mem vmem);
 
-=======
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 #endif /* _FONCT_GESTION_ */

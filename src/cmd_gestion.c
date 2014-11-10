@@ -1,11 +1,6 @@
 #include "../include/common/cmd_gestion.h"
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 /** TEST
  * version de la commande test qui prend en entrée un hexa
  * la fonction verifie si le nombre est >=0
@@ -626,7 +621,6 @@ int _debugcmd(interpreteur inter, FILE* fp)
     inter->mode=INTERACTIF;
     return CMD_OK_RETURN_VALUE;
 }
-<<<<<<< HEAD
 
 
 /** MACHINE_STATE
@@ -707,5 +701,3 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
 	}
     }
 }
-=======
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969

@@ -15,16 +15,11 @@
 /* les différents types utiles */
 #include "types.h"
 #include "../mem.h"
-<<<<<<< HEAD
 #include "../reg.h"
 #include "../liste.h"
 
 #include "interpreteur.h"
 #include "disasm.h"
-=======
-
-#include "interpreteur.h"
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 
 /*************************************************************\
@@ -37,7 +32,6 @@ Toute autre valeur signifie qu'une erreur est survenue
 #define CMD_UNKOWN_RETURN_VALUE -2
 
 
-<<<<<<< HEAD
 /*#ifndef _REG_
 #define _REG_
 // définie la structure registre 
@@ -52,21 +46,6 @@ typedef struct registre
 #endif */ /* _REG_ */
 
 enum {NOT_S, RUN, PAUSE, TERM} STATE;
-=======
-#ifndef _REG_
-#define _REG_
-/* définie la structure registre */
-typedef struct registre
-{
-	char	*name;		/* nom du registre */ 
-	char	*mnemo;		/* second nom du registre */ 
-	vaddr32	address; 	/* adresse de destination sur 32 bits */  
-	char	*data;		/* contenu du registre sur 32 bits */
-}* reg; /* pointeur qui pointe sur un registre */ 
-
-#endif /* _REG_ */
-
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 int _testcmd(int hexValue);
 
@@ -85,13 +64,8 @@ int _assert_bytecmd(uint32_t adress, int valeur, mem vmem);
 int _assert_wordcmd(uint32_t adress, int valeur, mem vmem);
 
 int _debugcmd(interpreteur inter, FILE* fp);
-<<<<<<< HEAD
 int _resumecmd(interpreteur inter, FILE* fp);
 
 int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem);
-=======
-
-int _resumecmd(interpreteur inter, FILE* fp);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 
 #endif /* _CMD_GESTION_H_ */

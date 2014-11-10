@@ -238,7 +238,6 @@ int get_type(char* chaine) {
 
 
 /**
-<<<<<<< HEAD
  * @brief parse la chaine courante de l'interpreteur a la recherche d'une commande, et execute cette commande.
  * @param inter l'interpreteur qui demande l'analyse
  * 
@@ -247,15 +246,6 @@ int get_type(char* chaine) {
  * @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
  * @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
  */
-=======
-* @brief parse la chaine courante de l'interpreteur a la recherche d'une commande, et execute cette commande.
-* @param inter l'interpreteur qui demande l'analyse
-* @return CMD_OK_RETURN_VALUE si la commande s'est executee avec succes (0)
-* @return CMD_EXIT_RETURN_VALUE si c'est la commande exit. Dans ce cas, le programme doit se terminer. (-1)
-* @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
-* @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
-*/
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
 {
     DEBUG_MSG("input '%s'", inter->input);
@@ -287,69 +277,43 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
     /* test si la commande est load */
     else if(strcmp(token, "load") == 0)
     {
-<<<<<<< HEAD
     	return loadcmd(inter, vmem);
-=======
-    return loadcmd(inter, vmem);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est disp */
     else if(strcmp(token, "disp") == 0)
     {
-<<<<<<< HEAD
     	return dispcmd(inter, tabreg, *vmem );
-=======
-    return dispcmd(inter, tabreg, *vmem );
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est disasm */
     else if(strcmp(token, "disasm") == 0)
     {
-<<<<<<< HEAD
     	return disasmcmd(inter, *vmem, tabreg);
-=======
-    return disasmcmd(inter, *vmem, tabreg);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est set */
     else if(strcmp(token, "set") == 0)
     {
-<<<<<<< HEAD
     	return setcmd(inter, tabreg, *vmem);
-=======
-    return setcmd(inter, tabreg, *vmem);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est assert */
     else if(strcmp(token, "assert") == 0)
     {
-<<<<<<< HEAD
     	return assertcmd(inter, tabreg, *vmem);
-=======
-    return assertcmd(inter, tabreg, *vmem);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est resume */
     else if(strcmp(token, "resume") == 0)
     {
-<<<<<<< HEAD
     	resumecmd(inter, fp);
     	return CMD_OK_RETURN_VALUE;
-=======
-    resumecmd(inter, fp);
-    return CMD_OK_RETURN_VALUE;
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     }
 
     /* test si la commande est debug */
     else if(strcmp(token, "debug") == 0)
     {
-<<<<<<< HEAD
     	debugcmd(inter, fp);
     	return CMD_OK_RETURN_VALUE;
     }
@@ -374,14 +338,6 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
 
     /* si aucune commande n'est reconnue */
     WARNING_MSG("Unknown Command : '%s'", cmdStr);
-=======
-    debugcmd(inter, fp);
-    return CMD_OK_RETURN_VALUE;
-    }
-
-    /* si aucune commande n'est reconnue */
-        WARNING_MSG("Unknown Command : '%s'", cmdStr);
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     return CMD_UNKOWN_RETURN_VALUE;
 }
 
@@ -390,32 +346,21 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
 /*************************************************************\
 Les commandes de l'émulateur.
 
-<<<<<<< HEAD
  Dans cette version, douze commandes :
-=======
- Dans cette version, neuf commandes :
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     "test" qui attend un nombre strictement positifs d'hexa strictement positifs et affiche ce(s) nombre() +1 dans le terminal
     "exit" qui quitte l'émulateur
     "load" qui charge un fichier objet ELF .o (laod.c)
     "disp" qui affiche (des éléments de) la mémoire ou de(s) registre(s)
-<<<<<<< HEAD
     "disasm" qui affiche les instructions présentes dans la plage de données précisée (incluses dans .text) (disasm.c)
-=======
-    "disasm" qui affiche les instructions présentes dans la plage de données précisée (disasm.c)
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
     "set" qui modifie la valeur d'une adresse mémoire ou d'un registre
     "assert" qui compare une valeur avec la valeur d'une adresse mémoire ou celle d'un registre
     "resume" qui repasse au mode SCRIPT après être arrivé en mode INTERACTIF à l'aide de debug
     "debug" qui permet de sortir du mode SCRIPT afin d'être en mode INTERACTIF
 
-<<<<<<< HEAD
     "run" qui
     "step" qui
     "break" qui
 
-=======
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
  \*************************************************************/
 
 
@@ -728,11 +673,7 @@ int assertcmd(interpreteur inter, reg* tab, mem vmem)
 	if ((token1=get_next_token(inter))==NULL) 
 	{
 	    WARNING_MSG("no argument given to command %s, expecting 'reg' , 'word' or 'byte'","assertcmd");
-<<<<<<< HEAD
         return 1;
-=======
-            return 1;
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 	}
 /* on test si l'argument suivant assert est bien un des arguments attendus */
     	if (strcmp(token1, "reg")!=0 && strcmp(token1, "word")!=0 && strcmp(token1, "byte")!=0)
@@ -985,23 +926,15 @@ void debugcmd(interpreteur inter, FILE* fp)
     char* token1=get_next_token(inter);
 	if(token1!=NULL)
 	{
-<<<<<<< HEAD
     	{
 		  WARNING_MSG("Too many argument in this command");
 		  return;
         }
-=======
-    	    {
-		WARNING_MSG("Too many argument in this command");
-		return;
-            }
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
 	}
 	_debugcmd(inter, fp);
 	return;
 }
 
-<<<<<<< HEAD
 /** 
  * BREAKCMD
  * commande qui met un point d'arrêt à une ou plusieurs adresses
@@ -1171,5 +1104,3 @@ int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
     tab_reg[32]->data=token1; // on initialise PC à la valeur précisée par l'utilisateur
     return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem); 
 }
-=======
->>>>>>> 5a8d557a05b18dbc62bcc0690c14d4c4bc769969
