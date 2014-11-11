@@ -418,7 +418,7 @@ int testcmd(interpreteur inter) {
  */
 int exitcmd(interpreteur inter) {
     INFO_MSG("Bye bye !");
-    return CMD_EXIT_RETURN_VALUE; /* retourne -1 et non pas 0 d'après le define initial non ? */
+    return CMD_EXIT_RETURN_VALUE; 
 }
 
 
@@ -741,7 +741,7 @@ else if(strcmp(token1, "word")==0)
             sscanf(token2,"%x",&addrValue);
             if(get_type(token3)==INTEGER) /* on vérifie que le token3 représente un entier  */
             {
-		sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
+		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
                 INFO_MSG("La commande assert word 0x%x %u est exécutée", addrValue, k);
                 return _assert_wordcmd(addrValue, k, vmem);
             }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer 32 bits",token3,"assert_word <adresse>"); return 1;}
@@ -931,6 +931,7 @@ void debugcmd(interpreteur inter, FILE* fp)
 		  return;
         }
 	}
+
 	_debugcmd(inter, fp);
 	return;
 }
@@ -945,6 +946,12 @@ void debugcmd(interpreteur inter, FILE* fp)
  */
 int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
 {
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+    
     DEBUG_MSG("Command break");
     char* token1=get_next_token(inter); char* token2=NULL;
     int address=0;
@@ -1038,6 +1045,12 @@ int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
  */
 int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
 {
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+
     DEBUG_MSG("Command step");
     char* token1=get_next_token(inter);
     char* token2=NULL;
@@ -1077,6 +1090,12 @@ int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
  */
 int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
 {
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+
     DEBUG_MSG("Command run");
     char* token1=get_next_token(inter);
     char* token2=NULL;

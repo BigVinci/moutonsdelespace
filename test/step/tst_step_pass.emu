@@ -3,5 +3,6 @@
 #TEST_COMMENT="Teste fonctionnement standard"
 #-------
 
+load elf/boucle.o
 step
 step into

@@ -3,12 +3,4 @@
 #TEST_COMMENT="Teste fonctionnement standard"
 #-------
 
-
-
-
-
-xit
-exite
-exit xbgyusgyu
-exit 0x7459a354
-
+char exit

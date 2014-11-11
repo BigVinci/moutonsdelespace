@@ -1,11 +1,11 @@
-	5.2.3 : (p. 39)
-	lecture :
+***	5.2.3 : (p. 39)
+***	lecture : ***
 			run
 			set
 set into
 			break
 
-	exe :
+***	exe : ***
 			run
 			set
 set into
@@ -13,7 +13,7 @@ set into
 			break add
 			break suppr			3 - finie
 
-	3.4.2 : (p. 23-25) 
+***	3.4.2 : (p. 23-25)  ***
 		BEQ						2 - rien à modifier 
 		BNE	
 		BGEZ
@@ -38,10 +38,10 @@ B???
 J/JAL
 LW/SW
 
-incrémentation du PC : où ? 
+***	incrémentation du PC : où ? ***
 
 
-	.c à travailler :
+***	.c à travailler : ***
 			fonct_gestion.c 
 			cmd_gestion.c
 
@@ -49,3 +49,18 @@ incrémentation du PC : où ?
 
 	disasm.c 
 	instruction.c
+
+
+
+***	test .emu ***		ETAT :
+			assert		pbm avec pass.emu
+			break 		** validé **
+			debug		ne marche pas !!
+			disasm		pbm avec pass.emu
+			disp 		** validé **
+			exit 		** validé **
+			load		** validé **
+			resume		pbm return !void (test fail) mais la fonction marche correctement 
+			run 	 	ne marche pas !!
+			set 		pbm avec pass.emu
+			step 		pbm avec pass.emu & step into

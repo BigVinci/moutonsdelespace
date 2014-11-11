@@ -3,15 +3,9 @@
 #TEST_COMMENT="Teste fonctionnement standard"
 #-------
 
-
+load elf/boucle.o
 disp mem map
-
-
-
-disp reg $19
-disp reg $19+$14
-
-disp mem 0x44444444:0x77777777
-disp mem 0x44444444+0x77777777
-disp mem 0x44444444:0x7777
-disp mem 0x44444
+disp mem 0x1000 : 0xffffffff
+disp reg all
+disp reg $2
+disp reg $LO
