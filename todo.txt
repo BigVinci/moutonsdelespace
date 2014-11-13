@@ -64,3 +64,11 @@ LW/SW
 			run 	 	ne marche pas !!
 			set 		pbm avec pass.emu
 			step 		pbm avec pass.emu & step into
+
+autre :
+- i-type : calcul du complément à 2 : offset négatif
+- maj_reg : pas besoin de mettre à jour immediate, target & offset ?
+- conserve le meme ordre dans les prototypes !! 
+- quand les _num sont-ils modifiés ??
+- //bitwise logical AND ??? pk ? quel est le sens ?
+- pas de gestion d'erreur possible

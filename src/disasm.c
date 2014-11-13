@@ -172,7 +172,7 @@ int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est p
 {
     union inst_poly inst;
     inst.code=code_instr; //on initialise l'union
-//    int op_code_j=inst.j.opcode; // inutile pour le moment
+    int op_code_j=inst.j.opcode; //deja affiche par la fonction dissasm
     int target_j=inst.j.target;
     //on récupère la valeur de "target" et on l'affiche
 
@@ -193,7 +193,7 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
-//    int op_code_i=inst.i.opcode; // inutile pour le moment
+    int op_code_i=inst.i.opcode; //deja affiche par la fonction dissasm
     int rs_i=inst.i.rs; //on récupère toutes les opérantes grace à l'union
     int rt_i=inst.i.rt;
     int immediate=inst.i.immediate;
@@ -202,39 +202,42 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
     char*s=NULL;
     char*reg=NULL;
 
+    op_val_1->rs_num=rs_i;
+    op_val_1->rt_num=rt_i;
+
     int i=0;
     for(i=0; i<(int_t.definition.nb_op); i++) //On teste les noms des opérandes pour les afficher dans le bon ordre, puis on les affiche
     {
         s=int_t.definition.op_mapping[i]; 
         if(strcmp(s,"rs")==0)
         {   
-	    reg=(tab_reg[rs_i]->mnemo);
+	        reg=(tab_reg[rs_i]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[rs_i]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[rs_i]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else if(strcmp(s,"rt")==0)
         {   
-	    reg=(tab_reg[rt_i]->mnemo);
+	        reg=(tab_reg[rt_i]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[rt_i]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[rt_i]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else if(strcmp(s,"immediate")==0)
         {
             printf(" %d", immediate);
-	    opvalue->immediate=immediate;
+	        opvalue->immediate=immediate;
         }
 
         else if(strcmp(s,"offset")==0)
         {
             printf(" %d", offset); //ce n'est pas immediate ici, mais ça correspond au nombre contenu dans "immediate"
-	    opvalue->offset=offset;
+	        opvalue->offset=offset;
         }
 
         else
-	{
-   	    WARNING_MSG("Impossible d'afficher l'opération"); //si aucune opérande ne corespond il y a un probleme
+	    {
+   	        WARNING_MSG("Impossible d'afficher l'opération"); //si aucune opérande ne corespond il y a un probleme
             return 1;
         }
     }
@@ -255,15 +258,21 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
-//    int op_code_r=inst.r.opcode; // inutile pour le moment
+    int op_code_r=inst.r.opcode; 
     int rs_r=inst.r.rs; //récupération des paramètres
     int rt_r=inst.r.rt;
     int rd_r=inst.r.rd;
     int sa_r=inst.r.sa;
-//    int func_r=inst.r.func; // inutile pour le moment
+    int func_r=inst.r.func; 
 
     char*s=NULL;
     char*reg=NULL;
+
+    op_val_1->rs_num=rs_r;
+    op_val_1->rt_num=rt_r;
+    op_val_1->rd_num=rd_r;
+    op_val_1->rs_num=rs_r;
+    op_val_1->sa_num=sa_r;
 
     int i=0;
     for(i=0; i<(int_t.definition.nb_op); i++) //affichage des opérandes dans le bon ordre
@@ -272,35 +281,35 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
 
         if(strcmp(s,"rs")==0)
         {   
-	    reg=(tab_reg[rs_r]->mnemo);
+	        reg=(tab_reg[rs_r]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[rs_r]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[rs_r]->data, "%d", &(opvalue->rs)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else if(strcmp(s,"rt")==0)
         {   
-	    reg=(tab_reg[rt_r]->mnemo);
+	        reg=(tab_reg[rt_r]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[rt_r]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[rt_r]->data, "%d", &(opvalue->rt)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else  if(strcmp(s,"rd")==0)
         {   
-	    reg=(tab_reg[rd_r]->mnemo);
+	        reg=(tab_reg[rd_r]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[rd_r]->data, "%d", &(opvalue->rd)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[rd_r]->data, "%d", &(opvalue->rd)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else if(strcmp(s,"sa")==0)
         {   
-	    reg=(tab_reg[sa_r]->mnemo);
+	        reg=(tab_reg[sa_r]->mnemo);
             printf(" %s", reg);
-	    sscanf(tab_reg[sa_r]->data, "%d", &(opvalue->sa)); // on renvoie la donnée data dans opvalue sous forme d'entier
+	        sscanf(tab_reg[sa_r]->data, "%d", &(opvalue->sa)); // on renvoie la donnée data dans opvalue sous forme d'entier
         }
 
         else
-	{
-   	    WARNING_MSG("Impossible d'afficher l'opération"); //si aucune ne corespond, renvois d'une erreur 
+	    {
+   	        WARNING_MSG("Impossible d'afficher l'opération"); //si aucune ne corespond, renvois d'une erreur 
             return 1;
         }
     }
@@ -347,7 +356,7 @@ int disasm(char* code, def* tab_instr, reg* tab_reg, char* adress, char** name, 
     instruction int_t;
     int adresse_virtuelle=0;
 
-    sscanf(code, "%s", int_t.code);
+    sscanf(code, "%s", &(int_t.code));
     sscanf(adress, "%x", &adresse_virtuelle);
     (int_t.definition)=trouve_def(code, tab_instr);
     printf("%x :: %s",adresse_virtuelle ,int_t.definition.name  ); // affiche l'adresse virtuelle et le nom
