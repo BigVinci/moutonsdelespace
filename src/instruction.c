@@ -162,7 +162,6 @@ int realise_instr(OP_VAL* op1, char** name, reg* tab_reg)
  * @return 0 si réussi, 1 si fail
  */
 int maj_reg(OP_VAL* opvalue, reg* tab_reg)
-<<<<<<< HEAD
 {   int a=(opvalue->rs);
 char donnee[100]; 
 INFO_MSG("Step0");
@@ -186,21 +185,6 @@ INFO_MSG("%s %s", donnee, tab_reg[opvalue->rd_num]->data);INFO_MSG("Step2.5");}
 INFO_MSG("%s %s", donnee, tab_reg[opvalue->sa_num]->data);INFO_MSG("Step3.5");}
 	//sprintf(tab_reg[opvalue->sa_num]->data, "%d", opvalue->sa); // on met à jour le tableau de registre
     INFO_MSG("Step4");
-=======
-{
-    if (opvalue->rs_num!=35)
-        (tab_reg[(opvalue->rs_num)]->data)=(opvalue->rs);
-
-    if (opvalue->rt_num!=35)
-        (tab_reg[opvalue->rt_num]->data)=opvalue->rt;
-
-    if (opvalue->rd_num!=35)
-        (tab_reg[opvalue->rd_num]->data)=opvalue->rd;
-
-    if (opvalue->sa_num!=35)
-        (tab_reg[opvalue->sa_num]->data)=opvalue->sa;
-
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -220,11 +204,7 @@ int instr_add(OP_VAL* opvalue)
 
     if(dest>2147483648) //on compare avec 2^31, le nombre maximal codable sur 32 bits
     {   
-<<<<<<< HEAD
         WARNING_MSG("Integer Overflow");
-=======
-        WARNING_MSG("Integer Overflow")
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
         return 1;
     }
 
@@ -258,11 +238,7 @@ int instr_addi(OP_VAL* opvalue)
 
     if(dest>2147483648) //on compare avec 2^31, le nombre maximal codable sur 32 bits
     {   
-<<<<<<< HEAD
         WARNING_MSG("Integer Overflow");
-=======
-        WARNING_MSG("Integer Overflow")
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
         return 1;
     }
 
@@ -322,16 +298,10 @@ int instr_subu(OP_VAL* opvalue)
 /** MULT
  * commande qui réalise l'instruction MULT
  * @param opvalue contient une structure OP_VAL* à modifier
-<<<<<<< HEAD
  * @param tab_reg le tableau de registre
  * @return 0 
  */
 int instr_mult(OP_VAL* opvalue,reg* tab_reg)
-=======
- * @return 0 
- */
-int instr_mult(OP_VAL* opvalue)
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 {
     INFO_MSG("Command MULT");
     int a=opvalue->rs;
@@ -343,20 +313,12 @@ int instr_mult(OP_VAL* opvalue)
     long long sign2=0xffffffff00000000;
 
     d=c&sign1;
-<<<<<<< HEAD
     sprintf(tab_reg[33]->data, "%lld", d); // on met à jour le tableau de registre
 
     d=c&sign2;
     d>>=16;
     d=d&sign1;
     sprintf(tab_reg[34]->data, "%lld", d); // on met à jour le tableau de registre
-=======
-    tab_reg[33]->data=d;
-    d=c&sign2;
-    d>>=16;
-    d=d&sign1;
-    tab_reg[34]->data=d;
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
     return CMD_OK_RETURN_VALUE;
 }
@@ -365,7 +327,6 @@ int instr_mult(OP_VAL* opvalue)
 /** DIV
  * commande qui réalise l'instruction DIV
  * @param opvalue contient une structure OP_VAL* à modifier
-<<<<<<< HEAD
  * @param tab_reg le tableau de registre
  * @return 0 
  */
@@ -381,15 +342,6 @@ int instr_div(OP_VAL* opvalue,reg* tab_reg)
 
     sprintf(tab_reg[33]->data, "%d",  ( (opvalue->rs)/(opvalue->rt)) ); // on met à jour le tableau de registre
     sprintf(tab_reg[34]->data, "%d",  ( (opvalue->rs)%(opvalue->rt)) ); // on met à jour le tableau de registre
-=======
- * @return 0 
- */
-int instr_div(OP_VAL* opvalue)
-{
-    INFO_MSG("Command DIV");
-    tab_reg[34]->data=(opvalue->rs)/(opvalue->rt);
-    tab_reg[33]->data=(opvalue->rs)%(opvalue->rt);
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -427,11 +379,7 @@ int instr_andi(OP_VAL* opvalue) //bitwise logical AND
  * @param opvalue modifié: charge rd avec le résultat d'un OU logique entre rs et rt.
  * @return 0 
  */
-<<<<<<< HEAD
 int instr_or(OP_VAL* opvalue) 
-=======
-int instr_or(OP_VAL* opvalue) //bitwise logical AND
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 {
     INFO_MSG("Command OR");
     opvalue->rd=((opvalue->rs)|(opvalue->rt));
@@ -444,11 +392,7 @@ int instr_or(OP_VAL* opvalue) //bitwise logical AND
  * @param opvalue modifié: charge rd le résultat d'un OU logique entre rs et immediate.
  * @return 0 
  */
-<<<<<<< HEAD
 int instr_ori(OP_VAL* opvalue)
-=======
-int instr_ori(OP_VAL* opvalue) //bitwise logical AND
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 {
     INFO_MSG("Command ORI");
     opvalue->rt=((opvalue->rs)|(opvalue->immediate));
@@ -557,11 +501,7 @@ int instr_slt(OP_VAL* opvalue)
 int instr_sltu(OP_VAL* opvalue)
 {
     INFO_MSG("Command SLTU");
-<<<<<<< HEAD
     if(opvalue->rs < opvalue->rt)
-=======
-    if(opvalue->rs<opvalue->rt)
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     {
         opvalue->rd=1; //True
         return CMD_OK_RETURN_VALUE;
@@ -580,11 +520,7 @@ int instr_sltu(OP_VAL* opvalue)
 int instr_slti(OP_VAL* opvalue)
 {
     INFO_MSG("Command SLTI");
-<<<<<<< HEAD
     if(opvalue->rs < opvalue->immediate)
-=======
-    if(opvalue->rs<opvalue->immediate)
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     {
         opvalue->rt=1; //True
         return 1;
@@ -674,17 +610,10 @@ int instr_lui(OP_VAL* opvalue)
  * @param opvalue contient une structure OP_VAL* à modifier
  * @return 0
  */
-<<<<<<< HEAD
 int instr_mfhi(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command MFHI");
     sscanf(tab_reg[33]->data, "%d", &(opvalue->rd)); // converti le char* en integer et le place dans rd
-=======
-int instr_mfhi(OP_VAL* opvalue)
-{
-    INFO_MSG("Command MFHI");
-    opvalue->rd=tab_reg[33]->data;
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -694,17 +623,10 @@ int instr_mfhi(OP_VAL* opvalue)
  * @param opvalue contient une structure OP_VAL* à modifier
  * @return 0
  */
-<<<<<<< HEAD
 int instr_mflo(OP_VAL* opvalue,reg* tab_reg)
 {
     INFO_MSG("Command MFLO");
     sscanf(tab_reg[33]->data, "%d", &(opvalue->rd)); // converti le char* en integer et le place dans rd
-=======
-int instr_mflo(OP_VAL* opvalue)
-{
-    INFO_MSG("Command MFLO");
-    opvalue->rd=tab_reg[34]->data;
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     return CMD_OK_RETURN_VALUE;
 }
 

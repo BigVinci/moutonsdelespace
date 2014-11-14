@@ -34,13 +34,8 @@ int instr_addi(OP_VAL* opvalue);
 int instr_addiu(OP_VAL* opvalue);
 int instr_sub(OP_VAL* opvalue);
 int instr_subu(OP_VAL* opvalue);
-<<<<<<< HEAD
 int instr_mult(OP_VAL* opvalue, reg* tab_reg);
 int instr_div(OP_VAL* opvalue, reg* tab_reg);
-=======
-int instr_mult(OP_VAL* opvalue);
-int instr_div(OP_VAL* opvalue);
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
 // instructions logiques
 int instr_and(OP_VAL* opvalue);
@@ -68,13 +63,8 @@ int instr_lb(OP_VAL* opvalue);
 int instr_lbu(OP_VAL* opvalue);
 int instr_sb(OP_VAL* opvalue);
 int instr_lui(OP_VAL* opvalue);
-<<<<<<< HEAD
 int instr_mfhi(OP_VAL* opvalue, reg* tab_reg);
 int instr_mflo(OP_VAL* opvalue, reg* tab_reg);
-=======
-int instr_mfhi(OP_VAL* opvalue);
-int instr_mflo(OP_VAL* opvalue);
->>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
 // instructions de branchement, de saut et de contrôle
 int instr_beq(OP_VAL* opvalue);
