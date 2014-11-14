@@ -67,11 +67,15 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
 	j=disasm(contenu, dico, tab_reg, addr1, vname, opvalue);
 	
+<<<<<<< HEAD
 	k=realise_instr(opvalue, vname, tab_reg);
 
 	maj_reg(opvalue, tab_reg);  
 
 	opvalue=init_opvalue(); // on réinitialise opvalue pour la prochaine instruction
+=======
+	k=realise_instr(opvalue, vname, tab_reg);      
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
 	if (j!=0) // erreur dans disasm
 	{
@@ -176,6 +180,10 @@ int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est p
 {
     union inst_poly inst;
     inst.code=code_instr; //on initialise l'union
+<<<<<<< HEAD
+=======
+    int op_code_j=inst.j.opcode; //deja affiche par la fonction dissasm
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     int target_j=inst.j.target;
     //on récupère la valeur de "target" et on l'affiche
 
@@ -196,6 +204,10 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
+<<<<<<< HEAD
+=======
+    int op_code_i=inst.i.opcode; //deja affiche par la fonction dissasm
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     int rs_i=inst.i.rs; //on récupère toutes les opérantes grace à l'union
     int rt_i=inst.i.rt;
     int immediate=inst.i.immediate;
@@ -206,8 +218,13 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
     char*s=NULL;
     char*reg=NULL;
 
+<<<<<<< HEAD
     opvalue->rs_num=rs_i;
     opvalue->rt_num=rt_i;
+=======
+    op_val_1->rs_num=rs_i;
+    op_val_1->rt_num=rt_i;
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
     int i=0;
     for(i=0; i<(int_t.definition.nb_op); i++) //On teste les noms des opérandes pour les afficher dans le bon ordre, puis on les affiche
@@ -262,18 +279,34 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
 {
     union inst_poly inst;
     inst.code=code_instr; //initialisation de l'union
+<<<<<<< HEAD
+=======
+    int op_code_r=inst.r.opcode; 
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     int rs_r=inst.r.rs; //récupération des paramètres
     int rt_r=inst.r.rt;
     int rd_r=inst.r.rd;
     int sa_r=inst.r.sa;
+<<<<<<< HEAD
+=======
+    int func_r=inst.r.func; 
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
     char*s=NULL;
     char*reg=NULL;
 
+<<<<<<< HEAD
     opvalue->rs_num=rs_r;
     opvalue->rt_num=rt_r;
     opvalue->rd_num=rd_r;
     opvalue->sa_num=sa_r;
+=======
+    op_val_1->rs_num=rs_r;
+    op_val_1->rt_num=rt_r;
+    op_val_1->rd_num=rd_r;
+    op_val_1->rs_num=rs_r;
+    op_val_1->sa_num=sa_r;
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
 
     int i=0;
     for(i=0; i<(int_t.definition.nb_op); i++) //affichage des opérandes dans le bon ordre
@@ -357,7 +390,11 @@ int disasm(char* code, def* tab_instr, reg* tab_reg, char* adress, char** name, 
     instruction int_t;
     int adresse_virtuelle=0;
 
+<<<<<<< HEAD
     sscanf(code, "%s", (int_t.code));
+=======
+    sscanf(code, "%s", &(int_t.code));
+>>>>>>> c5715009a920bd6ee66d4e2629de38c55ac4657a
     sscanf(adress, "%x", &adresse_virtuelle);
     (int_t.definition)=trouve_def(code, tab_instr);
     printf("%x :: %s",adresse_virtuelle ,int_t.definition.name  ); // affiche l'adresse virtuelle et le nom
