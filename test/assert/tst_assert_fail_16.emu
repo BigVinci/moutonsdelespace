@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=FAIL           
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+load elf/boucle.o
+assert byte 0x1020 alpha

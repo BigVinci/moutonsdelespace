@@ -82,7 +82,7 @@ int main ( int argc, char *argv[] )
                 if ( fp != stdin ) {
                     fclose( fp );
                 }
-                del_inter(inter);
+//                del_inter(inter);
 		del_mem(*vmem);
                 exit(EXIT_SUCCESS);
                 break;

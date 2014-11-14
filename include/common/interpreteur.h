@@ -12,6 +12,8 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "notify.h"
 
+/* les fonctions liées aux listes */
+#include "../liste.h"
 
 /* taille max pour nos chaines de char */
 #define MAX_STR 1024
@@ -38,6 +40,7 @@ typedef struct {
     char * from;
     char first_token;
     FILE* file;
+    Liste* BP;
 } *interpreteur;
 
 
