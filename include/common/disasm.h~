@@ -34,9 +34,9 @@ int _disasm_range_offsetcmd(char* addrValue1, int offsetValue, mem vmem, reg* ta
 
 def* mem_dico(char*nom);
 
-int if_j_type(unsigned int code_instr, OP_VAL* opvalue);
-int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue);
-int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* opvalue);
+int if_j_type(unsigned int code_instr);
+int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
+int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg);
 def trouve_def(char*code, def*tab_instr);
 int disasm(char*code, def*tab_instr, reg*tab_reg,char*adress, char** name, OP_VAL* opvalue);
 

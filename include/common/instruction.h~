@@ -20,8 +20,8 @@
 #include "interpreteur.h"
 
 // contient les valeurs à mettre dans les registres (les valeurs sont dans rt, rs, rd, ...) et les numéros des registres à modifier (dans *_num)
-typedef struct op_val_struct {int rt; int rs; int rd; int sa; int immediate; int offset; int target; 
-                              int rt_num; int rs_num; int rd_num; int sa_num; /*int immediate_num; int offset_num; int target_num;*/} OP_VAL;
+typedef struct op_val_struct {int rt; int rs; int rd; int sa; int immediate; int offset; int target;
+                              int rt_num; int rs_num; int rd_num; int sa_num;} OP_VAL;
 
 OP_VAL* init_opvalue(void);
 int realise_instr(OP_VAL* opvalue, char** vname, reg* tab_reg, mem vmem);
@@ -49,6 +49,11 @@ int instr_sll(OP_VAL* opvalue);
 int instr_srl(OP_VAL* opvalue);
 int instr_sra(OP_VAL* opvalue);
 
+
+// fonctions auxilliaires pour les instructions de sign extend
+int sign_extend_8(int a);
+int sign_extend_16(int a);
+
 // instructions set
 int instr_seb(OP_VAL* opvalue);
 int instr_slt(OP_VAL* opvalue);
@@ -57,11 +62,11 @@ int instr_slti(OP_VAL* opvalue);
 int instr_sltiu(OP_VAL* opvalue);
 
 // instructions load/store
-int instr_lw(OP_VAL* opvalue);
-int instr_sw(OP_VAL* opvalue);
-int instr_lb(OP_VAL* opvalue);
-int instr_lbu(OP_VAL* opvalue);
-int instr_sb(OP_VAL* opvalue);
+int instr_lw(OP_VAL* opvalue, mem vmem);
+int instr_sw(OP_VAL* opvalue, mem vmem);
+int instr_lb(OP_VAL* opvalue, mem vmem);
+int instr_lbu(OP_VAL* opvalue, mem vmem);
+int instr_sb(OP_VAL* opvalue, mem vmem);
 int instr_lui(OP_VAL* opvalue);
 int instr_mfhi(OP_VAL* opvalue, reg* tab_reg);
 int instr_mflo(OP_VAL* opvalue, reg* tab_reg);
@@ -87,5 +92,8 @@ int instr_neg(OP_VAL* opvalue);
 int instr_li16(OP_VAL* opvalue);
 int instr_li32(OP_VAL* opvalue);
 int instr_blt(OP_VAL* opvalue);
+
+int _set_mem_bytecmd_2(uint8_t byteValue, uint32_t vaddr, mem vmem);
+int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg);
 
 #endif /* _INSTRUCTION_H_ */

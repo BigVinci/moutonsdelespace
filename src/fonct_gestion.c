@@ -999,11 +999,10 @@ int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
             }
 
             if (strcmp(token2, "all")==0) // si la commande entrée est break del all
-	    {
-		INFO_MSG("Suppression de tous les breakpoints");
+            {
+                INFO_MSG("Suppression de tous les breakpoints");
                 *(inter->BP)=suppr_liste(*(inter->BP)); // on supprime tous les breakpoints
-	    }
-
+            }
             else if (get_type(token2)==HEXA)
             {
                 sscanf(token2, "%x", &BP);
@@ -1032,10 +1031,10 @@ int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
         return CMD_OK_RETURN_VALUE;
     }
 
-    else 
+    else
     {
-	WARNING_MSG("Wrong argument to command %s","break");
-	return 1; 
+        WARNING_MSG("Wrong argument to command %s","break");
+        return 1;
     }
 
     WARNING_MSG("Should never be here");
@@ -1110,11 +1109,10 @@ int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
 
     if (strcmp(tab_reg[32]->data,"0")==0) 
     {
-	char* data_start=strdup("Initialisation");
-	sprintf(data_start, "%x", vmem->seg[0].start._32);
-	tab_reg[32]->data=data_start; // on initialise PC au début du point .text si il n'a pas encore été initialisé
+        char* data_start=strdup("Initialisation");
+        sprintf(data_start, "%x", vmem->seg[0].start._32);
+        tab_reg[32]->data=data_start; // on initialise PC au début du point .text si il n'a pas encore été initialisé
     }
-
     if (token1==NULL) // si l'adresse est omise, on démarre à l'adresse courante du PC
     {
 	   return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem);
@@ -1135,15 +1133,15 @@ int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
     unsigned int addr_start; sscanf(token1, "%x", &addr_start);
     if (addr_start<vmem->seg[0].start._32) // si l'adresse de départ est avant le début de la section .text
     {
-	   INFO_MSG("L'adresse de départ ne sera pas %s mais %x",token1, vmem->seg[0].start._32);
-	   addr_start=vmem->seg[0].start._32;
-	   sprintf(token1, "%x", addr_start); // on modifie token1 en conséquence
+        INFO_MSG("L'adresse de départ ne sera pas %s mais %x",token1, vmem->seg[0].start._32);
+        addr_start=vmem->seg[0].start._32;
+        sprintf(token1, "%x", addr_start); // on modifie token1 en conséquence
     }
 
     if (addr_start>(vmem->seg[0].start._32+vmem->seg[0].size._32))
     {
-	   WARNING_MSG("L'adresse de départ est trop grande");
-	   return 1;
+        WARNING_MSG("L'adresse de départ est trop grande");
+        return 1;
     }
 
     tab_reg[32]->data=token1; // on initialise PC à la valeur précisée par l'utilisateur

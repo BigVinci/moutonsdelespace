@@ -73,7 +73,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
     unsigned int start;
     sscanf(tab_reg[32]->data,"%d",&start); //converti la valeur du PC en integer
 
-    if (start<vmem->seg[0].start._32 && start!=0)
+    if (start<vmem->seg[0].start._32)
     {
         WARNING_MSG("Modification interdite du PC suite à un saut ou un branchement");
         return 1;
