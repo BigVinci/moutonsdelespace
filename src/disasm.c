@@ -11,7 +11,7 @@
  */
 int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 {
-    int no_args=1, j=0, k=0;
+    int no_args=1, i=0, j=0, k=0;
     uint32_t addrreelle;
 
     int* value1=calloc(1, sizeof(int)); int* value2=calloc(1, sizeof(int));
@@ -48,6 +48,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
     def* dico=mem_dico("dico_instr.txt");
 
     INFO_MSG("Lancement de la fonction disasm %s : %s", addr1, addr2);
+    i=addr_start;
     while (addr_start<=addr_end)
     {
 	no_args=0;
@@ -68,22 +69,6 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 	j=disasm(contenu, dico, tab_reg, addr1, vname, opvalue);
 
 	k=realise_instr(opvalue, vname, tab_reg, vmem);
-
-    // on vérifie que le PC ne prenne pas une valeur interdite suite à l'exécution d'un saut ou d'un branchement
-    unsigned int start;
-    sscanf(tab_reg[32]->data,"%d",&start); //converti la valeur du PC en integer
-
-    if (start<vmem->seg[0].start._32 && start!=0)
-    {
-        WARNING_MSG("Modification interdite du PC suite à un saut ou un branchement");
-        return 1;
-    }
-
-    if (start>(vmem->seg[0].start._32+vmem->seg[0].size._32))
-    {
-        WARNING_MSG("Modification interdite du PC suite à un saut ou un branchement");
-        return 1;
-    }
 
 	maj_reg(opvalue, tab_reg);
 
@@ -194,7 +179,7 @@ int if_j_type(unsigned int code_instr, OP_VAL* opvalue) // l'instruction n'est p
     int target_j=inst.j.target;
     //on récupère la valeur de "target" et on l'affiche
 
-    printf(" %d \n",target_j);
+    printf(" %d ",target_j);
     opvalue->target=target_j;
     return CMD_OK_RETURN_VALUE;
 }
@@ -260,7 +245,6 @@ int if_i_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
             return 1;
         }
     }
-    printf("\n");
 
     return CMD_OK_RETURN_VALUE;
 }
@@ -329,7 +313,7 @@ int if_r_type(unsigned int code_instr, instruction int_t, reg*tab_reg, OP_VAL* o
             return 1;
         }
     }
-    printf("\n");
+
     return CMD_OK_RETURN_VALUE;
 }
 

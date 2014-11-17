@@ -63,7 +63,7 @@ int instr_sltiu(OP_VAL* opvalue);
 
 // instructions load/store
 int instr_lw(OP_VAL* opvalue, mem vmem);
-int instr_sw(OP_VAL* opvalue, mem vmem);
+int instr_sw(OP_VAL* opvalue, mem vmem, reg* tab_reg);
 int instr_lb(OP_VAL* opvalue, mem vmem);
 int instr_lbu(OP_VAL* opvalue, mem vmem);
 int instr_sb(OP_VAL* opvalue, mem vmem);
@@ -94,6 +94,6 @@ int instr_li32(OP_VAL* opvalue);
 int instr_blt(OP_VAL* opvalue);
 
 int _set_mem_bytecmd_2(uint8_t byteValue, uint32_t vaddr, mem vmem);
-int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg);
+int _set_mem_wordcmd_2(uint32_t wordValue, uint32_t vaddr, mem vmem);
 
 #endif /* _INSTRUCTION_H_ */

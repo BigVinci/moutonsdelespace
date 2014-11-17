@@ -391,8 +391,8 @@ int instr_or(OP_VAL* opvalue)
 }
 
 
-/** OR
- * commande qui réalise l'instruction OR
+/** ORI
+ * commande qui réalise l'instruction ORI
  * @param opvalue modifié: charge rd le résultat d'un OU logique entre rs et immediate.
  * @return 0
  */
@@ -469,8 +469,11 @@ int instr_sra(OP_VAL* opvalue)
 
 // instructions set
 
-
-
+/** sign_extend_8
+ * fonction qui transforme un entier de 8 bits en son entier sign extended
+ * @param entier dont on doit étendre le signe
+ * @return entier sign extended
+ */
 int sign_extend_8(int a)
 {
     int mask=0x000000ff;
@@ -485,13 +488,14 @@ int sign_extend_8(int a)
 
     }
     return sign;
-
 }
 
 
-
-
-
+/** sign_extend_16
+ * fonction qui transforme un entier de 8 bits en son entier sign extended
+ * @param entier dont on doit étendre le signe
+ * @return entier sign extended
+ */
 int sign_extend_16(int a)
 {
     int mask=0x0000ffff;
@@ -636,6 +640,11 @@ int instr_sltiu(OP_VAL*opvalue)
 
 // instructions load/store
 
+/** LW
+ * place dans $rt la valeur du WORD lue dans la mémoire à l'adresse offset(base)
+ * @param opvalue contient une structure OP_VAL* à modifier
+ * @return 0
+ */
 int instr_lw(OP_VAL* opvalue, mem vmem)
 {
     INFO_MSG("Command LW");
@@ -655,16 +664,27 @@ int instr_lw(OP_VAL* opvalue, mem vmem)
 }
 
 
+/** SW
+ * place à l'adresse offset(base) la valeur du WORD lue dans $rt
+ * @param opvalue contient une structure OP_VAL* à modifier
+ * @return 0
+ */
 int instr_sw(OP_VAL* opvalue, mem vmem)
 {
     INFO_MSG("Command SW");
 
     int a=(opvalue->rs)+(opvalue->offset);
+
     return _set_mem_wordcmd_2(opvalue->rt,a,vmem);
 
 }
 
 
+/** LB
+ * place dans $rt la valeur du BYTE lue dans la mémoire à l'adresse offset(base)
+ * @param opvalue contient une structure OP_VAL* à modifier
+ * @return 0
+ */
 int instr_lb(OP_VAL* opvalue, mem vmem)
 {
     INFO_MSG("Command LB");
@@ -684,6 +704,11 @@ int instr_lb(OP_VAL* opvalue, mem vmem)
 }
 
 
+/** LBU
+ * place dans $rt la valeur non signée (zero extended) du BYTE lue dans la mémoire à l'adresse offset(base)
+ * @param opvalue contient une structure OP_VAL* à modifier
+ * @return 0
+ */
 int instr_lbu(OP_VAL* opvalue, mem vmem)
 {
     INFO_MSG("Command LBU");
@@ -706,6 +731,11 @@ int instr_lbu(OP_VAL* opvalue, mem vmem)
 }
 
 
+/** SB
+ * place  à l'adresse offset(base) la valeur du BYTE lue dans $rt
+ * @param opvalue contient une structure OP_VAL* à modifier
+ * @return 0
+ */
 int instr_sb(OP_VAL* opvalue, mem vmem)
 {
     INFO_MSG("Command SB");
@@ -765,10 +795,15 @@ int instr_beq(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BEQ");
     
-    if (strcmp(tab_reg[opvalue->rs]->data,tab_reg[opvalue->rt]->data)==0)
+    char* data1=calloc(1, sizeof(char));char* data2=calloc(1, sizeof(char));
+    data1=strdup(tab_reg[opvalue->rs]->data);data2=strdup(tab_reg[opvalue->rt]->data);
+
+    if (strcmp(data1,data2)==0)
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("Les registres n'ont pas la même valeur");
@@ -787,10 +822,15 @@ int instr_bne(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BNE");
     
-    if (strcmp(tab_reg[opvalue->rs]->data,tab_reg[opvalue->rt]->data)!=0)
+    char* data1=calloc(1, sizeof(char));char* data2=calloc(1, sizeof(char));
+    data1=strdup(tab_reg[opvalue->rs]->data);data2=strdup(tab_reg[opvalue->rt]->data);
+
+    if (strcmp(data1,data2)!=0)
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("Les registres ont la même valeur");
@@ -815,7 +855,9 @@ int instr_bgez(OP_VAL* opvalue, reg* tab_reg)
     if (a>=0 && a<=2147483648) // si a appartient à {0; 2^31}
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("La valeur du registre est inférieure strictement à 0");
@@ -840,7 +882,9 @@ int instr_bgtz(OP_VAL* opvalue, reg* tab_reg)
     if (a>0 && a<=2147483648) // si a appartient à {1; 2^31}
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("La valeur du registre est inférieure ou égale à 0");
@@ -865,7 +909,9 @@ int instr_blez(OP_VAL* opvalue, reg* tab_reg)
     if (a==0 || (a>2147483648 && a<=4294967296)) // si a appartient à {2^31+1; 2^32} ou est nul (0=2^32)
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("La valeur du registre est supérieure strictement à 0");
@@ -889,7 +935,9 @@ int instr_bltz(OP_VAL* opvalue, reg* tab_reg)
     if (a>2147483648 && a<4294967296) // si a appartient à {2^31+1; 2^32-1}
     {
         int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
-        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	char* data=calloc(1, sizeof(char));
+        sprintf(data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+	tab_reg[32]->data=strdup(data);
     }
     else
         INFO_MSG("La valeur du registre est supérieure ou égale à 0");
@@ -907,7 +955,7 @@ int instr_bltz(OP_VAL* opvalue, reg* tab_reg)
 int instr_j(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command J");
-    unsigned int a=((opvalue->target)*4); // on décale la target initiale de 2 bits (soit target sur 28 bits)
+    unsigned int a=((opvalue->target)<<2); // on décale la target initiale de 2 bits (soit target sur 28 bits)
 
     // on veut rajouter les 4 bits de poids fort du PC
     char* data=calloc(1, sizeof(char));
@@ -917,8 +965,9 @@ int instr_j(OP_VAL* opvalue, reg* tab_reg)
     b=(b>>28); // on décale la valeur de b de 28 bits sur la droite : on ne garde que les 4 bits de poids fort
     a+=b<<28; // on rajoute ces 4 bits de poids fort devant les 28 bits de a, a fait désormais 32 bits
 
-    sprintf(tab_reg[32]->data, "%x", a); // converti la valeur de a en char* sous la forme d'un hexadécimal (ie une adresse)
-    WARNING_MSG("La structure opvalue a été modifée");
+    sprintf(data, "%x", a); // converti la valeur de a en char* sous la forme d'un hexadécimal (ie une adresse)
+    tab_reg[32]->data=strdup(data);
+
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -935,9 +984,11 @@ int instr_jal(OP_VAL* opvalue, reg* tab_reg)
 
     // on conserve la valeur suivante de PC ($32) en la mettant dans $ra ($31)
     unsigned int a=0;
+    char* data=calloc(1, sizeof(char));
     sscanf(tab_reg[32]->data,"%d", &a); // converti un char* en integer
     a=a+4; // permet de cibler l'instruction suivant le saut
-    sprintf(tab_reg[31]->data,"%x", a); // converti un integer en char*
+    sprintf(data,"%x", a); // converti un integer en char*
+    tab_reg[31]->data=strdup(data);
 
     // puis on effectue l'instruction J
     instr_j(opvalue, tab_reg);
@@ -963,10 +1014,13 @@ int instr_jalr(OP_VAL* opvalue, reg* tab_reg)
         unsigned int a;
         sscanf(tab_reg[32]->data,"%d", &a); // converti un char* en integer
         a=a+4; // permet de cibler l'instruction suivant le saut
-        sprintf(tab_reg[(opvalue)->rd_num]->data,"%d", a); // converti un integer en char*
+	char* data=calloc(1, sizeof(char));
+        sprintf(data,"%d", a); // converti un integer en char*
+	tab_reg[(opvalue)->rd_num]->data=strdup(data);
 
         // on effectue le saut à l'adresse rs en mettant son contenu dans PC
-        sprintf(tab_reg[32]->data,"%d", (opvalue)->rs); // converti un integer en char*
+        sprintf(data,"%d", (opvalue)->rs); // converti un integer en char*
+	tab_reg[32]->data=strdup(data);
         
         return CMD_OK_RETURN_VALUE;
     }
@@ -989,7 +1043,9 @@ int instr_jr(OP_VAL* opvalue, reg* tab_reg)
     if ((opvalue->rs_num)<35) // on vérifie qu'un registre ait bien été précisé dans rs
     {
         // on effectue le saut à l'adresse rs en mettant son contenu dans PC
-        sprintf(tab_reg[32]->data,"%d", (opvalue)->rs); // converti un integer en char*
+	char* data=calloc(1, sizeof(char));
+        sprintf(data,"%d", (opvalue)->rs); // converti un integer en char*
+	tab_reg[32]->data=strdup(data);
 
         return CMD_OK_RETURN_VALUE;
     }

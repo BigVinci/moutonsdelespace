@@ -1,5 +1,15 @@
 load elf/procedure.o
-disasm 0x1000 : 0x1014
+disp mem 0x1000 + 8 
+set reg $2 4096
+set reg $3 4096
+disp reg all
+set mem word 0x1008 2153906180
+run 0x1000
+disp mem 0x1000 + 8
+debug
+
+
+run 0x1000
 debug
 
 load elf/boucle.o
