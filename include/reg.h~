@@ -1,0 +1,41 @@
+#ifndef _REG_H_
+#define _REG_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+#include <stdio.h>
+#include "common/types.h"
+
+/* définie la structure registre */
+typedef struct registre
+{
+	char	*name;		/* nom du registre */ 
+	char	*mnemo;		/* second nom du registre */ 
+	vaddr32	address; 	/* adresse de destination sur 32 bits */  
+	char	*data;		/* contenu du registre sur 32 bits */
+}* reg; /* pointeur qui pointe sur un registre */ 
+
+/* définie la pile */ 
+/* typedef struct maillon
+{
+	char	*name
+	struct maillon*	suiv
+}* pile;
+*/
+
+/* #define	$0		0 		utile ? */
+
+reg init_reg(char* name, char* mnemo);
+void del_reg (reg registre);
+reg init_tab_reg(void);
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _MEM_H_ */

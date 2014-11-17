@@ -1,0 +1,100 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include "common/bits.h"
+#include "common/notify.h"
+#include "elf/elf.h"
+#include "elf/syms.h"
+
+
+#include "load.c" /* fonction load */
+
+
+/*************************************************************\
+Les commandes de l'émulateur.
+
+ Dans cette version, deux commandes :
+	"test" qui attend un nombre strictement positifs d'hexa strictement positifs et affiche ce(s) nombre() +1 dans le terminal
+	"exit" qui quitte l'émulateur
+
+ \*************************************************************/
+
+/**
+ * version de la commande test qui prend en entrée un hexa
+ * la fonction verifie si le nombre est >=0
+ * @param hexValue la valeur à afficher
+ * @return 0 en case de succes, un nombre positif sinon
+ */
+
+int _testcmd(int hexValue) {
+    if(hexValue <= 0) {
+        WARNING_MSG("command %s  - invalid call. The argument should be positive.\n", "test");
+        return 2;
+    }
+    fprintf(stdout, "CMD TEST RESULT 0x%x\n", hexValue + 1);
+
+    return CMD_OK_RETURN_VALUE;
+}
+
+
+/**
+ * version de la commande test qui analyse la chaine entrée à
+ * l'interpreteur. Si la commande est correcte elle est executée.
+ * Si la commande contient plusieurs parametres valides, elle
+ * est excutée plusieurs fois.
+ * @param inter l'interpreteur qui demande l'analyse
+ * @return 0 en case de succes, un nombre positif sinon
+ */
+
+int testcmd(interpreteur inter) {
+    DEBUG_MSG("Chaine : %s", inter->input);
+    int return_value=0;
+
+    int no_args=1;
+    /* la commande test attend un argument hexa */
+    int hexValue;
+    char * token=NULL;
+
+    /* la boucle permet d'executer la commande de manière recurrente*/
+    /* i.e., tant qu'il y a un hexa on continue*/
+    while((token = get_next_token(inter))!=NULL && return_value==0) {
+    		no_args=0;
+        switch(get_type(token)) {
+        case HEXA:
+            sscanf(token,"%x",&hexValue);
+            return_value = _testcmd(hexValue);
+            break;
+        default :
+            WARNING_MSG("value %s is not a valid argument of command %s\n",token,"testcmd");
+            return 1;
+        }
+    }
+
+
+    if(no_args){
+            WARNING_MSG("no argument given to command %s\n","testcmd");
+            return 1;
+        }
+
+
+    return return_value;
+}
+
+
+/**
+ * commande exit qui ne necessite pas d'analyse syntaxique
+ * @param inter l'interpreteur qui demande l'analyse
+ * @return 0 en case de succes, un nombre positif sinon
+ */
+int exitcmd(interpreteur inter) {
+    INFO_MSG("Bye bye !");
+    return CMD_EXIT_RETURN_VALUE; /* retourne -1 et non pas 0 d'après le define initial non ? */ 
+}
+
+
+
+
+/* load, disp, disasm et set */
+int loadcmd(interpreteur inter)
+{
+	printf("Fonction non implémentée.\n");
+}

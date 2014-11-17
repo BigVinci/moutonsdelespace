@@ -238,13 +238,14 @@ int get_type(char* chaine) {
 
 
 /**
-* @brief parse la chaine courante de l'interpreteur a la recherche d'une commande, et execute cette commande.
-* @param inter l'interpreteur qui demande l'analyse
-* @return CMD_OK_RETURN_VALUE si la commande s'est executee avec succes (0)
-* @return CMD_EXIT_RETURN_VALUE si c'est la commande exit. Dans ce cas, le programme doit se terminer. (-1)
-* @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
-* @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
-*/
+ * @brief parse la chaine courante de l'interpreteur a la recherche d'une commande, et execute cette commande.
+ * @param inter l'interpreteur qui demande l'analyse
+ * 
+ * @return CMD_OK_RETURN_VALUE si la commande s'est executee avec succes (0)
+ * @return CMD_EXIT_RETURN_VALUE si c'est la commande exit. Dans ce cas, le programme doit se terminer. (-1)
+ * @return CMD_UNKOWN_RETURN_VALUE si la commande n'est pas reconnue. (-2)
+ * @return tout autre nombre (eg tout nombre positif) si erreur d'execution de la commande
+ */
 int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
 {
     DEBUG_MSG("input '%s'", inter->input);
@@ -276,49 +277,67 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
     /* test si la commande est load */
     else if(strcmp(token, "load") == 0)
     {
-    return loadcmd(inter, vmem);
+    	return loadcmd(inter, vmem);
     }
 
     /* test si la commande est disp */
     else if(strcmp(token, "disp") == 0)
     {
-    return dispcmd(inter, tabreg, *vmem );
+    	return dispcmd(inter, tabreg, *vmem );
     }
 
     /* test si la commande est disasm */
     else if(strcmp(token, "disasm") == 0)
     {
-    return disasmcmd(inter, *vmem, tabreg);
+    	return disasmcmd(inter, *vmem, tabreg);
     }
 
     /* test si la commande est set */
     else if(strcmp(token, "set") == 0)
     {
-    return setcmd(inter, tabreg, *vmem);
+    	return setcmd(inter, tabreg, *vmem);
     }
 
     /* test si la commande est assert */
     else if(strcmp(token, "assert") == 0)
     {
-    return assertcmd(inter, tabreg, *vmem);
+    	return assertcmd(inter, tabreg, *vmem);
     }
 
     /* test si la commande est resume */
     else if(strcmp(token, "resume") == 0)
     {
-    resumecmd(inter, fp);
-    return CMD_OK_RETURN_VALUE;
+    	resumecmd(inter, fp);
+    	return CMD_OK_RETURN_VALUE;
     }
 
     /* test si la commande est debug */
     else if(strcmp(token, "debug") == 0)
     {
-    debugcmd(inter, fp);
-    return CMD_OK_RETURN_VALUE;
+    	debugcmd(inter, fp);
+    	return CMD_OK_RETURN_VALUE;
+    }
+
+    /* test si la commande est debug */
+    else if(strcmp(token, "run") == 0)
+    {
+    	return runcmd(inter, tabreg, *vmem);
+    }
+
+    /* test si la commande est debug */
+    else if(strcmp(token, "step") == 0)
+    {
+    	return stepcmd(inter, tabreg, *vmem);
+    }
+
+    /* test si la commande est debug */
+    else if(strcmp(token, "break") == 0)
+    {
+    	return breakcmd(inter, tabreg, *vmem);
     }
 
     /* si aucune commande n'est reconnue */
-        WARNING_MSG("Unknown Command : '%s'", cmdStr);
+    WARNING_MSG("Unknown Command : '%s'", cmdStr);
     return CMD_UNKOWN_RETURN_VALUE;
 }
 
@@ -327,16 +346,20 @@ int execute_cmd(interpreteur inter, reg* tabreg, mem* vmem, FILE* fp)
 /*************************************************************\
 Les commandes de l'émulateur.
 
- Dans cette version, neuf commandes :
+ Dans cette version, douze commandes :
     "test" qui attend un nombre strictement positifs d'hexa strictement positifs et affiche ce(s) nombre() +1 dans le terminal
     "exit" qui quitte l'émulateur
     "load" qui charge un fichier objet ELF .o (laod.c)
     "disp" qui affiche (des éléments de) la mémoire ou de(s) registre(s)
-    "disasm" qui affiche les instructions présentes dans la plage de données précisée (disasm.c)
+    "disasm" qui affiche les instructions présentes dans la plage de données précisée (incluses dans .text) (disasm.c)
     "set" qui modifie la valeur d'une adresse mémoire ou d'un registre
     "assert" qui compare une valeur avec la valeur d'une adresse mémoire ou celle d'un registre
     "resume" qui repasse au mode SCRIPT après être arrivé en mode INTERACTIF à l'aide de debug
     "debug" qui permet de sortir du mode SCRIPT afin d'être en mode INTERACTIF
+
+    "run" qui
+    "step" qui
+    "break" qui
 
  \*************************************************************/
 
@@ -395,7 +418,7 @@ int testcmd(interpreteur inter) {
  */
 int exitcmd(interpreteur inter) {
     INFO_MSG("Bye bye !");
-    return CMD_EXIT_RETURN_VALUE; /* retourne -1 et non pas 0 d'après le define initial non ? */
+    return CMD_EXIT_RETURN_VALUE; 
 }
 
 
@@ -650,7 +673,7 @@ int assertcmd(interpreteur inter, reg* tab, mem vmem)
 	if ((token1=get_next_token(inter))==NULL) 
 	{
 	    WARNING_MSG("no argument given to command %s, expecting 'reg' , 'word' or 'byte'","assertcmd");
-            return 1;
+        return 1;
 	}
 /* on test si l'argument suivant assert est bien un des arguments attendus */
     	if (strcmp(token1, "reg")!=0 && strcmp(token1, "word")!=0 && strcmp(token1, "byte")!=0)
@@ -718,7 +741,7 @@ else if(strcmp(token1, "word")==0)
             sscanf(token2,"%x",&addrValue);
             if(get_type(token3)==INTEGER) /* on vérifie que le token3 représente un entier  */
             {
-		sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
+		        sscanf(token3,"%u",&k); /* k prend la valeur indiquée par token3 */
                 INFO_MSG("La commande assert word 0x%x %u est exécutée", addrValue, k);
                 return _assert_wordcmd(addrValue, k, vmem);
             }  {WARNING_MSG("value %s is not a valid argument of command %s , expecting an integer 32 bits",token3,"assert_word <adresse>"); return 1;}
@@ -903,12 +926,200 @@ void debugcmd(interpreteur inter, FILE* fp)
     char* token1=get_next_token(inter);
 	if(token1!=NULL)
 	{
-    	    {
-		WARNING_MSG("Too many argument in this command");
-		return;
-            }
+    	{
+		  WARNING_MSG("Too many argument in this command");
+		  return;
+        }
 	}
+
 	_debugcmd(inter, fp);
 	return;
 }
 
+/** 
+ * BREAKCMD
+ * commande qui met un point d'arrêt à une ou plusieurs adresses
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
+ * @param vmem la mémoire contenant le code assembleur (dans .text)
+ * @return 0 si réussi, 1 si fail
+ */
+int breakcmd( interpreteur inter, reg* tab_reg, mem vmem)
+{
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+    
+    DEBUG_MSG("Command break");
+    char* token1=get_next_token(inter); char* token2=NULL;
+    int address=0;
+    unsigned int BP;
+
+    if (token1==NULL)
+    {
+        WARNING_MSG("no argument given to command %s, expecting 'add' , 'del' or 'list'","break");
+        return 1;
+    }
+
+    if (strcmp(token1, "add")==0)
+    {
+        while ((token2=get_next_token(inter))!=NULL)
+        {
+            address=1;
+
+            if (get_type(token2)!=HEXA) // on vérifie que l'on a bien une adresse
+            {
+                WARNING_MSG("%s if not a valid argument to command %s %s, expecting an address",token2, "break", token1);
+                return 1;  
+            }
+
+            sscanf(token2, "%x", &BP);
+            *(inter->BP)=add_bp(*(inter->BP), BP); // on rajoute chaque élément précisé
+        }
+
+        if (address==0) // s'il n'y a aucun argument après "add"
+        {
+            WARNING_MSG("no argument given to command %s %s, expecting an address","break", token1);
+            return 1;  
+        }
+
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    else if (strcmp(token1, "del")==0)
+    {
+        while ((token2=get_next_token(inter))!=NULL)
+        {
+            address=1;
+
+            if (get_type(token2)!=HEXA && strcmp(token2, "all")!=0) // on vérifie que l'on a bien une adresse ou le mot "all"
+            {
+                WARNING_MSG("%s if not a valid argument to command %s %s, expecting an address or 'all' ",token2, "break", token1);
+                return 1;  
+            }
+
+            if (strcmp(token2, "all")==0) // si la commande entrée est break del all
+                suppr_liste(*(inter->BP)); // on supprime tous les breakpoints
+            else if (get_type(token2)==HEXA)
+            {
+                sscanf(token2, "%x", &BP);
+                *(inter->BP)=suppr_bp(*(inter->BP), BP); // on supprime chaque élément précisé
+            }
+        }
+
+        if (address==0) // s'il n'y a aucun argument après "add"
+        {
+            WARNING_MSG("no argument given to command %s %s, expecting an address or 'all' ","break", token1);
+            return 1;  
+        }
+
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    else if (strcmp(token1, "list")==0)
+    {
+        if((token2=get_next_token(inter))!=NULL)
+        {
+            WARNING_MSG("Too many arguments given to command %s %s","break", token1);
+            return 1; 
+        }
+
+        disp_bp(*(inter->BP));
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    WARNING_MSG("Should never be here");
+    return 1;
+}
+
+
+/** 
+ * STEPCMD
+ * commande qui provoque l'exécution d'une ou plusieurs instructions après avoir ajouté un breakpoint
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
+ * @param vmem la mémoire contenant le code assembleur (dans .text)
+ * @return 0 si réussi, 1 si fail
+ */
+int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
+{
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+
+    DEBUG_MSG("Command step");
+    char* token1=get_next_token(inter);
+    char* token2=NULL;
+
+    if (token1==NULL) // instruction STEP
+    {
+        return _machine_statecmd("step", tab_reg[32]->data, inter->BP, tab_reg, vmem);
+    }
+
+    else 
+    {
+        if((token2=get_next_token(inter))!=NULL || strcmp(token1, "into")!=0)
+        {
+            WARNING_MSG("Too many arguments to the command STEP (INTO)");
+            return 1;
+        }
+
+        else if (strcmp(token1, "into")==0) // instruction STEP INTO
+        {
+            WARNING_MSG("Fonction non implémentée. Exécution de la fonction STEP");
+            return _machine_statecmd("step", tab_reg[32]->data, inter->BP, tab_reg, vmem);
+        }
+    }
+
+    WARNING_MSG("Should never be here");
+    return 1;
+}
+
+
+/** 
+ * RUNCMD
+ * commande qui lance le microprocesseur après avoir chargé PC 
+ * @param inter l'interpreteur qui demande l'analyse et qui contient la liste de breakpoint
+ * @param tab_reg le tableau de registres dont PC
+ * @param vmem la mémoire contenant le code assembleur (dans .text)
+ * @return 0 si réussi, 1 si fail
+ */
+int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
+{
+    if (vmem==NULL) 
+    {
+    WARNING_MSG("You have to load a memory");
+        return 1;
+    }
+
+    DEBUG_MSG("Command run");
+    char* token1=get_next_token(inter);
+    char* token2=NULL;
+
+    if (strcmp(tab_reg[32]->data,"0")==0) 
+        sprintf(tab_reg[32]->data, "%u", vmem->seg[0].start._32); // on initialise PC au début du point .text si il n'a pas encore été initialisé
+
+    if (token1==NULL) // si l'adresse est omise, on démarre à l'adresse courante du PC
+    {
+	   return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem);
+    }
+
+    if ((token2=get_next_token(inter))!=NULL) // on vérifie qu'il n'y ait pas trop d'arguments
+    {
+	   WARNING_MSG("Too many arguments givent to command %s %s","run", token1);
+	   return 1;
+    }
+
+    if (get_type(token1)!=HEXA)
+    {
+	   WARNING_MSG("%s is not a valid argument for %s, expecting an adress",token1, "run cmd");
+	   return 1;
+    }
+
+    tab_reg[32]->data=token1; // on initialise PC à la valeur précisée par l'utilisateur
+    return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem); 
+}

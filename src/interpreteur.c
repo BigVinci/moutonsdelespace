@@ -14,9 +14,15 @@ interpreteur init_inter(void)
     interpreteur inter = calloc(1,sizeof(*inter));
     if (inter ==NULL)
         ERROR_MSG("impossible d'allouer un nouvel interpreteur");
+
     inter->file = calloc(1,sizeof(FILE));
     if (inter->file ==NULL)
         ERROR_MSG("impossible d'allouer un nouvel interpreteur");
+
+    inter->BP = calloc(1,sizeof(Liste));
+    if (inter->file ==NULL)
+        ERROR_MSG("impossible d'allouer un nouvel interpreteur");
+    
     return inter;
 }
 
@@ -29,22 +35,19 @@ void del_inter(interpreteur inter)
 	if (inter->file !=NULL)
     	free(inter->file);
 
-        if (inter !=NULL)
+    if ( !vide_liste(*(inter->BP)) )
+        suppr_liste(*(inter->BP));
+
+    if (inter !=NULL)
         free(inter);
 }
 
 
 
-/* fonction qui traduit les adresses virtuelles en adresses réelles et vice-versa à implémenter */
-
-
-
-
-
 /*************************************************************\
  Les deux fonctions principales de l'emulateur.
-	execute_cmd: parse la commande et l'execute en appelant la bonne fonction C
-                 commande présente dans fonc_gestion.c 
+	execute_cmd : parse la commande et l'execute en appelant la bonne fonction C
+                  commande présente dans fonc_gestion.c 
 	acquire_line : recupere une ligne (donc une "commande") dans le flux
  \*************************************************************/
 

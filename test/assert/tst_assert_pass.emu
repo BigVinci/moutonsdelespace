@@ -3,27 +3,10 @@
 #TEST_COMMENT="Teste fonctionnement standard"
 #-------
 
-
-
-
-
-
-assert
-assert reg
-assert reg $24
-assert reg $23 
+load elf/boucle.o
 assert reg $24 -4
-assert reg $24 0.4
 assert reg $24 4 
-assert word
-assert byte
-assert word 0x77777777 
-assert byte 0x77777777
-assert word 0x7777
-assert byte 0x7777
-assert word 0x77777777 0.4
-assert byte 0x77777777 0.4
-assert word 0x77777777 4
-assert byte 0x77777777 4
-assert word 0x77777777 -4
-assert byte 0x77777777 -4
+assert byte 0x1080 48
+assert byte 0x7051777 -4
+assert word 0x7fff7 4
+assert word 0xcd77777 -4

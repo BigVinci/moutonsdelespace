@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=FAIL        
+#TEST_COMMENT="Teste fonctionnement standard"
+#-------
+
+load elf/boucle.o
+disasm 0x1000 : 0x1500 next_char

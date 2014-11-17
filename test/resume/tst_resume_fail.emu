@@ -1,11 +1,6 @@
-
 #-------
-#TEST_RETURN_CODE=FAIL           
+#TEST_RETURN_CODE=PASS           
 #TEST_COMMENT="Teste fonctionnement standard"
 #-------
 
-
-resum
-resumea
-resume 45417554
-
+resume next_char
