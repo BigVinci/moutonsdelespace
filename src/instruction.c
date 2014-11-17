@@ -10,10 +10,10 @@ OP_VAL* init_opvalue(void)
     OP_VAL* opvalue=calloc(1, sizeof(OP_VAL));
 
 // liste des valeurs utilisables lors de chaque instruction
-    (*opvalue).rt=0;(*opvalue).rs=0;(*opvalue).rd=0;(*opvalue).sa=0;(*opvalue).immediate=0;(*opvalue).offset=0;
+    (*opvalue).rt=0;(*opvalue).rs=0;(*opvalue).rd=0;(*opvalue).sa=0;(*opvalue).immediate=0;(*opvalue).offset=0;(*opvalue).target=0;
 
 // liste des registres modifiables par chaque instruction, initialisé à 35 car le registre $35 n'existe pas
-    (*opvalue).rt_num=35;(*opvalue).rs_num=35;(*opvalue).rd_num=35;(*opvalue).sa_num=35;(*opvalue).immediate_num=35;(*opvalue).offset_num=35;
+    (*opvalue).rt_num=35;(*opvalue).rs_num=35;(*opvalue).rd_num=35;(*opvalue).sa_num=35;/*(*opvalue).immediate_num=35;(*opvalue).offset_num=35;(*opvalue).target_num=35;*/
     return opvalue;
 }
 
@@ -162,29 +162,33 @@ int realise_instr(OP_VAL* op1, char** name, reg* tab_reg)
  * @return 0 si réussi, 1 si fail
  */
 int maj_reg(OP_VAL* opvalue, reg* tab_reg)
-{   int a=(opvalue->rs);
-char donnee[100]; 
-INFO_MSG("Step0");
+{
+    char* donnee=strdup("Initialisation"); 
+
     if (opvalue->rs_num<35)
-	{sprintf(donnee, "%d", a); (tab_reg[opvalue->rs_num]->data)=strdup(donnee);
-INFO_MSG("%s %s", donnee, tab_reg[opvalue->rs_num]->data);INFO_MSG("Step0.5");} // on met à jour le tableau de registre
-    INFO_MSG("Step1");
+    {
+	sprintf(donnee, "%d", opvalue->rs); 
+	(tab_reg[opvalue->rs_num]->data)=strdup(donnee); // on met à jour le tableau de registre
+    }
+
     if ((opvalue->rt_num)<35)
-{sprintf(donnee, "%d", a); (tab_reg[opvalue->rt_num]->data)=strdup(donnee);
-INFO_MSG("Valeur %s %s", donnee, tab_reg[opvalue->rt_num]->data);
-INFO_MSG("Step1.5");}
-	//sprintf(tab_reg[opvalue->rt_num]->data, "%d", opvalue->rt); // on met à jour le tableau de registre
-    INFO_MSG("Step2");
+    {
+	sprintf(donnee, "%d", opvalue->rt); 
+	(tab_reg[opvalue->rt_num]->data)=strdup(donnee); // on met à jour le tableau de registre
+    }
+
     if (opvalue->rd_num<35)
-{sprintf(donnee, "%d", a); (tab_reg[opvalue->rd_num]->data)=strdup(donnee);
-INFO_MSG("%s %s", donnee, tab_reg[opvalue->rd_num]->data);INFO_MSG("Step2.5");}
-	//sprintf(tab_reg[opvalue->rd_num]->data, "%d", opvalue->rd); // on met à jour le tableau de registre
-    INFO_MSG("Step3");
+    {
+	sprintf(donnee, "%d", opvalue->rd); 
+	(tab_reg[opvalue->rd_num]->data)=strdup(donnee); // on met à jour le tableau de registre
+    }
+
     if (opvalue->sa_num<35)
-{sprintf(donnee, "%d", a); (tab_reg[opvalue->sa_num]->data)=strdup(donnee);
-INFO_MSG("%s %s", donnee, tab_reg[opvalue->sa_num]->data);INFO_MSG("Step3.5");}
-	//sprintf(tab_reg[opvalue->sa_num]->data, "%d", opvalue->sa); // on met à jour le tableau de registre
-    INFO_MSG("Step4");
+    {
+	sprintf(donnee, "%d", opvalue->sa); 
+	(tab_reg[opvalue->sa_num]->data)=strdup(donnee); // on met à jour le tableau de registre
+    }
+
     return CMD_OK_RETURN_VALUE;
 }
 
@@ -633,106 +637,250 @@ int instr_mflo(OP_VAL* opvalue,reg* tab_reg)
 
 // instructions de branchement, de saut et de contrôle
 
-int instr_beq(OP_VAL* opvalue)
+/** INSTR_BEQ
+ * commande qui réalise un offset si les deux registres indiqués ont la même valeur
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_beq(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BEQ");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    if (strcmp(tab_reg[opvalue->rs]->data,tab_reg[opvalue->rt]->data)==0)
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("Les registres n'ont pas la même valeur");
+
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_bne(OP_VAL* opvalue)
+/** INSTR_BNE
+ * commande qui réalise un offset si les deux registres indiqués ont chacun une valeur différente
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_bne(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BNE");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    if (strcmp(tab_reg[opvalue->rs]->data,tab_reg[opvalue->rt]->data)!=0)
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("Les registres ont la même valeur");
+    
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_bgez(OP_VAL* opvalue)
+/** INSTR_BGEZ
+ * commande qui réalise un offset si la valeur du registre est supérieure ou égale à 0
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_bgez(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BGEZ");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    int a;
+    sscanf(tab_reg[opvalue->rs]->data, "%x", &a);
+
+    if (a>=0 && a<=2147483648) // si a appartient à {0; 2^31}
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("La valeur du registre est inférieure strictement à 0");
+    
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_bgtz(OP_VAL* opvalue)
+/** INSTR_BGEZ
+ * commande qui réalise un offset si la valeur du registre est supérieure strictement à 0
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_bgtz(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BGTZ");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    int a;
+    sscanf(tab_reg[opvalue->rs]->data, "%x", &a);
+
+    if (a>0 && a<=2147483648) // si a appartient à {1; 2^31}
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("La valeur du registre est inférieure ou égale à 0");
+   
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_blez(OP_VAL* opvalue)
+/** INSTR_BLEZ
+ * commande qui réalise un offset si la valeur du registre est inférieure ou égale à 0
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_blez(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BLEZ");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    int a;
+    sscanf(tab_reg[opvalue->rs]->data, "%x", &a); // converti data en integer
+
+    if (a==0 || (a>2147483648 && a<=4294967296)) // si a appartient à {2^31+1; 2^32} ou est nul (0=2^32)
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("La valeur du registre est supérieure strictement à 0");
+   
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_bltz(OP_VAL* opvalue)
+/** INSTR_BLEZ
+ * commande qui réalise un offset si la valeur du registre est inférieure strictement à 0
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0
+ */
+int instr_bltz(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command BLTZ");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
+
+    int a;
+    sscanf(tab_reg[opvalue->rs]->data, "%x", &a); // converti data en integer
+
+    if (a>2147483648 && a<4294967296) // si a appartient à {2^31+1; 2^32-1}
+    {
+        int offset=((opvalue->offset)*4); // on décale l'offset initial de 2 bits (soit un offset sur 18 bits)
+        sprintf(tab_reg[32]->data, "%x", offset); // converti l'entier sur 18 bits en char* contenant une adresse
+    }
+    else
+        INFO_MSG("La valeur du registre est supérieure ou égale à 0");
+   
     return CMD_OK_RETURN_VALUE;
 }
 
 
 /** INSTR_J
  * commande qui permet d'effectuer un branchement aligné à 256Mo dans la région mémoire du PC
- * @param opvalue contient une structure OP_VAL* à modifier
+ * @param opvalue contient une structure OP_VAL* 
+ * tab_reg le tableau de registres contenant PC à modifier
  * @return 0 dès que réussi
  */
-int instr_j(OP_VAL* opvalue)
+int instr_j(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command J");
-    unsigned a=((opvalue->target)<<2); 
-    (opvalue->target)=a; // on ne peut rajouter les 4 bits de poids fort ici car le tableau de registre n'est pas présent
+    unsigned int a=((opvalue->target)*4); // on décale la target initiale de 2 bits (soit target sur 28 bits)
 
-    WARNING_MSG("La structure opvalue a été modifée");
+    // on veut rajouter les 4 bits de poids fort du PC 
+    char* data=calloc(1, sizeof(char));
+    int b=0;
+    data=strdup(tab_reg[32]->data); // on récupère l'adresse du PC dans data
+    sscanf(data,"%d",&b); // converti data en integer dans b
+    b=(b>>28); // on décale la valeur de b de 28 bits sur la droite : on ne garde que les 4 bits de poids fort
+    a+=b<<28; // on rajoute ces 4 bits de poids fort devant les 28 bits de a, a fait désormais 32 bits
+
+    sprintf(tab_reg[32]->data, "%x", a); // converti la valeur de a en char* sous la forme d'un hexadécimal (ie une adresse)
+
     return CMD_OK_RETURN_VALUE;
 }
 
 
-int instr_jal(OP_VAL* opvalue)
+/** INSTR_JAL
+ * commande qui permet d'effectuer un branchement aligné à 256Mo dans la région mémoire du PC après avoir renseigné l'adresse suivant le saut dans le registre $ra
+ * @param opvalue contient une structure OP_VAL* 
+ * tab_reg le tableau de registres contenant PC et $ra ($31) à modifier
+ * @return 0 dès que réussi
+ */
+int instr_jal(OP_VAL* opvalue, reg* tab_reg)
 {
-    INFO_MSG("Command JAL");
-    WARNING_MSG("Fonction non implémentée");
+    INFO_MSG("Command JAL (contient l'instruction J)");
+
+    // on conserve la valeur suivante de PC ($32) en la mettant dans $ra ($31)
+    unsigned int a=0;
+    sscanf(tab_reg[32]->data,"%d", &a); // converti un char* en integer
+    a=a+4; // permet de cibler l'instruction suivant le saut 
+    sprintf(tab_reg[31]->data,"%d", a); // converti un integer en char*
+
+    // puis on effectue l'instruction J
+    instr_j(opvalue, tab_reg);
+
     return CMD_OK_RETURN_VALUE;
 }
 
 
 /** INSTR_JALR
- * commande qui initialise le registre $rd à $31 si besoin et qui met à jour ce registre ainsi que $rs
- * @param opvalue contient une structure OP_VAL* à modifier
+ * commande qui effectue un saut à l'adresse rs et place l'adresse de retour (après le saut) dans rd ($31 si non spécifié) 
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC et $rs à modifier
  * @return 0 si réussi, 1 si fail
  */
-int instr_jalr(OP_VAL* opvalue)
+int instr_jalr(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command JALR");
-    if ((opvalue->rs_num)!=35)
+
+    if ((opvalue->rs_num)<35) // on vérifie qu'un registre ait bien été précisé dans rs
     {
-        if (((opvalue)->rd_num)!=35) // si rd n'est pas spécifié, le registre $31 sera utilisé par défaut
+        if (((opvalue)->rd_num)>=35) // si rd n'est pas spécifié, le registre $31 sera utilisé par défaut
             ((opvalue)->rd_num)=31;
 
-        // il faut mettre à jour rd et rs
+        // on conserve la valeur suivante de PC ($32) en la mettant dans $rd (cf instruction JAL)
+        unsigned int a;
+        sscanf(tab_reg[32]->data,"%d", &a); // converti un char* en integer
+        a=a+4; // permet de cibler l'instruction suivant le saut 
+        sprintf(tab_reg[(opvalue)->rd_num]->data,"%d", a); // converti un integer en char*
+
+        // on effectue le saut à l'adresse rs en mettant son contenu dans PC
+        sprintf(tab_reg[32]->data,"%d", (opvalue)->rs); // converti un integer en char*
 
         return CMD_OK_RETURN_VALUE;
     }
 
-    WARNING_MSG("L'instruction JALR n'a pas fonctionné car opvalue n'a pas été modifié comme prévu");
+    WARNING_MSG("Aucun saut n'est spécifié dans $rs, l'instruction ne peut être exécutée");
     return 1;
 }
 
 
-int instr_jr(OP_VAL* opvalue)
+/** INSTR_JR
+ * commande qui effectue un saut à l'adresse contenant dans $rs
+ * @param opvalue contient une structure OP_VAL*
+ * tab_reg le tableau de registres contenant PC à modifier
+ * @return 0 si réussi, 1 si fail
+ */
+int instr_jr(OP_VAL* opvalue, reg* tab_reg)
 {
     INFO_MSG("Command JR");
-    WARNING_MSG("Fonction non implémentée - la structure opvalue n'a pas besoin d'être modifée");
-    return CMD_OK_RETURN_VALUE;
+    
+    if ((opvalue->rs_num)<35) // on vérifie qu'un registre ait bien été précisé dans rs
+    {
+        // on effectue le saut à l'adresse rs en mettant son contenu dans PC
+        sprintf(tab_reg[32]->data,"%d", (opvalue)->rs); // converti un integer en char*
+
+        return CMD_OK_RETURN_VALUE;
+    }
+
+    WARNING_MSG("Aucun saut n'est spécifié dans $rs, l'instruction ne peut être exécutée");
+    return 1;
 }
 
 

@@ -11,7 +11,7 @@
  */
 int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 {
-    int no_args=1, i=0, j=0, k=0;
+    int no_args=1/*, i=0*/, j=0, k=0;
     uint32_t addrreelle;
 
     int* value1=calloc(1, sizeof(int)); int* value2=calloc(1, sizeof(int));
@@ -19,7 +19,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
     unsigned int addr_start; sscanf(addr1, "%x", &addr_start);
     unsigned int addr_end; sscanf(addr2, "%x", &addr_end);
-    int addr_end2=(vmem->seg[1].start._32+vmem->seg[1].size._32);
+    int addr_end2=(vmem->seg[0].start._32+vmem->seg[0].size._32);
     char* contenu=calloc(1, sizeof(char));
 
     OP_VAL* opvalue=init_opvalue();
@@ -66,8 +66,24 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
 
 	j=disasm(contenu, dico, tab_reg, addr1, vname, opvalue);
-	
+
 	k=realise_instr(opvalue, vname, tab_reg);
+ 
+        // on vérifie que le PC ne prenne pas une valeur interdite suite à l'exécution d'un saut ou d'un branchement
+        unsigned int start;
+        sscanf(tab_reg[32]->data,"%d",&start); //converti la valeur du PC en integer
+    
+        if (start<vmem->seg[0].start._32) 
+        {
+            WARNING_MSG("Modification interdite du PC suite à un saut ou un branchement");
+            return 1;
+        }
+
+        if (start>(vmem->seg[0].start._32+vmem->seg[0].size._32)) 
+        {
+            WARNING_MSG("Modification interdite du PC suite à un saut ou un branchement");
+            return 1;
+        }
 
 	maj_reg(opvalue, tab_reg);  
 
@@ -85,8 +101,8 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
         return 1;
 	}
 
-	i+=4;
-	addr_start+=4; sprintf(addr1, "%x", addr_start);	
+	   // i+=4;
+	   addr_start+=4; sprintf(addr1, "%x", addr_start);	
     }
 
     if (no_args==1) // si il ne se passe rien

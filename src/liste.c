@@ -1,6 +1,5 @@
 #include "../include/liste.h"
 
-
 /** 
  * INIT_LISTE
  * commande qui crée et alloue une liste
@@ -115,27 +114,27 @@ Liste add_bp(Liste L, unsigned int adress)
         *i=(p->data); *j=adress;  // permet de comparer les deux valeurs numériques
 
         if (p->suiv !=NULL) *k=p->suiv->data; // on vérifie qu'il y ait plus strictement de un élément
-        else 
+        else // si il n'y a qu'un seul élément 
         {
-            if (i<j) {p->suiv=L1; return L;}    // on rajoute l'élément en seconde position (ie la fin dans ce cas particulier)
+            if (*i<*j) {p->suiv=L1; return L;}    // on rajoute l'élément en seconde position (ie la fin dans ce cas particulier)
             else {L1->suiv=p; L=L1; return L;}  // on ajoute l'élément en première position
         }
 
     // cas où il y a au moins deux éléments dans la liste
-        if (j<i) // ajout en tête 
+        if (*j<*i) // ajout en tête 
         {
             L1->suiv=L;
             return L1;
         }
 
-        if (j<k && i<j) // ajout en seconde position 
+        if (*j<*k && *i<*j) // ajout en seconde position 
         {
             L1->suiv=p->suiv;
             p->suiv=L1;
             return L;
         }
 
-        while(k<j && p->suiv !=NULL) // ajout autre position
+        while(*k<*j && p->suiv !=NULL) // ajout autre position
         {
             p=p->suiv;
             if (p->suiv!=NULL) *k=p->suiv->data; // on check l'élément suivant
@@ -174,11 +173,11 @@ void disp_bp(Liste L)
     Liste p=init_liste();
     p=calloc(1, sizeof(Liste));
     p=L;
-    printf("Visualiser de la liste de breakpoint : \n %u ", p->data); // la liste n'est pas vide
+    printf("Visualiser de la liste de breakpoint : \n 0x%x ", p->data); // la liste n'est pas vide
     while (p->suiv!=NULL)
     {
         p=p->suiv;
-        printf("%u ", p->data);
+        printf("0x%x ", p->data);
     }
     printf("\n");
 }

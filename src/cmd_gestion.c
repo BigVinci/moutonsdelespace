@@ -638,7 +638,7 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
     STATE=NOT_S;
     unsigned int PC; sscanf(address, "%x", &PC);
     char* addresschar=calloc(1, sizeof(char));
-    int i;
+    int i; 
     
     char* instruction=calloc(1, sizeof(char));
     Liste BP=init_liste(); // on crée la liste de breakpoint
@@ -654,41 +654,78 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
                 STATE=RUN;
             else if (strcmp(cmd, "step")==0)
             {
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP INTO.\n");
                 STATE=RUN;
                 BP=add_bp(BP, PC+4);
             }
+            else if (strcmp(cmd, "step into")==0)
+            {
+                BP=add_bp(BP, PC+4);
+		STATE=RUN;
+            }
+            else if (strcmp(instruction, "exit")==0)
+                STATE=OUT;
             break;
 
         case RUN :
 	    sprintf(addresschar, "%x", PC);
             i=_disasm_range_offsetcmd(addresschar, 0, vmem, tab_reg); // exécute la fonction
+	    PC=PC+4; // on passe à la ligne à désassembler suivante 
             if (i==1) STATE=TERM; // en cas d'erreur dans la fonction disasm
-            else if (absent_bp(BP, PC+4)==0) STATE=PAUSE; // si l'adresse suivante est un breakpoint, on s'arrête avant l'exécution de celle-ci
+            else if (absent_bp(BP, PC)==0) STATE=PAUSE; // si l'adresse suivante est un breakpoint, on s'arrête avant l'exécution de celle-ci
             else if (PC>(vmem->seg[0].start._32+vmem->seg[0].size._32)) STATE=TERM;
-            PC+=4; // on passe à la ligne à désassembler suivante 
             break;
 
         case PAUSE :
+	    printf("Entrez une instruction.\n");
             scanf("%s", instruction);
             if (strcmp(instruction, "run")==0) 
                 STATE=RUN;
-            else if (strcmp(instruction, "step")==0)
-            {
-                STATE=RUN;
-                BP=add_bp(BP, PC+4);
-            }
             else if (strcmp(instruction, "step into")==0)
             {
-                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP");
                 STATE=RUN;
                 BP=add_bp(BP, PC+4);
             }
+            else if (strcmp(instruction, "step")==0)
+            {
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP INTO.\n");
+                BP=add_bp(BP, PC+4);
+                STATE=RUN;
+            }
             else if (strcmp(instruction, "exit")==0)
-                STATE=TERM;
+                STATE=OUT;
             break; 
 
         case TERM :
-            printf("Le désassemblage est terminé.\n");
+            printf("Le désassemblage est terminé. Vous pouvez supprimer la liste de breakpoint ou non (del) et soit recommencé (run, step, step into), soit quitter (exit).\n Pour initialiser une nouvelle liste de breakpoint, veuillez sortir (exit) et utiliser la fonction adéquate (break).\n");
+            scanf("%s", instruction);
+	    if (strcmp(instruction, "del")==0)
+            {
+		        BP=suppr_liste(BP);
+            }
+	    else if (strcmp(instruction, "run")==0)
+	    {
+		sscanf(address, "%x", &PC);
+                STATE=RUN;
+	    }
+            else if (strcmp(instruction, "step into")==0)
+            {
+		sscanf(address, "%x", &PC);
+                STATE=RUN;
+                BP=add_bp(BP, PC+4);
+            }
+            else if (strcmp(instruction, "step")==0)
+            {
+		sscanf(address, "%x", &PC);
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP INTO.\n");
+                BP=add_bp(BP, PC+4);
+                STATE=RUN;
+            }
+            else if (strcmp(instruction, "exit")==0)
+                STATE=OUT;
+            break; 
+
+	case OUT :
             *L=BP; // on conserve la liste de breakpoint modifiée
             return CMD_OK_RETURN_VALUE;
             break;

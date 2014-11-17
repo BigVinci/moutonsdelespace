@@ -21,7 +21,7 @@
 
 // contient les valeurs à mettre dans les registres (les valeurs sont dans rt, rs, rd, ...) et les numéros des registres à modifier (dans *_num)
 typedef struct op_val_struct {int rt; int rs; int rd; int sa; int immediate; int offset; int target; 
-                              int rt_num; int rs_num; int rd_num; int sa_num; int immediate_num; int offset_num; int target_num;} OP_VAL;
+                              int rt_num; int rs_num; int rd_num; int sa_num; /*int immediate_num; int offset_num; int target_num;*/} OP_VAL;
 
 OP_VAL* init_opvalue(void);
 int realise_instr(OP_VAL* opvalue, char** vname, reg* tab_reg);
@@ -67,16 +67,16 @@ int instr_mfhi(OP_VAL* opvalue, reg* tab_reg);
 int instr_mflo(OP_VAL* opvalue, reg* tab_reg);
 
 // instructions de branchement, de saut et de contrôle
-int instr_beq(OP_VAL* opvalue);
-int instr_bne(OP_VAL* opvalue);
-int instr_bgez(OP_VAL* opvalue);
-int instr_bgtz(OP_VAL* opvalue);
-int instr_blez(OP_VAL* opvalue);
-int instr_bltz(OP_VAL* opvalue);
-int instr_j(OP_VAL* opvalue);
-int instr_jal(OP_VAL* opvalue);
-int instr_jalr(OP_VAL* opvalue);
-int instr_jr(OP_VAL* opvalue);
+int instr_beq(OP_VAL* opvalue, reg* tab_reg);
+int instr_bne(OP_VAL* opvalue, reg* tab_reg);
+int instr_bgez(OP_VAL* opvalue, reg* tab_reg);
+int instr_bgtz(OP_VAL* opvalue, reg* tab_reg);
+int instr_blez(OP_VAL* opvalue, reg* tab_reg);
+int instr_bltz(OP_VAL* opvalue, reg* tab_reg);
+int instr_j(OP_VAL* opvalue, reg* tab_reg);
+int instr_jal(OP_VAL* opvalue, reg* tab_reg);
+int instr_jalr(OP_VAL* opvalue, reg* tab_reg);
+int instr_jr(OP_VAL* opvalue, reg* tab_reg);
 int instr_break(OP_VAL* opvalue);
 int instr_syscall(OP_VAL* opvalue);
 
