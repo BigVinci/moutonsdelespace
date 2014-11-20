@@ -488,7 +488,7 @@ int disasmcmd(interpreteur inter, mem vmem, reg* tab_reg)
         return 1;
     }
 
-    char* token1; char* token2; char* token3;
+    char* token1; char* token2; char* token3; //char* token4;
     if((token1=get_next_token(inter)) == NULL || (token2=get_next_token(inter))== NULL || (token3=get_next_token(inter))== NULL) /* on vérifie que la plage est indiqué pour disp mem */
     {
         WARNING_MSG("Vous devez indiquer la plage de donnée que vous souhaitez visualiser avec la commande %s","disasm");

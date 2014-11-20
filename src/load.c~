@@ -167,7 +167,7 @@ void reloc_segment(FILE* fp, segment seg, mem memory,unsigned int endianness,sta
 
 
 
-    if (rel != NULL &&seg.content!=NULL && seg.size._32!=0) {
+    if (rel != NULL && seg.content!=NULL && seg.size._32!=0) {
 
         INFO_MSG("--------------Relocation de %s-------------------\n",seg.name) ;
         INFO_MSG("Nombre de symboles a reloger: %ld\n",scnsz/sizeof(*rel)) ;
@@ -192,7 +192,7 @@ void reloc_segment(FILE* fp, segment seg, mem memory,unsigned int endianness,sta
 // la fonction charge un fichier elf en entrée en utilisant
 // les arguments du prototype de la fonction main (cf. fiches infos)
 //
-mem load(char* name) 
+mem load(char* name, char* adress) 
 {
     char* section_names[NB_SECTIONS]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR}; 	/* 4 sections dont les noms ont été définie ci-dessus */ 
     unsigned int segment_permissions[NB_SECTIONS]= {R_X,R__,RW_,RW_};						/* décrit les différentes permissions possibles */ 
@@ -202,6 +202,9 @@ mem load(char* name)
     unsigned int endianness;   //little ou big endian
     unsigned int bus_width;    // 32 bits ou 64bits
     unsigned int next_segment_start = START_MEM; // compteur pour designer le début de la prochaine section
+
+    if (adress != NULL)
+        sscanf(adress, "%x", &next_segment_start);
 
     mem memory;  // memoire virtuelle, c'est elle qui contiendra toute les données du programme
     stab symtab= new_stab(0); // table des symboles
@@ -242,7 +245,13 @@ mem load(char* name)
 /* alloue le segment [heap] qui restera vide */
     memory->seg[j].name          = strdup("[heap]");     /* nom du segment */
     memory->seg[j].size._32      = 0xff7f8000;    /* le segment est initialement vide */ 
-    memory->seg[j].start._32     = 0x5000;      /* adresse de départ du segment */
+    if(next_segment_start>0x4000)
+    {
+        next_segment_start+= ((memory->seg[j-1].size._32+0x1000)>>12 )<<12; // on arrondit au 1k suppérieur
+        memory->seg[j].start._32 = next_segment_start;
+    }
+    else
+        memory->seg[j].start._32 = 0x5000;      /* adresse de départ du segment */
     memory->seg[j].attr          = SCN_ATTR(1, R__);         // permission sur le segment 
     memory->seg[j].content       = calloc(memory->seg[j].size._32, sizeof(char)); //start ?    /* on alloue la mémoire réelle utile pour ce segment */
 

@@ -1,8 +1,7 @@
 Livrables précédents :
-- tester les sauts/branchements
-- syscall & break
-- gestion des "+" 
-- gestion des offsets négatifs 
+- sauts/branchements à tester
+- break à tester
+- gestion des offsets négatifs dans les fonctions "plage" et I-TYPE
 
 Livrable 4 :
 - déterminer la structure
@@ -13,3 +12,14 @@ Livrable 4 :
 - résolution des symboles non définis 
 - swap LE -> BE & BE -> LE
 - mise à jour de l'instruction
+- syscall 
+- fonction help ?
+- fonction test ? 
+
+Déjà réalisé : 
+- syscall : code 1 & 4 & 10 testés 
+- load avec une adresse testé 
+- mise à jour dynamique des adresses de départ des segments testée
+- disp mem plage avec "+" testé
+- disp reg avec "+" testé
+- disasm avec "+" testé

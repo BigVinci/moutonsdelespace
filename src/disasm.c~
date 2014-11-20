@@ -88,6 +88,7 @@ int _disasm_range_hexacmd(char* addr1, char* addr2, mem vmem, reg* tab_reg)
 
 	if (k==CMD_EXIT_RETURN_VALUE) // EXIT à cause de SYSCALL
 	{
+	  
             return k;
 	}
 

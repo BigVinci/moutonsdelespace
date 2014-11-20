@@ -1,9 +1,9 @@
 #ifndef _LOAD_H_
 #define _LOAD_H_
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "bits.h"
 #include "notify.h"
 #include "../elf/elf.h"
@@ -34,6 +34,6 @@ unsigned int get_nsegments(stab symtab,char* section_names[],int nb_sections);
 int elf_load_section_in_memory(FILE* fp, mem memory, char* scn,unsigned int permissions,unsigned long long add_start);
 void print_segment_raw_content(segment* seg);
 void reloc_segment(FILE* fp, segment seg, mem memory,unsigned int endianness,stab symtab);
-mem load(char* name);
+mem load(char* name, char* address);
 
 #endif /* _LOAD_H_ */

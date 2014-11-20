@@ -19,6 +19,9 @@
 
 #include "interpreteur.h"
 
+/* commandes issues de cmd_gestion.c */
+#include "instr_cmd_gestion.h"
+
 // contient les valeurs à mettre dans les registres (les valeurs sont dans rt, rs, rd, ...) et les numéros des registres à modifier (dans *_num)
 typedef struct op_val_struct {int rt; int rs; int rd; int sa; int immediate; int offset; int target;
                               int rt_num; int rs_num; int rd_num; int sa_num;} OP_VAL;
@@ -83,7 +86,7 @@ int instr_jal(OP_VAL* opvalue, reg* tab_reg);
 int instr_jalr(OP_VAL* opvalue, reg* tab_reg);
 int instr_jr(OP_VAL* opvalue, reg* tab_reg);
 int instr_break(OP_VAL* opvalue);
-int instr_syscall(OP_VAL* opvalue);
+int instr_syscall(OP_VAL* opvalue, reg* tab_reg, mem vmem);
 
 //pseudo_instructions
 int instr_nop(OP_VAL* opvalue);
@@ -92,8 +95,5 @@ int instr_neg(OP_VAL* opvalue);
 int instr_li16(OP_VAL* opvalue);
 int instr_li32(OP_VAL* opvalue);
 int instr_blt(OP_VAL* opvalue);
-
-int _set_mem_bytecmd_2(uint8_t byteValue, uint32_t vaddr, mem vmem);
-int _set_mem_wordcmd_2(uint32_t wordValue, uint32_t vaddr, mem vmem);
 
 #endif /* _INSTRUCTION_H_ */

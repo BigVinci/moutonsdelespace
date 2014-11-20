@@ -385,7 +385,7 @@ sscanf(addr2, "%x", &addr_end);
 
 
 /** DISP_REG_REGISTER
- * Fonction qui affiche la valeur contenue dans le registre donné (un seul registre pour le moment)
+ * Fonction qui affiche la valeur contenue dans le registre donné 
  * @param vname le nom du registre à afficher et 
  * @param tab le tableau des registres 
  * @return 0 si réussi, 1 si fail
@@ -670,6 +670,8 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
             i=_disasm_range_offsetcmd(addresschar, 0, vmem, tab_reg); // exécute la fonction
             PC+=4; // on passe à la ligne à désassembler suivante 
             if (i==1) STATE=TERM; // en cas d'erreur dans la fonction disasm
+            else if(i==CMD_BREAK_RETURN_VALUE) STATE=PAUSE; // on s'arrête à cause de l'instruction BREAK
+            else if(i==CMD_EXIT_RETURN_VALUE) STATE=OUT; // on s'arrête à cause de l'instruction SYSCALL - code de service 10
             else if (absent_bp(BP, PC)==0) STATE=PAUSE; // si l'adresse suivante est un breakpoint, on s'arrête avant l'exécution de celle-ci
             else if (PC>(vmem->seg[0].start._32+vmem->seg[0].size._32)) STATE=TERM;
             break;
@@ -685,7 +687,7 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
             }
             else if (strcmp(instruction, "step")==0)
             {
-                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP");
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP?. \n");
                 BP=add_bp(BP, PC+4);
                 STATE=RUN;
             }

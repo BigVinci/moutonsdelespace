@@ -1097,6 +1097,7 @@ int instr_syscall(OP_VAL* opvalue, reg* tab_reg, mem vmem)
 
     case 10 : 
         INFO_MSG("Code de service : 10 - Sortie du programme");
+	DEBUG_MSG("Byebye !");
         return CMD_EXIT_RETURN_VALUE; // entraîne la sortie du programme
 	break;
 
