@@ -1,4 +1,3 @@
-
 /**
  * @file elf.h
  * @author François Cayre <francois.cayre@grenoble-inp.fr>
@@ -15,12 +14,13 @@
 extern "C" {
 #endif
 
+#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#include "common/types.h"
-#include "elf/syms.h"
-#include "elf/section.h"
+#include "../common/types.h"
+#include "syms.h"
+#include "section.h"
 
 typedef uint32_t Elf32_Addr;
 typedef uint16_t Elf32_Half;

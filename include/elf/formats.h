@@ -20,8 +20,8 @@ extern "C" {
 /* Forward declaration */
 struct process_t;
 
-#include "common/types.h"
-#include "elf/elf.h"
+#include "../common/types.h"
+#include "elf.h"
 
 #define MACH_T_UNDEF    0x00
 #define MACH_T_MIPS     0x01
