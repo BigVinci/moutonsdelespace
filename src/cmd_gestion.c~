@@ -685,7 +685,7 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
             }
             else if (strcmp(instruction, "step")==0)
             {
-                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP?. \n");
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP");
                 BP=add_bp(BP, PC+4);
                 STATE=RUN;
             }

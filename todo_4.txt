@@ -1,0 +1,15 @@
+Livrables précédents :
+- tester les sauts/branchements
+- syscall & break
+- gestion des "+" 
+- gestion des offsets négatifs 
+
+Livrable 4 :
+- déterminer la structure
+- traduction de la table de relocation sous forme d'un tableau de structure 
+- gestion des 4 modes de relocation (deux colonnes du tableau)
+- calcul des 4 variables initiales (P, S, A, AHL)
+- chargement de libc  
+- résolution des symboles non définis 
+- swap LE -> BE & BE -> LE
+- mise à jour de l'instruction

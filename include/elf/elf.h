@@ -15,21 +15,12 @@
 extern "C" {
 #endif
 
-
-
-
-#include "../common/notify.h"
-#include "../common/bits.h"
-#include "formats.h"
-
-#include <strings.h>
-#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#include "../common/types.h"
-#include "syms.h"
-#include "section.h"
+#include "common/types.h"
+#include "elf/syms.h"
+#include "elf/section.h"
 
 typedef uint32_t Elf32_Addr;
 typedef uint16_t Elf32_Half;
@@ -242,9 +233,9 @@ typedef struct {
 
 typedef struct {
 
-    Elf32_Addr   r_offset;
-    Elf32_Word   r_info;
-    Elf32_Sword  r_addend;
+    Elf32_Addr   r_offset; // uint32_t
+    Elf32_Word   r_info;   // uint32_t
+    Elf32_Sword  r_addend; // int32_t
 
 } Elf32_Rela;
 

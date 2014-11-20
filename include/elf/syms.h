@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "../common/types.h"
+#include "common/types.h"
 
 
 typedef enum {
@@ -38,13 +38,13 @@ typedef struct {
 } stab;
 
 sym  new_sym32( char *name, vaddr32 addr, uint size, sym_type type, uint scnidx );
-//sym  new_sym64( char *name, vaddr64 addr, uint size, sym_type type, uint scnidx );
+sym  new_sym64( char *name, vaddr64 addr, uint size, sym_type type, uint scnidx );
 void sym32_print( sym s );
-//void sym64_print( sym s );
+void sym64_print( sym s );
 
 stab new_stab( uint size );
 void stab32_print( stab s );
-//void stab64_print( stab s );
+void stab64_print( stab s );
 void del_stab( stab s );
 
 #ifdef __cplusplus

@@ -167,7 +167,7 @@ void reloc_segment(FILE* fp, segment seg, mem memory,unsigned int endianness,sta
 
 
 
-    if (rel != NULL && seg.content!=NULL && seg.size._32!=0) {
+    if (rel != NULL &&seg.content!=NULL && seg.size._32!=0) {
 
         INFO_MSG("--------------Relocation de %s-------------------\n",seg.name) ;
         INFO_MSG("Nombre de symboles a reloger: %ld\n",scnsz/sizeof(*rel)) ;

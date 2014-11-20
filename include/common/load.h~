@@ -3,11 +3,13 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include "bits.h"
 #include "notify.h"
 #include "../elf/elf.h"
 #include "../elf/syms.h"
 #include "../mem.h"
+#include "../elf/relocator.h"
 
 // On fixe ici une adresse basse dans la mémoire virtuelle. Le premier segment
 // ira se loger à cette adresse.
