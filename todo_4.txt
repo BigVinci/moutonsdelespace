@@ -23,3 +23,4 @@ Déjà réalisé :
 - disp reg avec "+" testé
 - disasm avec "+" testé
 - .emu à finaliser
+- gestion du PC %4 - mode SCRIPT - hors champs .text

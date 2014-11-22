@@ -985,8 +985,8 @@ int instr_jal(OP_VAL* opvalue, reg* tab_reg)
     // on conserve la valeur suivante de PC ($32) en la mettant dans $ra ($31)
     unsigned int a=0;
     char* data=calloc(1, sizeof(char));
-    sscanf(tab_reg[32]->data,"%d", &a); // converti un char* en integer
-    a=a+4; // permet de cibler l'instruction suivant le saut
+    sscanf(tab_reg[32]->data,"%x", &a); // converti un char* en integer
+    a=a+8; // permet de cibler l'instruction suivant le saut en ignorant le NOP 
     sprintf(data,"%x", a); // converti un integer en char*
     tab_reg[31]->data=strdup(data);
 

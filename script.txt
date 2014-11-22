@@ -1,7 +1,14 @@
-load elf/procedure.o
-set reg $v0 4
-set reg $a0 1000
-set mem word 0x1000 12
+load elf/procedure.o 
+run
+debug
+
+set reg $2 12
+set reg $PC 4097
+set reg $17 1654351
+disp reg all 
+run 
+debug
+set mem word 0x1000 272695298
 step
 debug
 

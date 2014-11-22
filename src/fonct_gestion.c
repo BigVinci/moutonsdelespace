@@ -1163,6 +1163,16 @@ int stepcmd( interpreteur inter, reg* tab_reg, mem vmem)
         return 1;
     }
 
+    int a;
+    sscanf(tab_reg[32]->data, "%d", &a);
+    if (a<(vmem->seg[0].start._32) || a>(vmem->seg[0].start._32+vmem->seg[0].size._32)) 
+    {
+        char* data_start=strdup("Initialisation");
+	INFO_MSG("Le PC est réinitialisé au début du segment .text car sa valeur courante n'appartient pas à ce segment");
+        sprintf(data_start, "%x", vmem->seg[0].start._32);
+        tab_reg[32]->data=data_start; // on initialise PC au début du point .text si il n'a pas encore été initialisé
+    }
+
     DEBUG_MSG("Command step");
     char* token1=get_next_token(inter);
     char* token2=NULL;
@@ -1212,12 +1222,23 @@ int runcmd( interpreteur inter, reg* tab_reg, mem vmem)
     char* token1=get_next_token(inter);
     char* token2=NULL;
 
-    if (strcmp(tab_reg[32]->data,"0")==0) 
+    int a;
+    sscanf(tab_reg[32]->data, "%d", &a);
+    char* data_start=strdup("Initialisation");
+    if (a<(vmem->seg[0].start._32) || a>(vmem->seg[0].start._32+vmem->seg[0].size._32)) 
     {
-        char* data_start=strdup("Initialisation");
+	INFO_MSG("Le PC est réinitialisé au début du segment .text car sa valeur courante n'appartient pas à ce segment");
         sprintf(data_start, "%x", vmem->seg[0].start._32);
         tab_reg[32]->data=data_start; // on initialise PC au début du point .text si il n'a pas encore été initialisé
     }
+
+    if ((a%4)!=a) 
+    {
+	a-=(a%4);
+        sprintf(data_start, "%x", a);
+        tab_reg[32]->data=data_start; // on initialise PC au début du point .text si il n'a pas encore été initialisé
+    }
+
     if (token1==NULL) // si l'adresse est omise, on démarre à l'adresse courante du PC
     {
 	   return _machine_statecmd("run", tab_reg[32]->data, inter->BP, tab_reg, vmem);

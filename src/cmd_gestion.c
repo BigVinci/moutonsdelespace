@@ -668,7 +668,7 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
         case RUN :
 	    sprintf(addresschar, "%x", PC);
             i=_disasm_range_offsetcmd(addresschar, 0, vmem, tab_reg); // exécute la fonction
-            PC+=4; // on passe à la ligne à désassembler suivante 
+            PC+=4; sprintf(tab_reg[32]->data, "%x", PC); // on passe à la ligne à désassembler suivante 
             if (i==1) STATE=TERM; // en cas d'erreur dans la fonction disasm
             else if(i==CMD_BREAK_RETURN_VALUE) STATE=PAUSE; // on s'arrête à cause de l'instruction BREAK
             else if(i==CMD_EXIT_RETURN_VALUE) STATE=OUT; // on s'arrête à cause de l'instruction SYSCALL - code de service 10
@@ -682,13 +682,11 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
                 STATE=RUN;
             else if (strcmp(instruction, "step into")==0)
             {
-//		PC+=4;
                 STATE=RUN;
                 BP=add_bp(BP, PC+4);
             }
             else if (strcmp(instruction, "step")==0)
             {
-//		PC+=4;
                 printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP. \n");
                 BP=add_bp(BP, PC+4);
                 STATE=RUN;

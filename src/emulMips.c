@@ -72,7 +72,7 @@ int main ( int argc, char *argv[] )
         if (acquire_line( fp,  inter)  == 0 ) {
 	 int res;
             // Une nouvelle ligne a ete acquise dans le flux fp
-            res = execute_cmd(inter, tabreg, vmem, fp);     // execution de la commande en mode SCRIPT
+            res = execute_cmd(inter, tabreg, vmem, fp);     // execution de la commande 
 
             // traitement des erreurs
             switch(res) {
