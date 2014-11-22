@@ -5,7 +5,6 @@
 
 load elf/boucle.o
 set mem byte 0x3012 128
-set mem word 0xff7ff221 18451
+set mem word 0xff7ff224 18451
 set reg $2 128
-set reg $PC data
-set reg $54 -187
+set reg $PC 21

@@ -40,17 +40,17 @@ LW/SW
 
 
 ***	test .emu ***		ETAT :
-			assert		pbm avec pass.emu
+			assert		** validé **
 			break 		** validé **
-			debug		ne marche pas !!
-			disasm		pbm avec pass.emu
+			debug		ne peux exister car aucune valeur de retour
+			disasm		** validé **
 			disp 		** validé **
 			exit 		** validé **
 			load		** validé **
-			resume		pbm return !void (test fail) mais la fonction marche correctement 
-			run 	 	ne marche pas !!
-			set 		pbm avec pass.emu
-			step 		pbm avec pass.emu & step into
+			resume		ne peux exister car aucune valeur de retour
+			run 	 	** validé ** mais aucun pass.emu
+			set 		** validé **
+			step (into)	** validé ** mais aucun pass.emu
 
 autre :
 - i-type : calcul du complément à 2 : offset négatif

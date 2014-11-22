@@ -1,0 +1,7 @@
+les fichiers de test
+
+les tests sont regroupés en repertoires correspondant à une commande. 
+
+Il doivent être passés en parametre de simpleUnitTest.sh
+Pour lancer en mode batch : option -b :
+	../testing/simpleUnitTest.sh -e ./emulMips -b test/exit/*.emu

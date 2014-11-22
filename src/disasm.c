@@ -122,6 +122,12 @@ int _disasm_range_offsetcmd(char* addr1, int offsetValue, mem vmem, reg* tab_reg
 {
     DEBUG_MSG("La fonction disasm_range_offset a été lancée"); //On vérifie que la bonne fonction s'ouvre
 
+    if (offsetValue<0) // si il ne se passe rien
+    {
+        WARNING_MSG("Offset négatif : disasm impossible");
+        return 1;
+    }
+
     char* addr2=calloc(1, sizeof(char));
     unsigned int val2;
     sscanf(addr1, "%x", &val2);

@@ -193,7 +193,7 @@ int _set_regcmd(uint32_t wordValue, reg vreg, reg* tab_reg)
 }
 
 
-/** SET_MEM_MAP
+/** DISP_MEM_MAP
  * version de la commande disp mem map
  * la fonction affiche le contenu de la carte mémoire du programme
  * @param vmem la mémoire à afficher
@@ -526,7 +526,7 @@ int _assert_bytecmd(uint32_t address, int valeur, mem vmem)
 
             if(strcmp(valueaddr,val)==0) // On compare la valeur entrée avec le contenu de l'adresse
             {
-                INFO_MSG("Les deux valeurs sont identiques");
+                INFO_MSG("Les deux valeurs sont identiques"); printf("Les deux valeurs sont identiques. \n");
                 return CMD_OK_RETURN_VALUE; // retourne 0 si égal, 1 sinon
             } 
 
@@ -534,7 +534,7 @@ int _assert_bytecmd(uint32_t address, int valeur, mem vmem)
 	
     }
 
-    INFO_MSG("Les deux valeurs ne sont pas identiques");
+    INFO_MSG("Les deux valeurs ne sont pas identiques");  printf("Les deux valeurs ne sont pas identiques. \n");
     return 1;
 }
 
@@ -589,7 +589,7 @@ int _assert_wordcmd(uint32_t address, int valeur, mem vmem)
 
             if(strcmp(valueaddr,val)==0) // On compare la valeur entrée avec le contenu de l'adresse
             {
-                INFO_MSG("Les deux valeurs sont identiques");
+                INFO_MSG("Les deux valeurs sont identiques");  printf("Les deux valeurs sont identiques. \n");
                 return CMD_OK_RETURN_VALUE; // retourne 0 si égal, 1 sinon
             } 
 
@@ -597,7 +597,7 @@ int _assert_wordcmd(uint32_t address, int valeur, mem vmem)
 	
     }
 
-    INFO_MSG("Les deux valeurs ne sont pas identiques");
+    INFO_MSG("Les deux valeurs ne sont pas identiques");  printf("Les deux valeurs ne sont pas identiques. \n");
     return 1;
 }
 
@@ -682,12 +682,14 @@ int _machine_statecmd(char* cmd, char* address, Liste* L, reg* tab_reg, mem vmem
                 STATE=RUN;
             else if (strcmp(instruction, "step into")==0)
             {
+//		PC+=4;
                 STATE=RUN;
                 BP=add_bp(BP, PC+4);
             }
             else if (strcmp(instruction, "step")==0)
             {
-                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP?. \n");
+//		PC+=4;
+                printf("La fonction n'est pas encore implémentée et équivaut actuellement à STEP. \n");
                 BP=add_bp(BP, PC+4);
                 STATE=RUN;
             }

@@ -509,7 +509,7 @@ int disasmcmd(interpreteur inter, mem vmem, reg* tab_reg)
                 i+=_disasm_range_hexacmd(token1, token3, vmem, tab_reg); 
             else 
             {
-                WARNING_MSG("%s %s %s are not valid argument of command %s , expecting 'hexa : hexa' !", token2, token3, token4, "disasm");
+                WARNING_MSG("%s %s %s are not valid argument of command %s , expecting 'hexa : hexa' !", token1, token2, token3, "disasm");
                 return 1;
             }
         }
@@ -533,7 +533,7 @@ int disasmcmd(interpreteur inter, mem vmem, reg* tab_reg)
             }
             else 
             {
-                WARNING_MSG("%s %s %s are not valid argument of command %s , expecting 'hexa : hexa' !", token2, token3, token4, "disasm");
+                WARNING_MSG("%s %s %s are not valid argument of command %s , expecting 'hexa : hexa' !", token1, token2, token3, "disasm");
                 return 1;
             }
         }

@@ -1,6 +1,5 @@
 Livrables précédents :
 - sauts/branchements à tester
-- break à tester
 - gestion des offsets négatifs dans les fonctions "plage" et I-TYPE
 
 Livrable 4 :
@@ -23,3 +22,4 @@ Déjà réalisé :
 - disp mem plage avec "+" testé
 - disp reg avec "+" testé
 - disasm avec "+" testé
+- .emu à finaliser

@@ -8,4 +8,5 @@ disp mem map
 disp mem 0x1000 : 0xffffffff
 disp reg all
 disp reg $2
-disp reg $LO
+disp reg $LO $31 $14
+disp mem 0x1000 : 0x1002 0x1004 : 0x1008
